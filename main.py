@@ -1,16 +1,1 @@
-# This is a sample Python script.
-
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+from dataclasses import dataclassfrom typing import List@dataclassclass Cell:    asset_link: str    is_empty: bool@dataclassclass Room:    matrix: List[List[Cell]]class MapGenerator:    @staticmethod    def generate():        rooms = {            1: [Room([[Cell('1', True), Cell('2', True)], [Cell('1', True), Cell('2', True)]]), [2]],            2: [Room([[Cell('1', True), Cell('2', True)], [Cell('1', True), Cell('2', True)]]), [3]],            3: [Room([[Cell('1', True), Cell('2', True)], [Cell('1', True), Cell('2', True)]]), [4]],            4: [Room([[Cell('1', True), Cell('2', True)], [Cell('1', True), Cell('2', True)]]), []]        }        return roomsx = MapGenerator()print(x.generate())
