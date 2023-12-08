@@ -63,7 +63,7 @@ class MapGenerator:
             if direction == 'Y':
                 y_gen += alias_move
             self.__coordinates.append((x_gen, y_gen))
-            self.__rooms[x_gen][y_gen] = rooms[randrange(len(self.enemy_rooms))]
+            self.__rooms[x_gen][y_gen] = rooms[randrange(len(rooms))]
 
     def __create_enemy_rooms(self):
         enemies_rooms_number = randint(self.__min_enemies_rooms, self.__max_enemies_rooms)
@@ -184,6 +184,7 @@ class CreateFieldMatrix:
                 end_x=coordinates[i][0] * self.big_cell_size + self.big_cell_size // 2,
                 end_y=coordinates[i][1] * self.big_cell_size + self.big_cell_size // 2
             )
+        print(coordinates_treasure_rooms)
         for i in range(len(coordinates_treasure_rooms)):
             self.__create_road(
                 start_x=coordinates_treasure_rooms[i][0][0] * self.big_cell_size + self.big_cell_size // 2,
