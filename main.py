@@ -7,6 +7,7 @@ import pygame
 
 @dataclass
 class Cell:
+    color: tuple
     asset_link: str
     is_empty: bool
 
@@ -23,25 +24,29 @@ class Wall(Cell):
 class MapGenerator:
 
     def __init__(self):
-        self.start_room = Room([[Wall('Start', True), Cell('Start ', True)],
-                                [Cell('Start ', True), Cell('Start ', True)]])
+        self.start_room = Room([[Cell((100, 255, 255), 'Start', True), Cell((100, 255, 255), 'Start ', True)],
+                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)],
+                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)],
+                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)],
+                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)]])
         # self.portal_room = Room([[Cell('Portal', True), Cell('Portal', True)],
         #                          [Cell('Portal', True), Cell('Portal', True)]])
         # self.enemy_room = Room([[Cell('Enemy ', True), Cell('Enemy ', True)],
         #                         [Cell('Enemy ', True), Cell('Enemy ', True)]])
         # self.treasure_room = Room([[Cell('Treas ', True), Cell('Treas ', True)],
         #                            [Cell('Treas ', True), Cell('Treas ', True)]])
-        self.start_room = Room([[1, 1, 1, 1],
-                                [1, 1, 1, 1],
-                                [1, 1, 1, 1],
-                                [1, 1, 1, 1]])
+        # self.start_room = Room([[1, 1, 1, 1],
+        #                         [1, 1, 1, 1],
+        #                         [1, 1, 1, 1],
+        #                         [1, 1, 1, 1]])
         self.portal_room = Room([[2, 2],
                                  [2, 2]])
         self.enemy_rooms = [Room([[3, 3],
                                   [3, 3]]), Room([[5, 5],
                                                   [5, 5]])]
-        self.treasure_room = Room([[4, 4],
-                                   [4, 4]])
+        self.treasure_rooms = [Room([[4, 4],
+                                   [4, 4]]), Room([[6, 6],
+                                   [6, 6]])]
         self.rooms_amount = 10
         self.__min_enemies_rooms = 2
         self.__max_enemies_rooms = 5
@@ -106,7 +111,9 @@ class MapGenerator:
                         coordinate_enemy_for_treasure_room.append((x_enemy_room, y_enemy_room))
                         self.__coordinates_for_treasure_room.append(coordinate_enemy_for_treasure_room)
                         self.__all_coordinates.append((x_enemy_room, y_enemy_room))
-                        self.__rooms[x_enemy_room][y_enemy_room] = self.treasure_room
+                        self.__rooms[x_enemy_room][y_enemy_room] = self.treasure_rooms[
+                            randrange(len(self.treasure_rooms))
+                        ]
                         cnt_treasuries += 1
 
     def __crop(self):
@@ -167,12 +174,12 @@ class CreateFieldMatrix:
         start_y, end_y = min(start_y, end_y), max(start_y, end_y)
         if start_x == end_x:
             for i in range(end_y - start_y):
-                # self.__field[start_x][start_y + i] = Cell('road', True)
-                self.__field[start_x][start_y + i] = 'x'
+                self.__field[start_x][start_y + i] = Cell((255, 0, 0), 'road', True)
+                # self.__field[start_x][start_y + i] = 'x'
         if start_y == end_y:
             for i in range(end_x - start_x):
-                # self.__field[start_x + i][start_y] = Cell('road', True)
-                self.__field[start_x + i][start_y] = 'x'
+                self.__field[start_x + i][start_y] = Cell((255, 0, 0), 'road', True)
+                # self.__field[start_x + i][start_y] = 'x'
 
     def generate_field(self):
         map_generator = MapGenerator()
@@ -211,7 +218,7 @@ class DrawMap:
 
     def __init__(self):
         self.screen = None
-        self.quadrant_size = 5
+        self.quadrant_size = 3
         self.map = CreateFieldMatrix().generate_field()
 
     def draw(self):
@@ -220,7 +227,7 @@ class DrawMap:
             for j in range(len(self.map[0])):
                 div = self.map[i][j]
                 pygame.draw.rect(self.screen,
-                                 (255, 255, 255) if div != 0 else (0, 0, 0),
+                                 div.color if div != 0 and type(div) not in (int, str) else (0, 0, 0),
                                  ((self.quadrant_size * j, self.quadrant_size * i),
                                   (self.quadrant_size * (j + 1), self.quadrant_size * (i + 1))))
 
