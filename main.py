@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from random import randint, randrange
 from typing import List
 
+import pygame
+
 
 @dataclass
 class Cell:
@@ -14,24 +16,30 @@ class Room:
     matrix: List[List[Cell]]
 
 
+class Wall(Cell):
+    pass
+
+
 class MapGenerator:
 
     def __init__(self):
-        # self.start_room = Room([[Cell('Start ', True), Cell('Start ', True)],
-        #                         [Cell('Start ', True), Cell('Start ', True)]])
+        self.start_room = Room([[Wall('Start', True), Cell('Start ', True)],
+                                [Cell('Start ', True), Cell('Start ', True)]])
         # self.portal_room = Room([[Cell('Portal', True), Cell('Portal', True)],
         #                          [Cell('Portal', True), Cell('Portal', True)]])
         # self.enemy_room = Room([[Cell('Enemy ', True), Cell('Enemy ', True)],
         #                         [Cell('Enemy ', True), Cell('Enemy ', True)]])
         # self.treasure_room = Room([[Cell('Treas ', True), Cell('Treas ', True)],
         #                            [Cell('Treas ', True), Cell('Treas ', True)]])
-        self.start_room = Room([[1, 1],
-                                [1, 1]])
+        self.start_room = Room([[1, 1, 1, 1],
+                                [1, 1, 1, 1],
+                                [1, 1, 1, 1],
+                                [1, 1, 1, 1]])
         self.portal_room = Room([[2, 2],
                                  [2, 2]])
         self.enemy_rooms = [Room([[3, 3],
-                                [3, 3]]), Room([[5, 5],
-                                [5, 5]])]
+                                  [3, 3]]), Room([[5, 5],
+                                                  [5, 5]])]
         self.treasure_room = Room([[4, 4],
                                    [4, 4]])
         self.rooms_amount = 10
@@ -192,17 +200,48 @@ class CreateFieldMatrix:
                 end_x=coordinates_treasure_rooms[i][1][0] * self.big_cell_size + self.big_cell_size // 2,
                 end_y=coordinates_treasure_rooms[i][1][1] * self.big_cell_size + self.big_cell_size // 2
             )
-        self.print_field(field)
-        # self.print_field(self.__field)
+        return self.__field
 
     def print_field(self, field):
         for row in field:
             print(*row)
 
 
+class DrawMap:
+
+    def __init__(self):
+        self.screen = None
+        self.quadrant_size = 5
+        self.map = CreateFieldMatrix().generate_field()
+
+    def draw(self):
+        self.screen.fill((0, 255, 0))
+        for i in range(len(self.map)):
+            for j in range(len(self.map[0])):
+                div = self.map[i][j]
+                pygame.draw.rect(self.screen,
+                                 (255, 255, 255) if div != 0 else (0, 0, 0),
+                                 ((self.quadrant_size * j, self.quadrant_size * i),
+                                  (self.quadrant_size * (j + 1), self.quadrant_size * (i + 1))))
+
+    def create_window(self):
+        pygame.init()
+        size = width, height = len(self.map[0]) * self.quadrant_size, len(self.map) * self.quadrant_size
+        self.screen = pygame.display.set_mode(size)
+        pygame.display.flip()
+        self.draw()
+        while pygame.event.wait().type != pygame.QUIT:
+            self.draw()
+            pygame.display.flip()
+        pygame.quit()
+
+
 # x = MapGenerator()
 # for el in x.generate()[0]:
 #     print(*el)
 
-d = CreateFieldMatrix()
-d.generate_field()
+# d = CreateFieldMatrix()
+# d.generate_field()
+
+draw = DrawMap()
+draw.create_window()
