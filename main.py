@@ -247,8 +247,8 @@ class DrawMap:
 
     def __init__(self):
         self.screen = None
-        self.quadrant_size = 10
-        self.width = self.height = 500
+        self.quadrant_size = 80
+        self.width = self.height = 1000
         self.x = self.width // 2
         self.y = self.height // 2
         self.map = CreateFieldMatrix().generate_field()
@@ -260,7 +260,8 @@ class DrawMap:
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 if self.x - self.width // 2 <= j * self.quadrant_size <= self.x + self.width // 2 and \
-                        self.y - self.height // 2 - self.quadrant_size <= j * self.quadrant_size <= self.y + self.height // 2 + self.quadrant_size:
+                        self.y - self.height // 2 - self.quadrant_size <= \
+                        i * self.quadrant_size <= self.y + self.height // 2 + self.quadrant_size:
                     div = self.map[i][j]
                     if div != 0:
                         CellSprite(self.quadrant_size * j - self.x + self.width // 2,
@@ -282,7 +283,7 @@ class DrawMap:
         pygame.display.flip()
         self.draw()
         pygame.display.flip()
-        velocity = 5
+        velocity = 100
         running = True
         while running:
             for event in pygame.event.get():
@@ -299,7 +300,7 @@ class DrawMap:
                         self.y += velocity
             self.draw()
             self.all_sprites.draw(self.screen)
-            pygame.display.flip()
+            pygame.display.update()
         pygame.quit()
 
 
