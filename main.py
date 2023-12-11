@@ -254,13 +254,6 @@ class DrawMap:
         self.map = CreateFieldMatrix().generate_field()
         self.all_sprites = pygame.sprite.Group()
 
-    def load_image(self, name):
-        fullname = os.path.join('assets', name)
-        if not os.path.isfile(fullname):
-            return
-        image = pygame.transform.scale(pygame.image.load(fullname), (self.quadrant_size, self.quadrant_size))
-        return image
-
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.all_sprites.update()
