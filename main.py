@@ -27,6 +27,7 @@ class Assets:
             3: '3.png'
         }
         self.__images = self.load_all_images()
+        self.__player = self.load_image('player.png')
 
     def load_image(self, name):
         fullname = os.path.join('assets', name)
@@ -40,6 +41,9 @@ class Assets:
         for key, value in self.abbr.items():
             images[key] = self.load_image(value)
         return images
+
+    def get_player(self):
+        return self.__player
 
     @property
     def images(self):
@@ -236,7 +240,7 @@ class DrawMap:
 
     def __init__(self):
         self.screen = None
-        self.quadrant_size = 10
+        self.quadrant_size = 80
         self.width = self.height = 1000
         self.x = self.width // 2
         self.y = self.height // 2
@@ -268,6 +272,7 @@ class DrawMap:
                             self.screen.blit(self.assets.images[div.asset_abbr],
                                              (self.quadrant_size * j - self.x + self.width // 2,
                                               self.quadrant_size * i - self.y + self.height // 2))
+        self.screen.blit(self.assets.get_player(), (self.width // 2, self.height // 2))
 
     def create_window(self):
         pygame.init()
