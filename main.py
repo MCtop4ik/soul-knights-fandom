@@ -8,9 +8,8 @@ import pygame
 
 @dataclass
 class Cell:
-    color: tuple
-    asset_link: str
-    is_empty: bool
+    asset_abbr: int
+    name: str
 
 
 @dataclass(frozen=True)
@@ -18,33 +17,48 @@ class Room:
     matrix: List[List[Cell]]
 
 
-class Wall(Cell):
-    pass
+class Assets:
+
+    def __init__(self, quadrant_size):
+        self.quadrant_size = quadrant_size
+        self.abbr = {
+            1: '1.jpg',
+            2: '2.png',
+            3: '3.png'
+        }
+        self.__images = self.load_all_images()
+
+    def load_image(self, name):
+        fullname = os.path.join('assets', name)
+        if not os.path.isfile(fullname):
+            return
+        image = pygame.transform.scale(pygame.image.load(fullname), (self.quadrant_size, self.quadrant_size))
+        return image
+
+    def load_all_images(self):
+        images = {}
+        for key, value in self.abbr.items():
+            images[key] = self.load_image(value)
+        return images
+
+    @property
+    def images(self):
+        return self.__images
 
 
 class MapGenerator:
 
     def __init__(self):
-        self.start_room = Room([[Cell((100, 255, 255), 'Start', True), Cell((100, 255, 255), 'Start ', True)],
-                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)],
-                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 100, 255), 'Start ', True)],
-                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)],
-                                [Cell((100, 255, 255), 'Start ', True), Cell((100, 255, 255), 'Start ', True)]])
-        # self.portal_room = Room([[Cell('Portal', True), Cell('Portal', True)],
-        #                          [Cell('Portal', True), Cell('Portal', True)]])
-        # self.enemy_room = Room([[Cell('Enemy ', True), Cell('Enemy ', True)],
-        #                         [Cell('Enemy ', True), Cell('Enemy ', True)]])
-        # self.treasure_room = Room([[Cell('Treas ', True), Cell('Treas ', True)],
-        #                            [Cell('Treas ', True), Cell('Treas ', True)]])
-        # self.start_room = Room([[1, 1, 1, 1],
-        #                         [1, 1, 1, 1],
-        #                         [1, 1, 1, 1],
-        #                         [1, 1, 1, 1]])
-        self.portal_room = Room([[Cell((0, 0, 255), 'Start', True), Cell((0, 0, 255), 'Start ', True)],
-                                 [Cell((0, 0, 255), 'Start ', True), Cell((0, 0, 255), 'Start ', True)],
-                                 [Cell((0, 0, 255), 'Start ', True), Cell((0, 0, 255), 'Start ', True)],
-                                 [Cell((0, 0, 255), 'Start ', True), Cell((0, 0, 255), 'Start ', True)],
-                                 [Cell((0, 0, 255), 'Start ', True), Cell((0, 0, 255), 'Start ', True)]])
+        self.start_room = Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')]])
+        self.portal_room = Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                 [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                 [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
+                                 [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                 [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])
         self.enemy_rooms = [Room([[3, 3],
                                   [3, 3]]), Room([[5, 5],
                                                   [5, 5]])]
@@ -177,11 +191,11 @@ class CreateFieldMatrix:
         start_y, end_y = min(start_y, end_y), max(start_y, end_y)
         if start_x == end_x:
             for i in range(end_y - start_y):
-                self.__field[start_x][start_y + i] = Cell((255, 0, 0), 'road', True)
+                self.__field[start_x][start_y + i] = Cell(2, 'road')
                 # self.__field[start_x][start_y + i] = 'x'
         if start_y == end_y:
             for i in range(end_x - start_x):
-                self.__field[start_x + i][start_y] = Cell((255, 0, 0), 'road', True)
+                self.__field[start_x + i][start_y] = Cell(2, 'road')
                 # self.__field[start_x + i][start_y] = 'x'
 
     def generate_field(self):
@@ -218,16 +232,16 @@ class CreateFieldMatrix:
             print(*row)
 
 
-class CellSprite(pygame.sprite.Sprite):
+class DrawMap:
 
-    def __init__(self, x=0, y=0, quadrant_size=16, *group):
-        super().__init__(*group)
-        self.quadrant_size = quadrant_size
-        image = self.load_image('1.jpg')
-        self.image = image
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+    def __init__(self):
+        self.screen = None
+        self.quadrant_size = 10
+        self.width = self.height = 1000
+        self.x = self.width // 2
+        self.y = self.height // 2
+        self.map = CreateFieldMatrix().generate_field()
+        self.assets = Assets(self.quadrant_size)
 
     def load_image(self, name):
         fullname = os.path.join('assets', name)
@@ -236,48 +250,27 @@ class CellSprite(pygame.sprite.Sprite):
         image = pygame.transform.scale(pygame.image.load(fullname), (self.quadrant_size, self.quadrant_size))
         return image
 
-    def update(self):
-        self.die()
-
-    def die(self):
-        self.kill()
-
-
-class DrawMap:
-
-    def __init__(self):
-        self.screen = None
-        self.quadrant_size = 80
-        self.width = self.height = 1000
-        self.x = self.width // 2
-        self.y = self.height // 2
-        self.map = CreateFieldMatrix().generate_field()
-        self.all_sprites = pygame.sprite.Group()
-
     def draw(self):
         self.screen.fill((0, 0, 0))
-        self.all_sprites.update()
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
-                if self.x - self.width // 2 <= j * self.quadrant_size <= self.x + self.width // 2 and \
-                        self.y - self.height // 2 - self.quadrant_size <= \
+                if self.x - self.width // 2 - self.quadrant_size <= j * self.quadrant_size <= self.x + self.width // 2 \
+                        + self.quadrant_size \
+                        and self.y - self.height // 2 - self.quadrant_size <= \
                         i * self.quadrant_size <= self.y + self.height // 2 + self.quadrant_size:
                     div = self.map[i][j]
                     if div != 0:
-                        CellSprite(self.quadrant_size * j - self.x + self.width // 2,
-                                   self.quadrant_size * i - self.y + self.height // 2,
-                                   self.quadrant_size,
-                                   self.all_sprites)
-                # pygame.draw.rect(self.screen,
-                #                  div.color if div != 0 and type(div) not in (int, str) else (0, 0, 0),
-                #                  ((self.quadrant_size * j, self.quadrant_size * i),
-                #                   (self.quadrant_size * (j + 1), self.quadrant_size * (i + 1))))
-
-        # self.screen.fill((0, 255, 0))
+                        if type(div) == int:
+                            self.screen.blit(self.assets.images[1],
+                                             (self.quadrant_size * j - self.x + self.width // 2,
+                                              self.quadrant_size * i - self.y + self.height // 2))
+                        else:
+                            self.screen.blit(self.assets.images[div.asset_abbr],
+                                             (self.quadrant_size * j - self.x + self.width // 2,
+                                              self.quadrant_size * i - self.y + self.height // 2))
 
     def create_window(self):
         pygame.init()
-        # size = width, height = len(self.map[0]) * self.quadrant_size, len(self.map) * self.quadrant_size
         size = width, height = self.width, self.height
         self.screen = pygame.display.set_mode(size)
         pygame.display.flip()
@@ -299,7 +292,6 @@ class DrawMap:
                     if event.key == pygame.K_DOWN:
                         self.y += velocity
             self.draw()
-            self.all_sprites.draw(self.screen)
             pygame.display.update()
         pygame.quit()
 
