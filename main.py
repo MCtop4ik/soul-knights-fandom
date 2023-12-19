@@ -240,7 +240,7 @@ class DrawMap:
 
     def __init__(self):
         self.screen = None
-        self.quadrant_size = 80
+        self.quadrant_size = 300
         self.width = self.height = 1000
         self.x = self.width // 2
         self.y = self.height // 2
@@ -281,7 +281,7 @@ class DrawMap:
         pygame.display.flip()
         self.draw()
         pygame.display.flip()
-        velocity = 100
+        velocity = 500
         running = True
         while running:
             for event in pygame.event.get():
