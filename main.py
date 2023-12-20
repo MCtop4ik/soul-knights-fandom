@@ -1,4 +1,5 @@
 import os
+import sys
 from dataclasses import dataclass
 from random import randint, randrange
 from typing import List
@@ -63,12 +64,26 @@ class MapGenerator:
                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])
-        self.enemy_rooms = [Room([[3, 3],
-                                  [3, 3]]), Room([[5, 5],
-                                                  [5, 5]])]
-        self.treasure_rooms = [Room([[4, 4],
-                                     [4, 4]]), Room([[6, 6],
-                                                     [6, 6]])]
+        self.enemy_rooms = [Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]]),
+                            Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])]
+        self.treasure_rooms = [Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]]),
+                               Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])]
         self.rooms_amount = 10
         self.__min_enemies_rooms = 2
         self.__max_enemies_rooms = 5
@@ -236,77 +251,102 @@ class CreateFieldMatrix:
             print(*row)
 
 
-class DrawMap:
+class Player(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.transform.scale(pygame.image.load('assets/player.png').convert_alpha(), (80, 80))
+        self.rect = self.image.get_rect(center=pos)
+        self.direction = pygame.math.Vector2()
+        self.speed = 5
 
-    def __init__(self):
-        self.screen = None
-        self.quadrant_size = 300
-        self.width = self.height = 1000
-        self.x = self.width // 2
-        self.y = self.height // 2
-        self.map = CreateFieldMatrix().generate_field()
+    def input(self):
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_UP]:
+            self.direction.y = -1
+        elif keys[pygame.K_DOWN]:
+            self.direction.y = 1
+        else:
+            self.direction.y = 0
+
+        if keys[pygame.K_RIGHT]:
+            self.direction.x = 1
+        elif keys[pygame.K_LEFT]:
+            self.direction.x = -1
+        else:
+            self.direction.x = 0
+
+    def update(self):
+        self.input()
+        self.rect.center += self.direction * self.speed
+
+
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = pygame.transform.scale(pygame.image.load('assets/3.png').convert_alpha(), (20, 20))
+        self.rect = self.image.get_rect(center=pos)
+
+
+class CameraGroup(pygame.sprite.Group):
+    ZERO = 0
+
+    def __init__(self, width, height, quadrant_size, lvl):
+        super().__init__()
+        self.display_surface = pygame.display.get_surface()
+        self.quadrant_size = quadrant_size
+        self.width, self.height = width, height
+
+        self.map = lvl
         self.assets = Assets(self.quadrant_size)
 
-    def load_image(self, name):
-        fullname = os.path.join('assets', name)
-        if not os.path.isfile(fullname):
-            return
-        image = pygame.transform.scale(pygame.image.load(fullname), (self.quadrant_size, self.quadrant_size))
-        return image
+        self.offset = pygame.math.Vector2()
 
-    def draw(self):
-        self.screen.fill((0, 0, 0))
+        self.half_w = self.width // 2
+        self.half_h = self.height // 2
+
+    def map_draw(self):
+        screen.fill((0, 0, 0))
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
-                if self.x - self.width // 2 - self.quadrant_size <= j * self.quadrant_size <= self.x + self.width // 2 \
-                        + self.quadrant_size \
-                        and self.y - self.height // 2 - self.quadrant_size <= \
-                        i * self.quadrant_size <= self.y + self.height // 2 + self.quadrant_size:
-                    div = self.map[i][j]
-                    if div != 0:
-                        if type(div) == int:
-                            self.screen.blit(self.assets.images[1],
-                                             (self.quadrant_size * j - self.x + self.width // 2,
-                                              self.quadrant_size * i - self.y + self.height // 2))
-                        else:
-                            self.screen.blit(self.assets.images[div.asset_abbr],
-                                             (self.quadrant_size * j - self.x + self.width // 2,
-                                              self.quadrant_size * i - self.y + self.height // 2))
-        self.screen.blit(self.assets.get_player(), (self.width // 2, self.height // 2))
+                div = self.map[i][j]
+                if div != self.ZERO:
+                    ground_surf = self.assets.images[div.asset_abbr]
+                    self.display_surface.blit(
+                        ground_surf,
+                        (self.quadrant_size * j, self.quadrant_size * i) - self.offset)
 
-    def create_window(self):
-        pygame.init()
-        size = width, height = self.width, self.height
-        self.screen = pygame.display.set_mode(size)
-        pygame.display.flip()
-        self.draw()
-        pygame.display.flip()
-        velocity = 500
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        self.x -= velocity
-                    if event.key == pygame.K_RIGHT:
-                        self.x += velocity
-                    if event.key == pygame.K_UP:
-                        self.y -= velocity
-                    if event.key == pygame.K_DOWN:
-                        self.y += velocity
-            self.draw()
-            pygame.display.update()
-        pygame.quit()
+    def center_target_camera(self, target):
+        self.offset.x = target.rect.centerx - self.half_w
+        self.offset.y = target.rect.centery - self.half_h
+
+    def draw_sprites(self, sprite_for_camera):
+        self.map_draw()
+        self.center_target_camera(sprite_for_camera)
+        for sprite in sorted(self.sprites(), key=lambda x: x.rect.centery):
+            offset_pos = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image, offset_pos)
 
 
-# x = MapGenerator()
-# for el in x.generate()[0]:
-#     print(*el)
+clock = pygame.time.Clock()
+screen = pygame.display.set_mode((1280, 720))
+level = CreateFieldMatrix().generate_field()
+camera_group = CameraGroup(300, 300, 80, level)
+player = Player((640, 360), camera_group)
+for _ in range(20):
+    Wall((randint(0, 200), randint(0, 200)), camera_group)
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
 
-# d = CreateFieldMatrix()
-# d.generate_field()
+    camera_group.update()
+    camera_group.draw_sprites(player)
 
-draw = DrawMap()
-draw.create_window()
+    pygame.display.update()
+    clock.tick(60)
