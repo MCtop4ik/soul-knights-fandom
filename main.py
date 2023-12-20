@@ -257,7 +257,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load('assets/player.png').convert_alpha(), (80, 80))
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
-        self.speed = 5
+        self.speed = 30
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -282,14 +282,14 @@ class Player(pygame.sprite.Sprite):
 
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, pos, quadrant_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/3.png').convert_alpha(), (20, 20))
+        self.image = Assets(quadrant_size).images[3]
         self.rect = self.image.get_rect(center=pos)
 
 
 class CameraGroup(pygame.sprite.Group):
-    ZERO = 0
+    EMPTY_CELL = 0
 
     def __init__(self, width, height, quadrant_size, lvl):
         super().__init__()
@@ -310,31 +310,45 @@ class CameraGroup(pygame.sprite.Group):
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 div = self.map[i][j]
-                if div != self.ZERO:
+                if div != self.EMPTY_CELL:
                     ground_surf = self.assets.images[div.asset_abbr]
                     self.display_surface.blit(
                         ground_surf,
                         (self.quadrant_size * j, self.quadrant_size * i) - self.offset)
+
+    def wall_draw(self):
+        for i in range(1, len(self.map) - 1):
+            for j in range(1, len(self.map[0]) - 1):
+                div = self.map[i][j]
+                if div != self.EMPTY_CELL and self.EMPTY_CELL in (
+                        self.map[i + 1][j], self.map[i - 1][j],
+                        self.map[i][j + 1], self.map[i][j - 1]):
+                    Wall(
+                        (self.quadrant_size * j + self.quadrant_size // 2,
+                         self.quadrant_size * i + self.quadrant_size // 2),
+                        self.quadrant_size, self)
+        print('created all sprites')
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
         self.offset.y = target.rect.centery - self.half_h
 
     def draw_sprites(self, sprite_for_camera):
-        self.map_draw()
         self.center_target_camera(sprite_for_camera)
+        self.map_draw()
         for sprite in sorted(self.sprites(), key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
 
 
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((1280, 720))
+empty_cell = 0
+screen = pygame.display.set_mode((600, 600))
 level = CreateFieldMatrix().generate_field()
-camera_group = CameraGroup(300, 300, 80, level)
-player = Player((640, 360), camera_group)
-for _ in range(20):
-    Wall((randint(0, 200), randint(0, 200)), camera_group)
+camera_group = CameraGroup(600, 600, 100, level)
+player = Player((200, 200), camera_group)
+camera_group.wall_draw()
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
