@@ -18,14 +18,24 @@ class Room:
     matrix: List[List[Cell]]
 
 
-class Assets:
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class Assets(metaclass=Singleton):
 
     def __init__(self, quadrant_size):
         self.quadrant_size = quadrant_size
         self.abbr = {
             1: '1.jpg',
-            2: '2.png',
-            3: '3.png'
+            2: 'player-alpha-2.png',
+            3: '3.png',
+            4: 'wall.png'
         }
         self.__images = self.load_all_images()
         self.__player = self.load_image('player.png')
@@ -54,36 +64,73 @@ class Assets:
 class MapGenerator:
 
     def __init__(self):
-        self.start_room = Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')]])
-        self.portal_room = Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
-                                 [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                 [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
-                                 [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                 [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])
-        self.enemy_rooms = [Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
-                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
-                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]]),
-                            Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
-                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
-                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])]
-        self.treasure_rooms = [Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
-                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
-                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                     [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]]),
-                               Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
-                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal')],
-                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
-                                     [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])]
+        self.start_room = Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')]])
+        self.portal_room = Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                 [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                 [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                 [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])
+        self.enemy_rooms = [Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]]),
+                            Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                  [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])]
+        self.treasure_rooms = [Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]]),
+                               Room([[Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')],
+                                     [Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal'), Cell(1, 'Portal')]])]
         self.rooms_amount = 10
         self.__min_enemies_rooms = 2
         self.__max_enemies_rooms = 5
@@ -211,11 +258,17 @@ class CreateFieldMatrix:
         if start_x == end_x:
             for i in range(end_y - start_y):
                 self.__field[start_x][start_y + i] = Cell(2, 'road')
-                # self.__field[start_x][start_y + i] = 'x'
+                self.__field[start_x + 1][start_y + i] = Cell(2, 'road')
+                self.__field[start_x - 1][start_y + i] = Cell(2, 'road')
+                self.__field[start_x + 2][start_y + i] = Cell(2, 'road')
+                self.__field[start_x - 2][start_y + i] = Cell(2, 'road')
         if start_y == end_y:
             for i in range(end_x - start_x):
                 self.__field[start_x + i][start_y] = Cell(2, 'road')
-                # self.__field[start_x + i][start_y] = 'x'
+                self.__field[start_x + i][start_y + 1] = Cell(2, 'road')
+                self.__field[start_x + i][start_y - 1] = Cell(2, 'road')
+                self.__field[start_x + i][start_y + 2] = Cell(2, 'road')
+                self.__field[start_x + i][start_y - 2] = Cell(2, 'road')
 
     def generate_field(self):
         map_generator = MapGenerator()
@@ -229,20 +282,50 @@ class CreateFieldMatrix:
                     x_corner, y_corner = self.__find_corner_square(room)
                     self.__add_room_in_field(room, x_corner, y_corner, i, j)
         for i in range(1, len(coordinates)):
-            self.__create_road(
-                start_x=coordinates[i - 1][0] * self.big_cell_size + self.big_cell_size // 2,
-                start_y=coordinates[i - 1][1] * self.big_cell_size + self.big_cell_size // 2,
-                end_x=coordinates[i][0] * self.big_cell_size + self.big_cell_size // 2,
-                end_y=coordinates[i][1] * self.big_cell_size + self.big_cell_size // 2
-            )
+            start_room = field[coordinates[i - 1][0]][coordinates[i - 1][1]].matrix
+            end_room = field[coordinates[i][0]][coordinates[i][1]].matrix
+            start_x, start_y = self.__find_corner_square(start_room)
+            end_x, end_y = self.__find_corner_square(end_room)
+            start_x += coordinates[i - 1][0] * self.big_cell_size
+            start_y += coordinates[i - 1][1] * self.big_cell_size
+            end_x += coordinates[i][0] * self.big_cell_size
+            end_y += coordinates[i][1] * self.big_cell_size
+            if start_x < end_x and coordinates[i - 1][1] == coordinates[i][1]:
+                self.__create_road(
+                    start_x=start_x + len(start_room[0]),
+                    start_y=start_y + len(start_room) // 2,
+                    end_x=end_x,
+                    end_y=end_y + len(end_room) // 2
+                )
+            if start_x > end_x and coordinates[i - 1][1] == coordinates[i][1]:
+                self.__create_road(
+                    start_x=start_x,
+                    start_y=start_y + len(start_room) // 2,
+                    end_x=end_x + len(end_room[0]),
+                    end_y=end_y + len(end_room) // 2
+                )
+            if start_y < end_y and coordinates[i - 1][0] == coordinates[i][0]:
+                self.__create_road(
+                    start_x=start_x + len(start_room[0]) // 2,
+                    start_y=start_y + len(start_room),
+                    end_x=end_x + len(end_room[0]) // 2,
+                    end_y=end_y
+                )
+            if start_y > end_y and coordinates[i - 1][0] == coordinates[i][0]:
+                self.__create_road(
+                    start_x=start_x + len(start_room[0]) // 2,
+                    start_y=start_y,
+                    end_x=end_x + len(start_room[0]) // 2,
+                    end_y=end_y + len(start_room)
+                )
         print(coordinates_treasure_rooms)
-        for i in range(len(coordinates_treasure_rooms)):
-            self.__create_road(
-                start_x=coordinates_treasure_rooms[i][0][0] * self.big_cell_size + self.big_cell_size // 2,
-                start_y=coordinates_treasure_rooms[i][0][1] * self.big_cell_size + self.big_cell_size // 2,
-                end_x=coordinates_treasure_rooms[i][1][0] * self.big_cell_size + self.big_cell_size // 2,
-                end_y=coordinates_treasure_rooms[i][1][1] * self.big_cell_size + self.big_cell_size // 2
-            )
+        # for i in range(len(coordinates_treasure_rooms)):
+        #     self.__create_road(
+        #         start_x=coordinates_treasure_rooms[i][0][0] * self.big_cell_size + self.big_cell_size // 2,
+        #         start_y=coordinates_treasure_rooms[i][0][1] * self.big_cell_size + self.big_cell_size // 2,
+        #         end_x=coordinates_treasure_rooms[i][1][0] * self.big_cell_size + self.big_cell_size // 2,
+        #         end_y=coordinates_treasure_rooms[i][1][1] * self.big_cell_size + self.big_cell_size // 2
+        #     )
         self.print_field(field)
         return self.__field
 
@@ -252,9 +335,9 @@ class CreateFieldMatrix:
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, pos, player_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/player.png').convert_alpha(), (80, 80))
+        self.image = pygame.transform.scale(pygame.image.load('assets/player.png').convert_alpha(), player_size)
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
         self.speed = 30
@@ -284,7 +367,7 @@ class Player(pygame.sprite.Sprite):
 class Wall(pygame.sprite.Sprite):
     def __init__(self, pos, quadrant_size, group):
         super().__init__(group)
-        self.image = Assets(quadrant_size).images[3]
+        self.image = Assets(quadrant_size).images[4]
         self.rect = self.image.get_rect(center=pos)
 
 
@@ -345,8 +428,8 @@ clock = pygame.time.Clock()
 empty_cell = 0
 screen = pygame.display.set_mode((600, 600))
 level = CreateFieldMatrix().generate_field()
-camera_group = CameraGroup(600, 600, 100, level)
-player = Player((200, 200), camera_group)
+camera_group = CameraGroup(600, 600, 5, level)
+player = Player((200, 200), (10, 10), camera_group)
 camera_group.wall_draw()
 
 while True:
