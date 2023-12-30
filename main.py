@@ -451,11 +451,15 @@ class CreateFieldMatrix:
                 self.__field[start_x][start_y + i] = Cell(2, 'road')
                 self.__field[start_x + 1][start_y + i] = Cell(2, 'road')
                 self.__field[start_x - 1][start_y + i] = Cell(2, 'road')
+                self.__field[start_x + 2][start_y + i] = Cell(2, 'road')
+                self.__field[start_x - 2][start_y + i] = Cell(2, 'road')
         if start_y == end_y:
             for i in range(end_x - start_x):
                 self.__field[start_x + i][start_y] = Cell(2, 'road')
                 self.__field[start_x + i][start_y + 1] = Cell(2, 'road')
                 self.__field[start_x + i][start_y - 1] = Cell(2, 'road')
+                self.__field[start_x + i][start_y + 2] = Cell(2, 'road')
+                self.__field[start_x + i][start_y - 2] = Cell(2, 'road')
 
     def generate_field(self):
         map_generator = MapGenerator()
@@ -497,7 +501,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load('assets/player.png').convert_alpha(), player_size)
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
-        self.speed = 30
+        self.speed = 10
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -519,7 +523,8 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.rect.center += self.direction * self.speed
-        print(self.rect.center)
+        if pygame.sprite.spritecollideany(self, wall_group):
+            self.rect.center -= self.direction * self.speed
 
 
 class Wall(pygame.sprite.Sprite):
@@ -567,7 +572,7 @@ class CameraGroup(pygame.sprite.Group):
                     Wall(
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
-                        self.quadrant_size, self)
+                        self.quadrant_size, wall_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
@@ -576,7 +581,7 @@ class CameraGroup(pygame.sprite.Group):
     def draw_sprites(self, sprite_for_camera):
         self.center_target_camera(sprite_for_camera)
         self.map_draw()
-        for sprite in sorted(self.sprites(), key=lambda x: x.rect.centery):
+        for sprite in sorted(self.sprites() + wall_group.sprites(), key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
 
@@ -591,6 +596,7 @@ player = Player(
     (start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2, start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2),
     (40, 40),
     camera_group)
+wall_group = pygame.sprite.Group()
 camera_group.wall_draw()
 
 while True:
