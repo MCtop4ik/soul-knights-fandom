@@ -523,8 +523,8 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.rect.center += self.direction * self.speed
-        if pygame.sprite.spritecollideany(self, wall_group):
-            self.rect.center -= self.direction * self.speed
+        while pygame.sprite.spritecollideany(self, wall_group):
+            self.rect.center -= self.direction
 
 
 class Wall(pygame.sprite.Sprite):
@@ -591,7 +591,6 @@ q_s = 40
 b_c_s = 50
 screen = pygame.display.set_mode((800, 800))
 level, start_coordinates = CreateFieldMatrix().generate_field()
-print(start_coordinates)
 camera_group = CameraGroup(600, 600, q_s, level)
 player = Player(
     (start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2, start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2),
