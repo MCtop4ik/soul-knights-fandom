@@ -41,7 +41,7 @@ class Assets(metaclass=Singleton):
         self.__player = self.load_image('player.png')
 
     def load_image(self, name):
-        fullname = os.path.join('assets', name)
+        fullname = os.path.join('assets/images_test', name)
         if not os.path.isfile(fullname):
             return
         image = pygame.transform.scale(pygame.image.load(fullname), (self.quadrant_size, self.quadrant_size))
@@ -498,7 +498,7 @@ class CreateFieldMatrix:
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, player_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/player.png').convert_alpha(), player_size)
+        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/player.png').convert_alpha(), player_size)
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
         self.speed = 10
