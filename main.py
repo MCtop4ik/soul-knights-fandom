@@ -35,7 +35,8 @@ class Assets(metaclass=Singleton):
             1: '1.jpg',
             2: 'player-alpha-2.png',
             3: '3.png',
-            4: 'wall.png'
+            4: 'wall.png',
+            5: '2.png'
         }
         self.__images = self.load_all_images()
         self.__player = self.load_image('player.png')
@@ -93,7 +94,7 @@ class MapGenerator:
                                  Cell(1, 'Start'), Cell(1, 'Start')],
                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                 Cell(1, 'Start'), Cell(1, 'Start')],
                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                  Cell(1, 'Start'), Cell(1, 'Start')],
@@ -136,7 +137,7 @@ class MapGenerator:
                                   Cell(1, 'Start'), Cell(1, 'Start')],
                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                  Cell(1, 'Start'), Cell(1, 'Start')],
                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                   Cell(1, 'Start'), Cell(1, 'Start')],
@@ -179,7 +180,7 @@ class MapGenerator:
                                    Cell(1, 'Start'), Cell(1, 'Start')],
                                   [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                   Cell(1, 'Start'), Cell(1, 'Start')],
                                   [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start')],
@@ -222,7 +223,7 @@ class MapGenerator:
                                    Cell(1, 'Start'), Cell(1, 'Start')],
                                   [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                   Cell(1, 'Start'), Cell(1, 'Start')],
                                   [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start')],
@@ -265,7 +266,7 @@ class MapGenerator:
                                       Cell(1, 'Start'), Cell(1, 'Start')],
                                      [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                      Cell(1, 'Start'), Cell(1, 'Start')],
                                      [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start')],
@@ -308,7 +309,7 @@ class MapGenerator:
                                       Cell(1, 'Start'), Cell(1, 'Start')],
                                      [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start')],
+                                      Cell(1, 'Start'), Cell(1, 'Start')],
                                      [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start')],
@@ -498,7 +499,8 @@ class CreateFieldMatrix:
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, player_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/player.png').convert_alpha(), player_size)
+        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/player.png').convert_alpha(),
+                                            player_size)
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
         self.speed = 10
@@ -534,8 +536,16 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
 
 
+class Door(pygame.sprite.Sprite):
+    def __init__(self, pos, quadrant_size, group):
+        super().__init__(group)
+        self.image = Assets(quadrant_size).images[5]
+        self.rect = self.image.get_rect(center=pos)
+
+
 class CameraGroup(pygame.sprite.Group):
     EMPTY_CELL = 0
+    ROAD_CELL = Cell(asset_abbr=2, name='road')
 
     def __init__(self, width, height, quadrant_size, lvl):
         super().__init__()
@@ -566,13 +576,26 @@ class CameraGroup(pygame.sprite.Group):
         for i in range(1, len(self.map) - 1):
             for j in range(1, len(self.map[0]) - 1):
                 div = self.map[i][j]
-                if div != self.EMPTY_CELL and self.EMPTY_CELL in (
-                        self.map[i + 1][j], self.map[i - 1][j],
-                        self.map[i][j + 1], self.map[i][j - 1]):
+                cells_around = (self.map[i + 1][j], self.map[i - 1][j], self.map[i][j + 1], self.map[i][j - 1])
+                diagonal_cells = (self.map[i + 1][j + 1], self.map[i - 1][j - 1],
+                                  self.map[i - 1][j + 1], self.map[i + 1][j - 1])
+                if div != self.EMPTY_CELL and self.EMPTY_CELL in cells_around:
                     Wall(
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
                         self.quadrant_size, wall_group)
+                if div != self.EMPTY_CELL and self.ROAD_CELL in cells_around and div != self.ROAD_CELL:
+                    if len(list(filter(lambda x: x == self.ROAD_CELL and x != self.EMPTY_CELL,
+                                       cells_around + diagonal_cells))) == 2:
+                        Wall(
+                            (self.quadrant_size * j + self.quadrant_size // 2,
+                             self.quadrant_size * i + self.quadrant_size // 2),
+                            self.quadrant_size, wall_group)
+                    else:
+                        Door(
+                            (self.quadrant_size * j + self.quadrant_size // 2,
+                             self.quadrant_size * i + self.quadrant_size // 2),
+                            self.quadrant_size, doors_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
@@ -581,7 +604,9 @@ class CameraGroup(pygame.sprite.Group):
     def draw_sprites(self, sprite_for_camera):
         self.center_target_camera(sprite_for_camera)
         self.map_draw()
-        for sprite in sorted(self.sprites() + wall_group.sprites(), key=lambda x: x.rect.centery):
+        for sprite in sorted(
+                self.sprites() + wall_group.sprites() + doors_group.sprites(),
+                key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
 
@@ -597,6 +622,7 @@ player = Player(
     (40, 40),
     camera_group)
 wall_group = pygame.sprite.Group()
+doors_group = pygame.sprite.Group()
 camera_group.wall_draw()
 
 while True:
