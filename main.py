@@ -569,7 +569,7 @@ class CameraGroup(pygame.sprite.Group):
         self.half_h = self.height // 2
 
     def map_draw(self):
-        screen.fill((0, 0, 0))
+        Level().screen.fill((0, 0, 0))
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 div = self.map[i][j]
@@ -618,30 +618,40 @@ class CameraGroup(pygame.sprite.Group):
             self.display_surface.blit(sprite.image, offset_pos)
 
 
-clock = pygame.time.Clock()
-q_s = 40
-b_c_s = 50
-screen = pygame.display.set_mode((800, 800))
-level, start_coordinates = CreateFieldMatrix().generate_field()
-camera_group = CameraGroup(600, 600, q_s, level)
-player = Player(
-    (start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2, start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2),
-    (40, 40),
-    camera_group)
-camera_group.wall_draw()
+class Level(metaclass=Singleton):
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                sys.exit()
+    def __init__(self):
+        self.screen = pygame.display.set_mode((800, 800))
 
-    camera_group.update()
-    camera_group.draw_sprites(player)
+    def start(self):
+        clock = pygame.time.Clock()
+        q_s = 40
+        b_c_s = 50
+        level, start_coordinates = CreateFieldMatrix().generate_field()
+        camera_group = CameraGroup(600, 600, q_s, level)
+        player = Player(
+            (start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2,
+             start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2),
+            (40, 40),
+            camera_group)
+        camera_group.wall_draw()
 
-    pygame.display.update()
-    clock.tick(60)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+
+            camera_group.update()
+            camera_group.draw_sprites(player)
+
+            pygame.display.update()
+            clock.tick(60)
+
+
+if __name__ == '__main__':
+    Level().start()
