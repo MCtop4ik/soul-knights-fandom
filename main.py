@@ -27,6 +27,13 @@ class Singleton(type):
         return cls._instances[cls]
 
 
+class SpriteGroups(metaclass=Singleton):
+
+    def __init__(self):
+        self.walls_group = pygame.sprite.Group()
+        self.doors_group = pygame.sprite.Group()
+
+
 class Assets(metaclass=Singleton):
 
     def __init__(self, quadrant_size):
@@ -323,10 +330,10 @@ class MapGenerator:
                                       Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                       Cell(1, 'Start'), Cell(1, 'Start')]
                                      ])]
-        self.rooms_amount = 10
         self.__min_enemies_rooms = 2
         self.__max_enemies_rooms = 5
         self.__max_treasuries_rooms = 3
+        self.rooms_amount = 2 + self.__max_treasuries_rooms + self.__max_enemies_rooms
         self.__rooms = self.__create_rooms_matrix()
         self.__all_coordinates = []
         self.__coordinates = [(self.rooms_amount + 1, self.rooms_amount + 1)]
@@ -525,7 +532,7 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         self.input()
         self.rect.center += self.direction * self.speed
-        while pygame.sprite.spritecollideany(self, wall_group):
+        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.center -= self.direction
 
 
@@ -583,19 +590,19 @@ class CameraGroup(pygame.sprite.Group):
                     Wall(
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
-                        self.quadrant_size, wall_group)
+                        self.quadrant_size, SpriteGroups().walls_group)
                 if div != self.EMPTY_CELL and self.ROAD_CELL in cells_around and div != self.ROAD_CELL:
                     if len(list(filter(lambda x: x == self.ROAD_CELL and x != self.EMPTY_CELL,
                                        cells_around + diagonal_cells))) == 2:
                         Wall(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
-                            self.quadrant_size, wall_group)
+                            self.quadrant_size, SpriteGroups().walls_group)
                     else:
                         Door(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
-                            self.quadrant_size, doors_group)
+                            self.quadrant_size, SpriteGroups().doors_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
@@ -605,7 +612,7 @@ class CameraGroup(pygame.sprite.Group):
         self.center_target_camera(sprite_for_camera)
         self.map_draw()
         for sprite in sorted(
-                self.sprites() + wall_group.sprites() + doors_group.sprites(),
+                self.sprites() + SpriteGroups().walls_group.sprites() + SpriteGroups().doors_group.sprites(),
                 key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
@@ -621,8 +628,6 @@ player = Player(
     (start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2, start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2),
     (40, 40),
     camera_group)
-wall_group = pygame.sprite.Group()
-doors_group = pygame.sprite.Group()
 camera_group.wall_draw()
 
 while True:
