@@ -105,6 +105,15 @@ class RoomFactory:
                 if category == 'special':
                     special.update(data)
 
+            if '*' in common:
+                common = self.__get_all_file_names_from_directory(
+                    directory_path='assets/rooms/common'
+                )
+            if '*' in special:
+                special = self.__get_all_file_names_from_directory(
+                    directory_path=f'assets/rooms/{self.name}'
+                )
+
                 print(common, special)
 
         start_room = self.load_room(f"assets/rooms/{self.name}/start_room.room")
@@ -115,6 +124,11 @@ class RoomFactory:
             'start_room': start_room,
             'portal_room': portal_room
         }
+
+    @staticmethod
+    def __get_all_file_names_from_directory(directory_path):
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+        return files
 
     def load_assets(self):
         new_abbr = dict()
