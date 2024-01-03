@@ -39,6 +39,7 @@ class Constants(metaclass=Singleton):
     def __init__(self):
         self.quadrant_size = 80
         self.big_cell_size = 50
+        self.name = '1'
 
 
 class Assets(metaclass=Singleton):
@@ -106,6 +107,15 @@ class RoomFactory:
 
                 print(common, special)
 
+        start_room = self.load_room(f"assets/rooms/{self.name}/start_room.room")
+        portal_room = self.load_room(f"assets/rooms/{self.name}/portal_room.room")
+        enemy_rooms = list()
+        treasury_rooms = list()
+        return {
+            'start_room': start_room,
+            'portal_room': portal_room
+        }
+
     def load_assets(self):
         new_abbr = dict()
 
@@ -117,96 +127,25 @@ class RoomFactory:
 
         Assets().load_abbr(new_abbr)
 
+    def load_room(self, path):
+        with open(path) as file:
+            room = file.readline().split()
+            label, room_width, room_height, room_floor = room[0], int(room[1]), int(room[2]), room[3:]
+
+            loaded_room = [[Cell(0, 'Empty') for _ in range(room_width)]
+                           for _ in range(room_height)]
+            for i in range(room_height):
+                for j in range(room_width):
+                    loaded_room[i][j] = Cell(int(room_floor[i * room_height + j]), label)
+
+            return Room(loaded_room)
+
 
 class MapGenerator:
 
-    def __init__(self):
-        self.start_room = Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')],
-                                [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                 Cell(1, 'Start'), Cell(1, 'Start')]
-                                ])
-        self.portal_room = Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(3, 'Portal'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(3, 'Portal')],
-                                 [Cell(1, 'Start'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(3, 'Portal')],
-                                 [Cell(1, 'Start'), Cell(3, 'Portal'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')]
-                                 ])
+    def __init__(self, rooms):
+        self.start_room = rooms['start_room']
+        self.portal_room = rooms['portal_room']
         self.enemy_rooms = [Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                    Cell(1, 'Start'), Cell(1, 'Start')],
@@ -487,7 +426,7 @@ class CreateFieldMatrix:
 
     def __create_field(self, field):
         height, width = len(field) * self.big_cell_size, len(field[0]) * self.big_cell_size
-        self.__field = [[0 for _ in range(width)] for _ in range(height)]
+        self.__field = [[Cell(0, 'Empty') for _ in range(width)] for _ in range(height)]
 
     def __find_corner_square(self, room_square):
         center_x = center_y = self.big_cell_size // 2
@@ -519,7 +458,9 @@ class CreateFieldMatrix:
                 self.__field[start_x + i][start_y - 2] = Cell(2, 'road')
 
     def generate_field(self):
-        map_generator = MapGenerator()
+        map_generator = MapGenerator(
+            RoomFactory(Constants().name).read_level()
+        )
         field, coordinates, coordinates_treasure_rooms = map_generator.generate()
         self.__create_field(field)
         for i in range(1, len(coordinates)):
@@ -600,7 +541,7 @@ class Door(pygame.sprite.Sprite):
 
 
 class CameraGroup(pygame.sprite.Group):
-    EMPTY_CELL = 0
+    EMPTY_CELL = Cell(asset_abbr=0, name='Empty')
     ROAD_CELL = Cell(asset_abbr=2, name='road')
 
     def __init__(self, width, height, lvl):
@@ -704,4 +645,5 @@ class Level(metaclass=Singleton):
 
 if __name__ == '__main__':
     RoomFactory('1').load_assets()
+    RoomFactory('1').load_room('assets/rooms/1/start_room.room')
     Level().start()
