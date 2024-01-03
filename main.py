@@ -34,28 +34,17 @@ class SpriteGroups(metaclass=Singleton):
         self.doors_group = pygame.sprite.Group()
 
 
-class RoomFactory:
+class Constants(metaclass=Singleton):
 
-    def read_level(self, name):
-        common = set()
-        special = set()
-
-        with open(f"assets/levels/{name}.lvl") as file_level_setup:
-            level_setup = file_level_setup.readlines()
-            for line in level_setup:
-                category, data = line.split()[0].lstrip(), map(str.lstrip, line.split()[1:])
-                print(list(data))
-                if category == 'common':
-                    common.update(list(data))
-                if category == 'special':
-                    special.update(list(data))
-                print(common, special)
+    def __init__(self):
+        self.quadrant_size = 80
+        self.big_cell_size = 50
 
 
 class Assets(metaclass=Singleton):
 
-    def __init__(self, quadrant_size):
-        self.quadrant_size = quadrant_size
+    def __init__(self):
+        self.quadrant_size = Constants().quadrant_size
         self.abbr = {
             1: '1.jpg',
             2: 'player-alpha-2.png',
@@ -63,8 +52,16 @@ class Assets(metaclass=Singleton):
             4: 'wall.png',
             5: '2.png'
         }
+        self.constant_images = {
+            'wall': 'wall.png',
+            'door': '2.png'
+        }
         self.__images = self.load_all_images()
         self.__player = self.load_image('player.png')
+
+    def load_abbr(self, new_abbr):
+        self.abbr = new_abbr
+        self.__images = self.load_all_images()
 
     def load_image(self, name):
         fullname = os.path.join('assets/images_test', name)
@@ -75,7 +72,7 @@ class Assets(metaclass=Singleton):
 
     def load_all_images(self):
         images = {}
-        for key, value in self.abbr.items():
+        for key, value in {**self.constant_images, **self.abbr}.items():
             images[key] = self.load_image(value)
         return images
 
@@ -85,6 +82,40 @@ class Assets(metaclass=Singleton):
     @property
     def images(self):
         return self.__images
+
+
+class RoomFactory:
+
+    def __init__(self, name):
+        self.name = name
+        self.quadrant_size = Constants().quadrant_size
+
+    def read_level(self):
+        common = set()
+        special = set()
+
+        with open(f"assets/levels/{self.name}.lvl") as file_level_setup:
+            level_setup = file_level_setup.readlines()
+            for line in level_setup:
+                category, data = line.split()[0].strip(), map(str.strip, line.split()[1:])
+
+                if category == 'common':
+                    common.update(data)
+                if category == 'special':
+                    special.update(data)
+
+                print(common, special)
+
+    def load_assets(self):
+        new_abbr = dict()
+
+        with open(f"assets/rooms/{self.name}/signed_pictures.special.sprite") as file_level_setup:
+            images_setup = file_level_setup.readlines()
+            for line in images_setup:
+                key, path = line.split(' -> ')
+                new_abbr[int(key)] = path.strip()
+
+        Assets().load_abbr(new_abbr)
 
 
 class MapGenerator:
@@ -452,7 +483,7 @@ class CreateFieldMatrix:
 
     def __init__(self):
         self.__field = []
-        self.big_cell_size = 50
+        self.big_cell_size = Constants().big_cell_size
 
     def __create_field(self, field):
         height, width = len(field) * self.big_cell_size, len(field[0]) * self.big_cell_size
@@ -555,16 +586,16 @@ class Player(pygame.sprite.Sprite):
 
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self, pos, quadrant_size, group):
+    def __init__(self, pos, group):
         super().__init__(group)
-        self.image = Assets(quadrant_size).images[4]
+        self.image = Assets().images['wall']
         self.rect = self.image.get_rect(center=pos)
 
 
 class Door(pygame.sprite.Sprite):
-    def __init__(self, pos, quadrant_size, group):
+    def __init__(self, pos, group):
         super().__init__(group)
-        self.image = Assets(quadrant_size).images[5]
+        self.image = Assets().images['door']
         self.rect = self.image.get_rect(center=pos)
 
 
@@ -572,16 +603,16 @@ class CameraGroup(pygame.sprite.Group):
     EMPTY_CELL = 0
     ROAD_CELL = Cell(asset_abbr=2, name='road')
 
-    def __init__(self, width, height, quadrant_size, lvl):
+    def __init__(self, width, height, lvl):
         super().__init__()
         self.display_surface = pygame.display.get_surface()
-        self.quadrant_size = quadrant_size
         self.width, self.height = width, height
 
         self.map = lvl
-        self.assets = Assets(self.quadrant_size)
+        self.assets = Assets()
 
         self.offset = pygame.math.Vector2()
+        self.quadrant_size = Constants().quadrant_size
 
         self.half_w = self.width // 2
         self.half_h = self.height // 2
@@ -608,19 +639,19 @@ class CameraGroup(pygame.sprite.Group):
                     Wall(
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
-                        self.quadrant_size, SpriteGroups().walls_group)
+                        SpriteGroups().walls_group)
                 if div != self.EMPTY_CELL and self.ROAD_CELL in cells_around and div != self.ROAD_CELL:
                     if len(list(filter(lambda x: x == self.ROAD_CELL and x != self.EMPTY_CELL,
                                        cells_around + diagonal_cells))) == 2:
                         Wall(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
-                            self.quadrant_size, SpriteGroups().walls_group)
+                            SpriteGroups().walls_group)
                     else:
                         Door(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
-                            self.quadrant_size, SpriteGroups().doors_group)
+                            SpriteGroups().doors_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
@@ -643,13 +674,13 @@ class Level(metaclass=Singleton):
 
     def start(self):
         clock = pygame.time.Clock()
-        q_s = 80
-        b_c_s = 50
         level, start_coordinates = CreateFieldMatrix().generate_field()
-        camera_group = CameraGroup(600, 600, q_s, level)
+        camera_group = CameraGroup(600, 600, level)
         player = Player(
-            (start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2,
-             start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2),
+            (start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
+             (Constants().quadrant_size * Constants().big_cell_size) // 2,
+             start_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
+             (Constants().quadrant_size * Constants().big_cell_size) // 2),
             (100, 100),
             camera_group)
         camera_group.wall_draw()
@@ -672,5 +703,5 @@ class Level(metaclass=Singleton):
 
 
 if __name__ == '__main__':
-    RoomFactory().read_level('1')
+    RoomFactory('1').load_assets()
     Level().start()
