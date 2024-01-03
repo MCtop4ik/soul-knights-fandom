@@ -34,6 +34,24 @@ class SpriteGroups(metaclass=Singleton):
         self.doors_group = pygame.sprite.Group()
 
 
+class RoomFactory:
+
+    def read_level(self, name):
+        common = set()
+        special = set()
+
+        with open(f"assets/levels/{name}.lvl") as file_level_setup:
+            level_setup = file_level_setup.readlines()
+            for line in level_setup:
+                category, data = line.split()[0].lstrip(), map(str.lstrip, line.split()[1:])
+                print(list(data))
+                if category == 'common':
+                    common.update(list(data))
+                if category == 'special':
+                    special.update(list(data))
+                print(common, special)
+
+
 class Assets(metaclass=Singleton):
 
     def __init__(self, quadrant_size):
@@ -128,12 +146,12 @@ class MapGenerator:
                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                   Cell(1, 'Start'), Cell(1, 'Start')],
                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                  Cell(1, 'Start'), Cell(1, 'Start')],
-                                 [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                  Cell(1, 'Start'), Cell(3, 'Portal'), Cell(1, 'Start'), Cell(1, 'Start'),
+                                  Cell(1, 'Start'), Cell(3, 'Portal')],
+                                 [Cell(1, 'Start'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Start'),
+                                  Cell(1, 'Start'), Cell(3, 'Portal'), Cell(3, 'Portal'), Cell(1, 'Start'),
+                                  Cell(1, 'Start'), Cell(3, 'Portal')],
+                                 [Cell(1, 'Start'), Cell(3, 'Portal'), Cell(1, 'Start'), Cell(1, 'Start'),
                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
                                   Cell(1, 'Start'), Cell(1, 'Start')],
                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
@@ -625,14 +643,14 @@ class Level(metaclass=Singleton):
 
     def start(self):
         clock = pygame.time.Clock()
-        q_s = 40
+        q_s = 80
         b_c_s = 50
         level, start_coordinates = CreateFieldMatrix().generate_field()
         camera_group = CameraGroup(600, 600, q_s, level)
         player = Player(
             (start_coordinates[1] * q_s * b_c_s + (q_s * b_c_s) // 2,
              start_coordinates[0] * q_s * b_c_s + (q_s * b_c_s) // 2),
-            (40, 40),
+            (100, 100),
             camera_group)
         camera_group.wall_draw()
 
@@ -654,4 +672,5 @@ class Level(metaclass=Singleton):
 
 
 if __name__ == '__main__':
+    RoomFactory().read_level('1')
     Level().start()
