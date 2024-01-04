@@ -71,7 +71,6 @@ class Assets(metaclass=Singleton):
         self.quadrant_size = Constants().quadrant_size
         self.abbr = {}
         self.constant_images = {
-            'wall': 'wall-1.png',
             'door': 'player.png'
         }
         self.__images = self.load_all_images()
