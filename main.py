@@ -41,6 +41,17 @@ class Constants(metaclass=Singleton):
         self.big_cell_size = 50
         self.name = '1'
 
+        self.min_enemies_rooms = 2
+        self.max_enemies_rooms = 5
+        self.max_treasuries_rooms = 3
+
+        # treasury room spawn chance
+        self.chance = 3
+        self.iters_for_chance = 3
+
+        self.EMPTY_CELL = Cell(asset_abbr=0, name='Empty')
+        self.ROAD_CELL = Cell(asset_abbr=2, name='road')
+
 
 class Assets(metaclass=Singleton):
 
@@ -188,9 +199,9 @@ class MapGenerator:
         self.portal_room = rooms['portal_room']
         self.enemy_rooms = rooms['enemy_rooms']
         self.treasure_rooms = rooms['treasury_rooms']
-        self.__min_enemies_rooms = 2
-        self.__max_enemies_rooms = 5
-        self.__max_treasuries_rooms = 3
+        self.__min_enemies_rooms = Constants().min_enemies_rooms
+        self.__max_enemies_rooms = Constants().max_enemies_rooms
+        self.__max_treasuries_rooms = Constants().max_treasuries_rooms
         self.rooms_amount = 2 + self.__max_treasuries_rooms + self.__max_enemies_rooms
         self.__rooms = self.__create_rooms_matrix()
         self.__all_coordinates = []
@@ -230,8 +241,8 @@ class MapGenerator:
         cnt_treasuries = 0
         left_shift = 1
         right_shift = 1
-        chance = 3
-        iters_for_chance = 3
+        chance = Constants().chance
+        iters_for_chance = Constants().iters_for_chance
 
         for enemy_room_coordinate in self.__coordinates[left_shift:-right_shift]:
             x_enemy_room, y_enemy_room = enemy_room_coordinate
@@ -296,7 +307,7 @@ class CreateFieldMatrix:
 
     def __create_field(self, field):
         height, width = len(field) * self.big_cell_size, len(field[0]) * self.big_cell_size
-        self.__field = [[Cell(0, 'Empty') for _ in range(width)] for _ in range(height)]
+        self.__field = [[Constants().EMPTY_CELL for _ in range(width)] for _ in range(height)]
 
     def __find_corner_square(self, room_square):
         center_x = center_y = self.big_cell_size // 2
@@ -411,8 +422,6 @@ class Door(pygame.sprite.Sprite):
 
 
 class CameraGroup(pygame.sprite.Group):
-    EMPTY_CELL = Cell(asset_abbr=0, name='Empty')
-    ROAD_CELL = Cell(asset_abbr=2, name='road')
 
     def __init__(self, width, height, lvl):
         super().__init__()
@@ -433,7 +442,7 @@ class CameraGroup(pygame.sprite.Group):
         for i in range(len(self.map)):
             for j in range(len(self.map[0])):
                 div = self.map[i][j]
-                if div != self.EMPTY_CELL:
+                if div != Constants().EMPTY_CELL:
                     ground_surf = self.assets.images[div.asset_abbr]
                     self.display_surface.blit(
                         ground_surf,
@@ -446,13 +455,14 @@ class CameraGroup(pygame.sprite.Group):
                 cells_around = (self.map[i + 1][j], self.map[i - 1][j], self.map[i][j + 1], self.map[i][j - 1])
                 diagonal_cells = (self.map[i + 1][j + 1], self.map[i - 1][j - 1],
                                   self.map[i - 1][j + 1], self.map[i + 1][j - 1])
-                if div != self.EMPTY_CELL and self.EMPTY_CELL in cells_around:
+                if div != Constants().EMPTY_CELL and Constants().EMPTY_CELL in cells_around:
                     Wall(
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
                         SpriteGroups().walls_group)
-                if div != self.EMPTY_CELL and self.ROAD_CELL in cells_around and div != self.ROAD_CELL:
-                    if len(list(filter(lambda x: x == self.ROAD_CELL and x != self.EMPTY_CELL,
+                if div != Constants().EMPTY_CELL and Constants().ROAD_CELL in cells_around and\
+                        div != Constants().ROAD_CELL:
+                    if len(list(filter(lambda x: x == Constants().ROAD_CELL and x != Constants().EMPTY_CELL,
                                        cells_around + diagonal_cells))) == 2:
                         Wall(
                             (self.quadrant_size * j + self.quadrant_size // 2,
