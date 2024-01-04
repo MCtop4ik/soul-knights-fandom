@@ -41,6 +41,14 @@ class Constants(metaclass=Singleton):
         self.quadrant_size = 80
         # square root of amount of small squares in area of room
         self.big_cell_size = 50
+        # player_size
+        self.player_size = (100, 100)
+        # player speed
+        self.speed = 30
+        # camera size
+        self.camera_size = (800, 800)
+        # screen size
+        self.screen_size = (800, 800)
         # level which will load
         self.name = '1'
 
@@ -385,7 +393,7 @@ class Player(pygame.sprite.Sprite):
                                             player_size)
         self.rect = self.image.get_rect(center=pos)
         self.direction = pygame.math.Vector2()
-        self.speed = 10
+        self.speed = Constants().speed
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -464,7 +472,7 @@ class CameraGroup(pygame.sprite.Group):
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
                         SpriteGroups().walls_group)
-                if div != Constants().EMPTY_CELL and Constants().ROAD_CELL in cells_around and\
+                if div != Constants().EMPTY_CELL and Constants().ROAD_CELL in cells_around and \
                         div != Constants().ROAD_CELL:
                     if len(list(filter(lambda x: x == Constants().ROAD_CELL and x != Constants().EMPTY_CELL,
                                        cells_around + diagonal_cells))) == 2:
@@ -495,18 +503,18 @@ class CameraGroup(pygame.sprite.Group):
 class Level(metaclass=Singleton):
 
     def __init__(self):
-        self.screen = pygame.display.set_mode((800, 800))
+        self.screen = pygame.display.set_mode(Constants().screen_size)
 
     def start(self):
         clock = pygame.time.Clock()
         level, start_coordinates = CreateFieldMatrix().generate_field()
-        camera_group = CameraGroup(600, 600, level)
+        camera_group = CameraGroup(*Constants().camera_size, level)
         player = Player(
             (start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
              (Constants().quadrant_size * Constants().big_cell_size) // 2,
              start_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
              (Constants().quadrant_size * Constants().big_cell_size) // 2),
-            (100, 100),
+            Constants().player_size,
             camera_group)
         camera_group.wall_draw()
 
