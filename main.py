@@ -37,10 +37,14 @@ class SpriteGroups(metaclass=Singleton):
 class Constants(metaclass=Singleton):
 
     def __init__(self):
+        # size of one block image
         self.quadrant_size = 80
+        # square root of amount of small squares in area of room
         self.big_cell_size = 50
+        # level which will load
         self.name = '1'
 
+        # generation params
         self.min_enemies_rooms = 2
         self.max_enemies_rooms = 5
         self.max_treasuries_rooms = 3
