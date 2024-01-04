@@ -71,12 +71,13 @@ class Assets(metaclass=Singleton):
         self.quadrant_size = Constants().quadrant_size
         self.abbr = {}
         self.constant_images = {
-            'wall': 'wall.png',
+            'wall': 'wall-1.png',
             'door': 'player.png'
         }
         self.__images = self.load_all_images()
         self.__player = self.load_image('player.png')
         self.road_image_ids = RoomFactory(Constants().name).get_road_images()
+        self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
 
     def load_abbr(self, new_abbr):
         self.abbr = new_abbr
@@ -197,6 +198,10 @@ class RoomFactory:
 
     def get_road_images(self):
         with open(f"assets/rooms/{self.name}/sprites.road") as file_level_setup:
+            return list(map(int, file_level_setup.readline().split()))
+
+    def get_wall_images(self):
+        with open(f"assets/rooms/{self.name}/sprites.wall") as file_level_setup:
             return list(map(int, file_level_setup.readline().split()))
 
 
@@ -385,7 +390,8 @@ class CreateFieldMatrix:
         self.print_field(field)
         return self.__field, coordinates[0]
 
-    def print_field(self, field):
+    @staticmethod
+    def print_field(field):
         for row in field:
             print(*row)
 
@@ -426,7 +432,11 @@ class Player(pygame.sprite.Sprite):
 class Wall(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
-        self.image = Assets().images['wall']
+        self.image = Assets().images[
+            Assets().wall_image_ids[
+                randrange(len(Assets().wall_image_ids))
+            ]
+        ]
         self.rect = self.image.get_rect(center=pos)
 
 
@@ -512,7 +522,8 @@ class Level(metaclass=Singleton):
     def __init__(self):
         self.screen = pygame.display.set_mode(Constants().screen_size)
 
-    def start(self):
+    @staticmethod
+    def start():
         clock = pygame.time.Clock()
         level, start_coordinates = CreateFieldMatrix().generate_field()
         camera_group = CameraGroup(*Constants().camera_size, level)
