@@ -1,2 +1,2 @@
 special *
-common 1.enemy_room 2.treasure_room
+common 1.enemy_room.common.room 2.treasure_room.common.room

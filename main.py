@@ -86,6 +86,7 @@ class Assets(metaclass=Singleton):
 
 
 class RoomFactory:
+    EMPTY_CELL = Cell(0, 'Empty')
 
     def __init__(self, name):
         self.name = name
@@ -114,15 +115,40 @@ class RoomFactory:
                     directory_path=f'assets/rooms/{self.name}'
                 )
 
-                print(common, special)
+            print(common, special)
 
         start_room = self.load_room(f"assets/rooms/{self.name}/start_room.room")
         portal_room = self.load_room(f"assets/rooms/{self.name}/portal_room.room")
-        enemy_rooms = list()
-        treasury_rooms = list()
+        enemy_rooms = list(filter(
+            lambda room: room is not None, [
+                                               self.load_room(f"assets/rooms/{self.name}/{name}")
+                                               if name.split('.')[1:] == ['enemy_room', 'special', 'room']
+                                               else None
+                                               for name in special
+                                           ] + [
+                                               self.load_room(f"assets/rooms/common/{name}")
+                                               if name.split('.')[1:] == ['enemy_room', 'common', 'room']
+                                               else None
+                                               for name in common
+                                           ]))
+        treasury_rooms = list(filter(
+            lambda room: room is not None, [
+                                               self.load_room(f"assets/rooms/{self.name}/{name}")
+                                               if name.split('.')[1:] == ['treasure_room', 'special', 'room']
+                                               else None
+                                               for name in special
+                                           ] + [
+                                               self.load_room(f"assets/rooms/common/{name}")
+                                               if name.split('.')[1:] == ['treasure_room', 'common', 'room']
+                                               else None
+                                               for name in common
+                                           ]))
+        print(enemy_rooms, treasury_rooms)
         return {
             'start_room': start_room,
-            'portal_room': portal_room
+            'portal_room': portal_room,
+            'enemy_rooms': enemy_rooms,
+            'treasury_rooms': treasury_rooms
         }
 
     @staticmethod
@@ -146,7 +172,7 @@ class RoomFactory:
             room = file.readline().split()
             label, room_width, room_height, room_floor = room[0], int(room[1]), int(room[2]), room[3:]
 
-            loaded_room = [[Cell(0, 'Empty') for _ in range(room_width)]
+            loaded_room = [[self.EMPTY_CELL for _ in range(room_width)]
                            for _ in range(room_height)]
             for i in range(room_height):
                 for j in range(room_width):
@@ -160,178 +186,8 @@ class MapGenerator:
     def __init__(self, rooms):
         self.start_room = rooms['start_room']
         self.portal_room = rooms['portal_room']
-        self.enemy_rooms = [Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')]
-                                  ]),
-                            Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')],
-                                  [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                   Cell(1, 'Start'), Cell(1, 'Start')]
-                                  ])]
-        self.treasure_rooms = [Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')]
-                                     ]),
-                               Room([[Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')],
-                                     [Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'), Cell(1, 'Start'),
-                                      Cell(1, 'Start'), Cell(1, 'Start')]
-                                     ])]
+        self.enemy_rooms = rooms['enemy_rooms']
+        self.treasure_rooms = rooms['treasury_rooms']
         self.__min_enemies_rooms = 2
         self.__max_enemies_rooms = 5
         self.__max_treasuries_rooms = 3
