@@ -62,26 +62,21 @@ class Constants(metaclass=Singleton):
         self.iters_for_chance = 3
 
         self.EMPTY_CELL = Cell(asset_abbr=0, name='Empty')
-        self.ROAD_CELL = Cell(asset_abbr=2, name='road')
+        self.ROAD_CELL = Cell(asset_abbr=2, name='Road')
 
 
 class Assets(metaclass=Singleton):
 
     def __init__(self):
         self.quadrant_size = Constants().quadrant_size
-        self.abbr = {
-            1: '1.jpg',
-            2: 'player-alpha-2.png',
-            3: '3.png',
-            4: 'wall.png',
-            5: '2.png'
-        }
+        self.abbr = {}
         self.constant_images = {
             'wall': 'wall.png',
-            'door': '2.png'
+            'door': 'player.png'
         }
         self.__images = self.load_all_images()
         self.__player = self.load_image('player.png')
+        self.road_image_ids = RoomFactory(Constants().name).get_road_images()
 
     def load_abbr(self, new_abbr):
         self.abbr = new_abbr
@@ -138,8 +133,6 @@ class RoomFactory:
                     directory_path=f'assets/rooms/{self.name}'
                 )
 
-            print(common, special)
-
         start_room = self.load_room(f"assets/rooms/{self.name}/start_room.room")
         portal_room = self.load_room(f"assets/rooms/{self.name}/portal_room.room")
         enemy_rooms = list(filter(
@@ -166,7 +159,6 @@ class RoomFactory:
                                                else None
                                                for name in common
                                            ]))
-        print(enemy_rooms, treasury_rooms)
         return {
             'start_room': start_room,
             'portal_room': portal_room,
@@ -202,6 +194,10 @@ class RoomFactory:
                     loaded_room[i][j] = Cell(int(room_floor[randrange(len(room_floor))]), label)
 
             return Room(loaded_room)
+
+    def get_road_images(self):
+        with open(f"assets/rooms/{self.name}/sprites.road") as file_level_setup:
+            return list(map(int, file_level_setup.readline().split()))
 
 
 class MapGenerator:
@@ -332,23 +328,31 @@ class CreateFieldMatrix:
             for j in range(len(room[i])):
                 self.__field[delta_x + i][delta_y + j] = room[i][j]
 
+    def __add_road_in_field(self, x_corner, y_corner, x, y):
+        for i in range(y):
+            for j in range(x):
+                self.__field[x_corner + j][y_corner + i] = Cell(
+                    Assets().road_image_ids[randrange(len(Assets().road_image_ids))],
+                    'Road'
+                )
+
     def __create_road(self, start_x, start_y, end_x, end_y):
         start_x, end_x = min(start_x, end_x), max(start_x, end_x)
         start_y, end_y = min(start_y, end_y), max(start_y, end_y)
         if start_x == end_x:
             for i in range(end_y - start_y):
-                self.__field[start_x][start_y + i] = Cell(2, 'road')
-                self.__field[start_x + 1][start_y + i] = Cell(2, 'road')
-                self.__field[start_x - 1][start_y + i] = Cell(2, 'road')
-                self.__field[start_x + 2][start_y + i] = Cell(2, 'road')
-                self.__field[start_x - 2][start_y + i] = Cell(2, 'road')
+                self.__add_road_in_field(
+                    start_x - 2,
+                    start_y + i,
+                    5, 1
+                )
         if start_y == end_y:
             for i in range(end_x - start_x):
-                self.__field[start_x + i][start_y] = Cell(2, 'road')
-                self.__field[start_x + i][start_y + 1] = Cell(2, 'road')
-                self.__field[start_x + i][start_y - 1] = Cell(2, 'road')
-                self.__field[start_x + i][start_y + 2] = Cell(2, 'road')
-                self.__field[start_x + i][start_y - 2] = Cell(2, 'road')
+                self.__add_road_in_field(
+                    start_x + i,
+                    start_y - 2,
+                    1, 5
+                )
 
     def generate_field(self):
         map_generator = MapGenerator(
@@ -472,10 +476,13 @@ class CameraGroup(pygame.sprite.Group):
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
                         SpriteGroups().walls_group)
-                if div != Constants().EMPTY_CELL and Constants().ROAD_CELL in cells_around and \
-                        div != Constants().ROAD_CELL:
-                    if len(list(filter(lambda x: x == Constants().ROAD_CELL and x != Constants().EMPTY_CELL,
-                                       cells_around + diagonal_cells))) == 2:
+                if div != Constants().EMPTY_CELL and Constants().ROAD_CELL.name in \
+                        list(map(lambda cell: cell.name, cells_around)) and \
+                        div.name != Constants().ROAD_CELL.name:
+                    if len(list(filter(
+                            lambda x: x.name == Constants().ROAD_CELL.name and x != Constants().EMPTY_CELL,
+                            cells_around + diagonal_cells
+                    ))) == 2:
                         Wall(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
