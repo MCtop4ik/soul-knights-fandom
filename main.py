@@ -514,6 +514,5 @@ class Level(metaclass=Singleton):
 
 
 if __name__ == '__main__':
-    RoomFactory('1').load_assets()
-    RoomFactory('1').load_room('assets/rooms/1/start_room.room')
+    RoomFactory(Constants().name).load_assets()
     Level().start()
