@@ -199,7 +199,7 @@ class RoomFactory:
                            for _ in range(room_height)]
             for i in range(room_height):
                 for j in range(room_width):
-                    loaded_room[i][j] = Cell(int(room_floor[i * room_height + j]), label)
+                    loaded_room[i][j] = Cell(int(room_floor[randrange(len(room_floor))]), label)
 
             return Room(loaded_room)
 
