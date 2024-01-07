@@ -32,17 +32,18 @@ class SpriteGroups(metaclass=Singleton):
     def __init__(self):
         self.walls_group = pygame.sprite.Group()
         self.doors_group = pygame.sprite.Group()
+        self.portal_group = pygame.sprite.Group()
 
 
 class Constants(metaclass=Singleton):
 
     def __init__(self):
         # size of one block image
-        self.quadrant_size = 80
+        self.quadrant_size = 60
         # square root of amount of small squares in area of room
         self.big_cell_size = 50
         # player_size
-        self.player_size = (100, 100)
+        self.player_size = (60, 60)
         # player speed
         self.speed = 30
         # camera size
@@ -50,7 +51,7 @@ class Constants(metaclass=Singleton):
         # screen size
         self.screen_size = (800, 800)
         # level which will load
-        self.name = '1'
+        self.name = '2'
 
         # generation params
         self.min_enemies_rooms = 2
@@ -63,6 +64,12 @@ class Constants(metaclass=Singleton):
 
         self.EMPTY_CELL = Cell(asset_abbr=0, name='Empty')
         self.ROAD_CELL = Cell(asset_abbr=2, name='Road')
+
+
+class GameStateManager(metaclass=Singleton):
+
+    def __init__(self):
+        self.next = False
 
 
 class Assets(metaclass=Singleton):
@@ -387,7 +394,7 @@ class CreateFieldMatrix:
                     x_corner, y_corner = self.__find_corner_square(room)
                     self.__add_room_in_field(room, x_corner, y_corner, i, j)
         self.print_field(field)
-        return self.__field, coordinates[0]
+        return self.__field, coordinates[0], coordinates[-1]
 
     @staticmethod
     def print_field(field):
@@ -422,10 +429,15 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
     def update(self):
+        keys = pygame.key.get_pressed()
         self.input()
         self.rect.center += self.direction * self.speed
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.center -= self.direction
+        if pygame.sprite.spritecollideany(self, SpriteGroups().portal_group):
+            if keys[pygame.K_RETURN]:
+                if GameStateManager().next is False:
+                    GameStateManager().next = True
 
 
 class Wall(pygame.sprite.Sprite):
@@ -440,6 +452,13 @@ class Wall(pygame.sprite.Sprite):
 
 
 class Door(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+        self.image = Assets().images['door']
+        self.rect = self.image.get_rect(center=pos)
+
+
+class Portal(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
         self.image = Assets().images['door']
@@ -510,7 +529,10 @@ class CameraGroup(pygame.sprite.Group):
         self.center_target_camera(sprite_for_camera)
         self.map_draw()
         for sprite in sorted(
-                self.sprites() + SpriteGroups().walls_group.sprites() + SpriteGroups().doors_group.sprites(),
+                self.sprites() +
+                SpriteGroups().walls_group.sprites() +
+                SpriteGroups().doors_group.sprites() +
+                SpriteGroups().portal_group.sprites(),
                 key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
@@ -521,10 +543,9 @@ class Level(metaclass=Singleton):
     def __init__(self):
         self.screen = pygame.display.set_mode(Constants().screen_size)
 
-    @staticmethod
-    def start():
+    def start(self):
         clock = pygame.time.Clock()
-        level, start_coordinates = CreateFieldMatrix().generate_field()
+        level, start_coordinates, portal_coordinates = CreateFieldMatrix().generate_field()
         camera_group = CameraGroup(*Constants().camera_size, level)
         player = Player(
             (start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
@@ -534,6 +555,12 @@ class Level(metaclass=Singleton):
             Constants().player_size,
             camera_group)
         camera_group.wall_draw()
+        Portal(
+            (portal_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
+             (Constants().quadrant_size * Constants().big_cell_size) // 2,
+             portal_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
+             (Constants().quadrant_size * Constants().big_cell_size) // 2),
+            SpriteGroups().portal_group)
 
         while True:
             for event in pygame.event.get():
@@ -544,6 +571,15 @@ class Level(metaclass=Singleton):
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         sys.exit()
+
+            if GameStateManager().next:
+                GameStateManager().next = False
+                Constants().name = "1"
+                SpriteGroups().doors_group = pygame.sprite.Group()
+                SpriteGroups().walls_group = pygame.sprite.Group()
+                SpriteGroups().portal_group = pygame.sprite.Group()
+                RoomFactory(Constants().name).load_assets()
+                self.start()
 
             camera_group.update()
             camera_group.draw_sprites(player)
