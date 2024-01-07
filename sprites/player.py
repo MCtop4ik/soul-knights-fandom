@@ -1,7 +1,6 @@
 import pygame
 
 from settings.constants import Constants
-from settings.game_state_manager import GameStateManager
 from sprites.sprite_groups import SpriteGroups
 
 
@@ -32,12 +31,7 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = 0
 
     def update(self):
-        keys = pygame.key.get_pressed()
         self.input()
         self.rect.center += self.direction * self.speed
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.center -= self.direction
-        if pygame.sprite.spritecollideany(self, SpriteGroups().portal_group):
-            if keys[pygame.K_RETURN]:
-                if GameStateManager().next_level is False:
-                    GameStateManager().next_level = True
