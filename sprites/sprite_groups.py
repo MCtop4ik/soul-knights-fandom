@@ -9,5 +9,6 @@ class SpriteGroups(metaclass=Singleton):
         self.walls_group = Group()
         self.doors_group = Group()
         self.portal_group = Group()
+        self.chests_group = Group()
         self.camera_group = Group()
         self.player = None

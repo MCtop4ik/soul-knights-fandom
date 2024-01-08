@@ -83,7 +83,10 @@ class CreateFieldMatrix:
                     x_corner, y_corner = self.__find_corner_square(room)
                     self.__add_room_in_field(room, x_corner, y_corner, i, j)
         self.print_field(field)
-        return self.__field, coordinates[0], coordinates[-1]
+        return self.__field,\
+            coordinates[0],\
+            coordinates[-1], \
+            list(map(lambda x: x[1], coordinates_treasure_rooms))
 
     @staticmethod
     def print_field(field):
