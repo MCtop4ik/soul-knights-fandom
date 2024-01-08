@@ -12,3 +12,4 @@ class SpriteGroups(metaclass=Singleton):
         self.chests_group = Group()
         self.camera_group = Group()
         self.player = None
+        self.inventory_group = Group()

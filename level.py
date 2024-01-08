@@ -10,6 +10,7 @@ from sprites.map_sprites.chest import Chest
 from sprites.map_sprites.portal import Portal
 from sprites.player import Player
 from sprites.sprite_groups import SpriteGroups
+from sprites.inventory import InventorySprite
 
 
 class Level(metaclass=Singleton):
@@ -17,13 +18,12 @@ class Level(metaclass=Singleton):
     def __init__(self):
         self.screen = pygame.display.set_mode(Constants().screen_size)
 
-    @staticmethod
-    def start():
+    def start(self):
         clock = pygame.time.Clock()
         level, \
-            start_coordinates, \
-            portal_coordinates, \
-            treasure_room_coordinates = CreateFieldMatrix().generate_field()
+        start_coordinates, \
+        portal_coordinates, \
+        treasure_room_coordinates = CreateFieldMatrix().generate_field()
         SpriteGroups().camera_group = CameraGroup(*Constants().camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
@@ -48,6 +48,10 @@ class Level(metaclass=Singleton):
                  trc_x * Constants().quadrant_size * Constants().big_cell_size +
                  (Constants().quadrant_size * Constants().big_cell_size) // 2),
                 SpriteGroups().chests_group)
+        inventory_sprite = InventorySprite((Constants().screen_size[1] - Constants().quadrant_size,
+                                            Constants().screen_size[0] - Constants().quadrant_size),
+                                           SpriteGroups().inventory_group)
+        self.screen.blit(inventory_sprite.image, inventory_sprite.rect)
 
         while True:
             for event in pygame.event.get():
@@ -60,7 +64,7 @@ class Level(metaclass=Singleton):
                         sys.exit()
 
             SpriteGroups().camera_group.update()
-            SpriteGroups().walls_group.update()
+            # SpriteGroups().walls_group.update()
             SpriteGroups().doors_group.update()
             SpriteGroups().chests_group.update()
             SpriteGroups().portal_group.update()
