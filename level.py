@@ -21,9 +21,9 @@ class Level(metaclass=Singleton):
     def start(self):
         clock = pygame.time.Clock()
         level, \
-        start_coordinates, \
-        portal_coordinates, \
-        treasure_room_coordinates = CreateFieldMatrix().generate_field()
+            start_coordinates, \
+            portal_coordinates, \
+            treasure_room_coordinates = CreateFieldMatrix().generate_field()
         SpriteGroups().camera_group = CameraGroup(*Constants().camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
@@ -51,7 +51,6 @@ class Level(metaclass=Singleton):
         inventory_sprite = InventorySprite((Constants().screen_size[1] - Constants().quadrant_size,
                                             Constants().screen_size[0] - Constants().quadrant_size),
                                            SpriteGroups().inventory_group)
-        self.screen.blit(inventory_sprite.image, inventory_sprite.rect)
 
         while True:
             for event in pygame.event.get():
@@ -69,6 +68,7 @@ class Level(metaclass=Singleton):
             SpriteGroups().chests_group.update()
             SpriteGroups().portal_group.update()
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
+            self.screen.blit(inventory_sprite.image, inventory_sprite.rect)
 
             pygame.display.update()
             clock.tick(60)
