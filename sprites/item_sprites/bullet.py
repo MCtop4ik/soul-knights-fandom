@@ -5,15 +5,13 @@ from assets import Assets
 from sprites.sprite_groups import SpriteGroups
 
 
-class Weapon(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
         self.image = Assets().images['chest']
         self.rect = self.image.get_rect(center=pos)
-        self.shift = Vector2(10, 10)
+        self.speed = 30
 
     def update(self):
-        self.rect = SpriteGroups().player.rect.copy()
-        self.rect.x += 30
-        self.rect.y += 30
-        print(self.rect.center)
+        self.rect.x += 60
+
