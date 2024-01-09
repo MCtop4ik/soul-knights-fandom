@@ -95,7 +95,7 @@ class Inventory(metaclass=Singleton):
             self.pocket.append(prop)
 
 
-class InventorySprite(pygame.sprite.Sprite):
+class InventoryArmorSprite(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
 
@@ -106,3 +106,14 @@ class InventorySprite(pygame.sprite.Sprite):
         ]
         self.rect = self.image.get_rect(center=pos)
 
+
+class InventoryPocketSprite(pygame.sprite.Sprite):
+    def __init__(self, pos, group):
+        super().__init__(group)
+
+        self.image = Assets().images[
+            Assets().wall_image_ids[
+                randrange(len(Assets().wall_image_ids))
+            ]
+        ]
+        self.rect = self.image.get_rect(center=pos)
