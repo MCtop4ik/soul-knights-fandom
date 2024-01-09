@@ -11,6 +11,7 @@ class SpriteGroups(metaclass=Singleton):
         self.portal_group = Group()
         self.chests_group = Group()
         self.camera_group = Group()
+        self.weapon_group = Group()
         self.player = None
         self.inventory_armor_group = Group()
         self.inventory_pocket_group = Group()
