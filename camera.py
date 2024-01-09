@@ -68,7 +68,6 @@ class CameraGroup(pygame.sprite.Group):
         self.offset.x = target.rect.centerx - self.half_w
         self.offset.y = target.rect.centery - self.half_h
 
-
     def draw_sprites(self, sprite_for_camera):
         self.center_target_camera(sprite_for_camera)
         self.map_draw()
