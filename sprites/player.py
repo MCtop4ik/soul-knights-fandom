@@ -18,8 +18,6 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_SPACE]:
-            self.shoot()
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             self.direction.y = -1
         elif keys[pygame.K_DOWN] or keys[pygame.K_s]:
@@ -33,12 +31,6 @@ class Player(pygame.sprite.Sprite):
             self.direction.x = -1
         else:
             self.direction.x = 0
-
-    def shoot(self):
-        bullet = Bullet(self.pos, SpriteGroups().camera_group)
-        SpriteGroups().bullets_group.add(bullet)
-
-        SpriteGroups().bullets_group.update()
 
     def update(self):
         self.input()

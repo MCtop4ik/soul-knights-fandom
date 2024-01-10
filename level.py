@@ -6,13 +6,11 @@ from camera import CameraGroup
 from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
-from sprites.item_sprites.bullet import Bullet
 from sprites.map_sprites.chest import Chest
 from sprites.map_sprites.portal import Portal
 from sprites.player import Player
 from sprites.sprite_groups import SpriteGroups
 from sprites.item_sprites.weapon import Weapon
-from sprites.inventory import InventoryArmorSprite, InventoryPocketSprite
 
 
 class Level(metaclass=Singleton):
@@ -23,9 +21,9 @@ class Level(metaclass=Singleton):
     def start(self):
         clock = pygame.time.Clock()
         level, \
-        start_coordinates, \
-        portal_coordinates, \
-        treasure_room_coordinates = CreateFieldMatrix().generate_field()
+            start_coordinates, \
+            portal_coordinates, \
+            treasure_room_coordinates = CreateFieldMatrix().generate_field()
         SpriteGroups().camera_group = CameraGroup(*Constants().camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
@@ -34,11 +32,11 @@ class Level(metaclass=Singleton):
              (Constants().quadrant_size * Constants().big_cell_size) // 2),
             Constants().player_size,
             SpriteGroups().camera_group)
-        weapon = Weapon((start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
-                         (Constants().quadrant_size * Constants().big_cell_size) // 2,
-                         start_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
-                         (Constants().quadrant_size * Constants().big_cell_size) // 2),
-                        SpriteGroups().camera_group)
+        Weapon((start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
+                (Constants().quadrant_size * Constants().big_cell_size) // 2,
+                start_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
+                (Constants().quadrant_size * Constants().big_cell_size) // 2),
+               SpriteGroups().camera_group)
         '''bullet = Bullet((start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
                          (Constants().quadrant_size * Constants().big_cell_size) // 2,
                          start_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
@@ -77,9 +75,9 @@ class Level(metaclass=Singleton):
             SpriteGroups().doors_group.update()
             SpriteGroups().chests_group.update()
             SpriteGroups().portal_group.update()
+            SpriteGroups().bullets_group.update()
             # SpriteGroups().weapon_group.update()
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
-            SpriteGroups().bullets_group.update()
 
             pygame.display.update()
             clock.tick(Constants().FPS)

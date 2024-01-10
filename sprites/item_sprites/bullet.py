@@ -1,17 +1,17 @@
 import pygame
-from pygame import Vector2
 
 from assets import Assets
 from sprites.sprite_groups import SpriteGroups
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, group):
         super().__init__(group)
         self.image = Assets().images['chest']
-        self.rect = self.image.get_rect(center=pos)
-        self.speed = 30
+        self.rect = self.image.get_rect(center=(SpriteGroups().player.rect.x,
+                                                SpriteGroups().player.rect.y))
+        self.speed = 1
 
     def update(self):
-        self.rect.x += 60
+        self.rect.x += self.speed
 
