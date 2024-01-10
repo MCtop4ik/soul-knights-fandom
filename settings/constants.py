@@ -12,7 +12,7 @@ class Constants(metaclass=Singleton):
         # player_size
         self.player_size = (60, 60)
         # player speed
-        self.speed = 30
+        self.speed = 10
         # camera size
         self.camera_size = (800, 800)
         # screen size
