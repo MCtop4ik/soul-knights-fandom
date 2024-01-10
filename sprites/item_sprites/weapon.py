@@ -30,4 +30,4 @@ class Weapon(pygame.sprite.Sprite):
     def shoot(self):
         print(self.angle)
         Bullet(SpriteGroups().bullets_group, self.angle)
-        self.angle = self.angle + 10 % 360
+        self.angle = (self.angle + 10) % 360
