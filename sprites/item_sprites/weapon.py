@@ -12,15 +12,17 @@ class Weapon(pygame.sprite.Sprite):
         self.image = Assets().images['chest']
         self.rect = self.image.get_rect(center=pos)
         self.shift = Vector2(10, 10)
+        self.last_shoot_time = 0
+        self.offset_time_ms = 1000
 
     def update(self):
         keys = pygame.key.get_pressed()
         self.rect = SpriteGroups().player.rect.copy()
         self.rect.x += 30
         self.rect.y += 30
-
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_SPACE] and pygame.time.get_ticks() - self.last_shoot_time > self.offset_time_ms:
             self.shoot()
+            self.last_shoot_time = pygame.time.get_ticks()
 
     def shoot(self):
         Bullet(SpriteGroups().bullets_group)
