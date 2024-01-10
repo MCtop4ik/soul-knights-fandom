@@ -80,4 +80,4 @@ class Level(metaclass=Singleton):
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
 
             pygame.display.update()
-            clock.tick(Constants().FPS)
+            #clock.tick(Constants().FPS)

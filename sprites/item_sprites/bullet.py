@@ -28,7 +28,8 @@ class Bullet(pygame.sprite.Sprite):
         self.direction.y = sin(convertedAngle)
 
         self.rect.center += self.direction * self.speed
-
+        if pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
+            self.kill()
         #self.rect.y += self.speed * sin(self.angle)
         #self.rect.x += self.speed * cos(self.angle)
         #if self.speed * sin(self.angle) == 0 and self.speed * cos(self.angle) == 100:

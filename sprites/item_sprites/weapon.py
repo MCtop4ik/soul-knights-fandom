@@ -27,9 +27,7 @@ class Weapon(pygame.sprite.Sprite):
             self.shoot()
             self.last_shoot_time = pygame.time.get_ticks()
 
-
-
     def shoot(self):
         print(self.angle)
         Bullet(SpriteGroups().bullets_group, self.angle)
-        self.angle += 3
+        self.angle += 10
