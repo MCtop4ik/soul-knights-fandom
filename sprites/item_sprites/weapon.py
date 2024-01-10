@@ -1,3 +1,5 @@
+from math import pi
+
 import pygame
 from pygame import Vector2
 
@@ -13,7 +15,8 @@ class Weapon(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=pos)
         self.shift = Vector2(10, 10)
         self.last_shoot_time = 0
-        self.offset_time_ms = 1000
+        self.offset_time_ms = 100
+        self.angle = 0
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -24,5 +27,9 @@ class Weapon(pygame.sprite.Sprite):
             self.shoot()
             self.last_shoot_time = pygame.time.get_ticks()
 
+
+
     def shoot(self):
-        Bullet(SpriteGroups().bullets_group)
+        print(self.angle)
+        Bullet(SpriteGroups().bullets_group, self.angle)
+        self.angle += 3
