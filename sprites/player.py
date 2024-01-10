@@ -37,5 +37,4 @@ class Player(pygame.sprite.Sprite):
         self.rect.center += self.direction * self.speed
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
-            print("as")
             self.rect.center -= self.direction
