@@ -22,14 +22,9 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         converted_angle = self.angle_solve_radians(self.angle)
-        # print(self.speed * sin(self.angle), self.speed * cos(self.angle))
         self.direction.x = cos(converted_angle)
         self.direction.y = sin(converted_angle)
 
         self.rect.center += self.direction * self.speed
         if pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.kill()
-        # self.rect.y += self.speed * sin(self.angle)
-        # self.rect.x += self.speed * cos(self.angle)
-        # if self.speed * sin(self.angle) == 0 and self.speed * cos(self.angle) == 100:
-        # print(self.angle)
