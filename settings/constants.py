@@ -30,7 +30,7 @@ class Constants(metaclass=Singleton):
         self.chance = 3
         self.iters_for_chance = 3
 
-        self.fire_radius = self.big_cell_size * 10
+        self.fire_radius = self.quadrant_size * 10
         self.max_enemy_amount = 10
         self.min_enemy_amount = 3
 

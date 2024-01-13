@@ -53,7 +53,8 @@ class Weapon(pygame.sprite.Sprite):
                 self.changeWeapon("test_weapon_2")
 
     def shoot(self):
-        Bullet(SpriteGroups().bullets_group, self.angle, self.offset_x + 50, self.offset_y + 60, 'chest')
+        Bullet(SpriteGroups().bullets_group, self.angle, self.offset_x + 50, self.offset_y + 60, (SpriteGroups().player.rect.x,
+                                                SpriteGroups().player.rect.y), 'chest')
         self.angle = (self.angle + 10) % 360
 
     def changeWeapon(self, baseID):
