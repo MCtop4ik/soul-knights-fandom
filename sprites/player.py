@@ -13,6 +13,11 @@ class Player(pygame.sprite.Sprite):
         self.pos = pos
         self.direction = pygame.math.Vector2()
         self.speed = Constants().speed
+        self.battle = False
+        self.uncleared_rooms = []
+        self.not_allowed_through_doors = False
+        self.entered_coord = (0, 0)
+        self.finished_coord = (0, 0)
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -38,5 +43,32 @@ class Player(pygame.sprite.Sprite):
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.center -= self.direction
 
+        if pygame.sprite.spritecollideany(self, SpriteGroups().doors_group):
+            if self.battle is False:
+                self.entered_coord = (self.rect.centerx, self.rect.centery)
+            x, y = (self.rect.centerx // (Constants().big_cell_size * Constants().quadrant_size),
+                    self.rect.centery // (Constants().big_cell_size * Constants().quadrant_size))
+            for uncleared_room in self.uncleared_rooms:
+                if x == uncleared_room[0] and y == uncleared_room[1]:
+                    if uncleared_room[2] > 0:
+                        self.battle = True
+                    else:
+                        self.battle = False
+                        self.finished_coord = (self.rect.centerx, self.rect.centery)
+        else:
+            if self.battle:
+                if abs(self.finished_coord[0] - self.entered_coord[0]) < Constants().quadrant_size and \
+                        abs(self.finished_coord[1] - self.entered_coord[1]) < Constants().quadrant_size:
+                    self.not_allowed_through_doors = False
+                    self.battle = False
+                else:
+                    self.not_allowed_through_doors = True
+
+        while pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) and self.not_allowed_through_doors:
+            self.rect.center -= self.direction
+
     def get_player_coordinates(self):
         return self.rect.center
+
+    def set_uncleared_rooms(self, uncleared_rooms):
+        self.uncleared_rooms = uncleared_rooms
