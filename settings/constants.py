@@ -18,7 +18,7 @@ class Constants(metaclass=Singleton):
         # screen size
         self.screen_size = (800, 800)
         # level which will load
-        self.name = '1'
+        self.name = '2'
         self.FPS = 80
 
         # generation params
