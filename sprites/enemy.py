@@ -21,7 +21,9 @@ class Enemy(pygame.sprite.Sprite):
         self.offset_shoot_time_ms = 1000
         self.last_shoot_time = 0
         self.last_moved_time = 0
-        self.offset_moved_time_ms = 100
+        self.offset_moved_time_ms = 300
+        self.visible = False
+        self.is_frozen = True
 
     def sign(self, x):
         if x == 0:
@@ -39,6 +41,23 @@ class Enemy(pygame.sprite.Sprite):
         self.angle = atan2(relative_y, relative_x)
         self.direction.x = self.sign(relative_x)
         self.direction.y = self.sign(relative_y)
+        rnd_state = random.randint(1, 10)
+        if 1 <= rnd_state <= 4:
+            self.direction.x = self.sign(relative_x)
+        if 5 <= rnd_state <= 8:
+            if self.sign(relative_x) == 1:
+                self.direction.x = 0
+            if self.sign(relative_x) == -1:
+                self.direction.x = 0
+            if self.sign(relative_x) == 0:
+                self.direction.x = [-1, 1][random.randint(0, 1)]
+        if 9 <= rnd_state <= 10:
+            if self.sign(relative_x) == 0:
+                self.direction.x = 0
+            if self.sign(relative_x) == -1:
+                self.direction.x = 1
+            if self.sign(relative_x) == 1:
+                self.direction.x = -1
 
     def to_radians(self):
         return self.angle * 180 / pi
@@ -51,12 +70,17 @@ class Enemy(pygame.sprite.Sprite):
             Bullet(SpriteGroups().bullets_group, self.to_radians(), 50, 60, self.pos, 'chest')
             self.last_shoot_time = pygame.time.get_ticks()
 
-    def update(self):
-        self.get_direction()
-        self.fire()
-        if pygame.time.get_ticks() - self.last_moved_time > self.offset_moved_time_ms * random.randint(1, 10):
-            self.rect.center += self.direction * self.speed
-            self.last_moved_time = pygame.time.get_ticks()
+    def check_if_battle(self):
+        self.is_frozen = not SpriteGroups().player.battle & SpriteGroups().player.not_allowed_through_doors
 
-        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
-            self.rect.center -= self.direction
+    def update(self):
+        self.check_if_battle()
+        if not self.is_frozen:
+            self.get_direction()
+            self.fire()
+            if pygame.time.get_ticks() - self.last_moved_time > self.offset_moved_time_ms * random.randint(1, 10):
+                self.rect.center += self.direction * self.speed
+                self.last_moved_time = pygame.time.get_ticks()
+
+            while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
+                self.rect.center -= self.direction

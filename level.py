@@ -58,14 +58,16 @@ class Level(metaclass=Singleton):
                  (Constants().quadrant_size * Constants().big_cell_size) // 2),
                 SpriteGroups().chests_group)
 
+        uncleared_rooms = []
         for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
             ec_x = enemy_coordinate[1]
             ec_y = enemy_coordinate[0]
             max_offset = (room_size[0] // 2 - 2) * Constants().quadrant_size
-            for _ in range(random.randint(
-                    Constants().max_enemy_amount,
+            enemy_amount = random.randint(
+                    Constants().min_enemy_amount,
                     Constants().max_enemy_amount)
-            ):
+            uncleared_rooms.append((ec_x, ec_y, enemy_amount))
+            for _ in range(enemy_amount):
                 Enemy(
                     (ec_x * Constants().quadrant_size * Constants().big_cell_size +
                      (Constants().quadrant_size * Constants().big_cell_size) // 2
@@ -74,6 +76,7 @@ class Level(metaclass=Singleton):
                      (Constants().quadrant_size * Constants().big_cell_size) // 2
                      + random.randint(-max_offset, max_offset)),
                     SpriteGroups().enemies_group)
+        SpriteGroups().player.set_uncleared_rooms(uncleared_rooms)
 
         while True:
             for event in pygame.event.get():
