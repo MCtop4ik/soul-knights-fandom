@@ -77,6 +77,7 @@ class CameraGroup(pygame.sprite.Group):
                 SpriteGroups().doors_group.sprites() +
                 SpriteGroups().portal_group.sprites() +
                 SpriteGroups().chests_group.sprites() +
+                SpriteGroups().enemies_group.sprites() +
                 SpriteGroups().bullets_group.sprites(),
                 key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset

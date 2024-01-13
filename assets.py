@@ -15,7 +15,8 @@ class Assets(metaclass=Singleton):
         self.constant_images = {
             'door': 'player.png',
             'portal': 'player.png',
-            'chest': 'player-alpha-2.png'
+            'chest': 'player-alpha-2.png',
+            'enemy': 'player-alpha.png'
         }
         self.__images = self.load_all_images()
         self.__player = self.load_image('player.png')

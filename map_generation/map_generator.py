@@ -18,6 +18,7 @@ class MapGenerator:
         self.__all_coordinates = []
         self.__coordinates = [(self.rooms_amount + 1, self.rooms_amount + 1)]
         self.__coordinates_for_treasure_room = []
+        self.enemy_room_sizes = []
 
     def __create_rooms_matrix(self):
         rooms = [[None for _ in range(self.rooms_amount * 2 + 1)] for _ in range(self.rooms_amount * 2 + 1)]
@@ -39,7 +40,10 @@ class MapGenerator:
             if direction == 'Y':
                 y_gen += alias_move
             self.__coordinates.append((x_gen, y_gen))
-            self.__rooms[x_gen][y_gen] = rooms[randrange(len(rooms))]
+            add_room = rooms[randrange(len(rooms))]
+            self.__rooms[x_gen][y_gen] = add_room
+            if rooms == self.enemy_rooms:
+                self.enemy_room_sizes.append((len(add_room.matrix[0]), len(add_room.matrix)))
 
     def __create_enemy_rooms(self):
         enemies_rooms_number = randint(self.__min_enemies_rooms, self.__max_enemies_rooms)
@@ -107,4 +111,4 @@ class MapGenerator:
         self.__create_treasure_rooms()
         self.__all_coordinates += self.__coordinates
         self.__crop()
-        return self.__rooms, self.__coordinates, self.__coordinates_for_treasure_room
+        return self.__rooms, self.__coordinates, self.__coordinates_for_treasure_room, self.enemy_room_sizes

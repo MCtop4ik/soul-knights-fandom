@@ -58,7 +58,7 @@ class CreateFieldMatrix:
         map_generator = MapGenerator(
             RoomFactory(Constants().name).read_level()
         )
-        field, coordinates, coordinates_treasure_rooms = map_generator.generate()
+        field, coordinates, coordinates_treasure_rooms, enemy_rooms_sizes = map_generator.generate()
         self.__create_field(field)
         for i in range(1, len(coordinates)):
             self.__create_road(
@@ -83,10 +83,12 @@ class CreateFieldMatrix:
                     x_corner, y_corner = self.__find_corner_square(room)
                     self.__add_room_in_field(room, x_corner, y_corner, i, j)
         self.print_field(field)
-        return self.__field,\
-            coordinates[0],\
+        return self.__field, \
+            coordinates[0], \
             coordinates[-1], \
-            list(map(lambda x: x[1], coordinates_treasure_rooms))
+            list(map(lambda x: x[1], coordinates_treasure_rooms)), \
+            coordinates[1:-1], \
+            enemy_rooms_sizes
 
     @staticmethod
     def print_field(field):

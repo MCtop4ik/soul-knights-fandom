@@ -1,7 +1,6 @@
 import pygame
 
 from settings.constants import Constants
-from sprites.item_sprites.bullet import Bullet
 from sprites.sprite_groups import SpriteGroups
 
 
@@ -38,3 +37,6 @@ class Player(pygame.sprite.Sprite):
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.center -= self.direction
+
+    def get_player_coordinates(self):
+        return self.rect.center
