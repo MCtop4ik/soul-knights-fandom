@@ -1,4 +1,5 @@
 import os
+import sqlite3
 
 import pygame
 from patterns.creational_patterns.singleton import Singleton
@@ -20,6 +21,8 @@ class Assets(metaclass=Singleton):
         self.__player = self.load_image('player.png')
         self.road_image_ids = RoomFactory(Constants().name).get_road_images()
         self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
+        self.connection = self.load_base()
+        self.connection.close()
 
     def load_abbr(self, new_abbr):
         self.abbr = new_abbr
@@ -44,3 +47,12 @@ class Assets(metaclass=Singleton):
     @property
     def images(self):
         return self.__images
+
+    @staticmethod
+    def load_base():
+
+        fullname = os.path.join('assets/bases', "database.db")
+        if not os.path.isfile(fullname):
+            return
+        connection = sqlite3.connect(fullname)
+        return connection

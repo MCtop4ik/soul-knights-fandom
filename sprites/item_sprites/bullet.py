@@ -5,14 +5,18 @@ from sprites.sprite_groups import SpriteGroups
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, angle):
+    def __init__(self, group, angle, offset_x, offset_y, assetID):
         super().__init__(group)
-        self.image = Assets().images['chest']
+        self.assetID = assetID
+        self.image = Assets().images[self.assetID]
         self.angle = angle
         self.image = pygame.transform.rotate(self.image, -self.angle - 90)
-
+        self.offset_x = offset_x
+        self.offset_y = offset_y
         self.rect = self.image.get_rect(center=(SpriteGroups().player.rect.x,
                                                 SpriteGroups().player.rect.y))
+        self.rect.x += offset_x
+        self.rect.y += offset_y
         self.direction = pygame.math.Vector2()
         self.speed = 15
 

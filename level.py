@@ -32,7 +32,7 @@ class Level(metaclass=Singleton):
              (Constants().quadrant_size * Constants().big_cell_size) // 2),
             Constants().player_size,
             SpriteGroups().camera_group)
-        Weapon((start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
+        SpriteGroups().weapon = Weapon((start_coordinates[1] * Constants().quadrant_size * Constants().big_cell_size +
                 (Constants().quadrant_size * Constants().big_cell_size) // 2,
                 start_coordinates[0] * Constants().quadrant_size * Constants().big_cell_size +
                 (Constants().quadrant_size * Constants().big_cell_size) // 2),
@@ -76,7 +76,6 @@ class Level(metaclass=Singleton):
             SpriteGroups().chests_group.update()
             SpriteGroups().portal_group.update()
             SpriteGroups().bullets_group.update()
-            # SpriteGroups().weapon_group.update()
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
 
             pygame.display.update()
