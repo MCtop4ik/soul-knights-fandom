@@ -14,7 +14,8 @@ class Portal(pygame.sprite.Sprite):
 
     def update(self):
         keys = pygame.key.get_pressed()
-        if pygame.sprite.spritecollideany(self, SpriteGroups().camera_group):
+        if self.rect.colliderect(SpriteGroups().player.rect.inflate(
+                Constants().quadrant_size * 3, Constants().quadrant_size * 3)):
             if keys[pygame.K_RETURN]:
                 self.teleport()
 

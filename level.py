@@ -75,6 +75,7 @@ class Level(metaclass=Singleton):
                      ec_y * Constants().quadrant_size * Constants().big_cell_size +
                      (Constants().quadrant_size * Constants().big_cell_size) // 2
                      + random.randint(-max_offset, max_offset)),
+                    (ec_x, ec_y),
                     SpriteGroups().enemies_group)
         SpriteGroups().player.set_uncleared_rooms(uncleared_rooms)
 

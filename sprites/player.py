@@ -19,6 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.entered_direction = (0, 0)
         self.finished_direction = (0, 0)
 
+        self.heal_points = 1000
+
     def input(self):
         keys = pygame.key.get_pressed()
 
@@ -36,7 +38,21 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
 
+    def damage(self, damage):
+        self.heal_points -= damage
+
+    def decrease_enemies_cnt(self, room_coordinates):
+        new_uncleared_rooms = []
+        for uncleared_room in self.uncleared_rooms:
+            new_uncleared_room = uncleared_room
+            if uncleared_room[0] == room_coordinates[0] and uncleared_room[1] == room_coordinates[1]:
+                new_uncleared_room = (uncleared_room[0], uncleared_room[1], uncleared_room[2] - 1)
+            new_uncleared_rooms.append(new_uncleared_room)
+        self.uncleared_rooms = new_uncleared_rooms
+
     def update(self):
+        if self.heal_points <= 0:
+            self.kill()
         self.input()
         self.rect.center += self.direction * self.speed
 
@@ -58,6 +74,8 @@ class Player(pygame.sprite.Sprite):
             if self.battle:
                 self.finished_direction = self.direction
                 self.not_allowed_through_doors = True
+            else:
+                self.not_allowed_through_doors = False
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) and self.not_allowed_through_doors:
             self.rect.center -= self.direction

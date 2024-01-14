@@ -10,7 +10,7 @@ from sprites.sprite_groups import SpriteGroups
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, pos, room_coordinates, group):
         super().__init__(group)
         self.image = Assets().images['enemy']
         self.rect = self.image.get_rect(center=pos)
@@ -24,6 +24,8 @@ class Enemy(pygame.sprite.Sprite):
         self.offset_moved_time_ms = 300
         self.visible = False
         self.is_frozen = True
+        self.room_coordinates = room_coordinates
+        self.heal_points = 100
 
     def sign(self, x):
         if x == 0:
@@ -67,13 +69,22 @@ class Enemy(pygame.sprite.Sprite):
         if ((pygame.time.get_ticks() - self.last_shoot_time > self.offset_shoot_time_ms * random.randint(1, 10))
                 and sqrt((x_player - self.rect.centerx) ** 2 + (
                         y_player - self.rect.centery) ** 2) < Constants().fire_radius * sqrt(2)):
-            Bullet(SpriteGroups().bullets_group, self.to_radians(), 50, 60, self.pos, 'chest')
+            Bullet(SpriteGroups().bullets_group, self.to_radians(), 50, 60, self.pos, 'enemy', 'chest')
             self.last_shoot_time = pygame.time.get_ticks()
 
     def check_if_battle(self):
         self.is_frozen = not SpriteGroups().player.battle & SpriteGroups().player.not_allowed_through_doors
 
+    def get_room(self):
+        return self.room_coordinates
+
+    def damage(self, damage):
+        self.heal_points -= damage
+
     def update(self):
+        if self.heal_points <= 0:
+            SpriteGroups().player.decrease_enemies_cnt(self.room_coordinates)
+            self.kill()
         self.check_if_battle()
         if not self.is_frozen:
             self.get_direction()
