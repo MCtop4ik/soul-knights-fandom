@@ -20,6 +20,9 @@ class CameraGroup(pygame.sprite.Group):
 
         self.offset = pygame.math.Vector2()
         self.quadrant_size = Constants().quadrant_size
+        self.empty_cell = Constants().EMPTY_CELL
+        self.road_cell = Constants().ROAD_CELL
+        self.screen_size = Constants().screen_size
 
         self.half_w = self.width // 2
         self.half_h = self.height // 2
@@ -29,8 +32,8 @@ class CameraGroup(pygame.sprite.Group):
         Level().screen.fill((0, 0, 0))
         player_offset_y = (SpriteGroups().player.rect.centery // self.quadrant_size)
         player_offset_x = (SpriteGroups().player.rect.centerx // self.quadrant_size)
-        screen_limit_y = (Constants().screen_size[1] // self.quadrant_size)
-        screen_limit_x = (Constants().screen_size[0] // self.quadrant_size)
+        screen_limit_y = (self.screen_size[1] // self.quadrant_size)
+        screen_limit_x = (self.screen_size[0] // self.quadrant_size)
         half_screen_limit_y = round(screen_limit_y / 2)
         half_screen_limit_x = round(screen_limit_x / 2)
         offset_i = player_offset_y - half_screen_limit_y - 2
@@ -51,49 +54,52 @@ class CameraGroup(pygame.sprite.Group):
                         (self.quadrant_size * j, self.quadrant_size * i) - self.offset)
 
     def wall_draw(self):
+        walls_group = SpriteGroups().walls_group
+        doors_group = SpriteGroups().doors_group
         for i in range(1, len(self.map) - 1):
             for j in range(1, len(self.map[0]) - 1):
                 div = self.map[i][j]
                 cells_around = (self.map[i + 1][j], self.map[i - 1][j], self.map[i][j + 1], self.map[i][j - 1])
                 diagonal_cells = (self.map[i + 1][j + 1], self.map[i - 1][j - 1],
                                   self.map[i - 1][j + 1], self.map[i + 1][j - 1])
-                if div != Constants().EMPTY_CELL and Constants().EMPTY_CELL in cells_around:
+                if div != self.empty_cell and self.empty_cell in cells_around:
                     Wall(
                         (self.quadrant_size * j + self.quadrant_size // 2,
                          self.quadrant_size * i + self.quadrant_size // 2),
-                        SpriteGroups().walls_group)
-                if div != Constants().EMPTY_CELL and Constants().ROAD_CELL.name in \
+                        walls_group)
+                if div != self.empty_cell and self.road_cell.name in \
                         list(map(lambda cell: cell.name, cells_around)) and \
-                        div.name != Constants().ROAD_CELL.name:
+                        div.name != self.road_cell.name:
                     if len(list(filter(
-                            lambda x: x.name == Constants().ROAD_CELL.name and x != Constants().EMPTY_CELL,
+                            lambda x: x.name == self.road_cell.name and x != self.empty_cell,
                             cells_around + diagonal_cells
                     ))) == 2:
                         Wall(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
-                            SpriteGroups().walls_group)
+                            walls_group)
                     else:
                         Door(
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
-                            SpriteGroups().doors_group)
+                            doors_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
         self.offset.y = target.rect.centery - self.half_h
 
     def draw_sprites(self, sprite_for_camera):
+        sprite_groups = SpriteGroups()
         self.center_target_camera(sprite_for_camera)
         self.map_draw()
         for sprite in sorted(
                 self.sprites() +
-                SpriteGroups().walls_group.sprites() +
-                SpriteGroups().doors_group.sprites() +
-                SpriteGroups().portal_group.sprites() +
-                SpriteGroups().chests_group.sprites() +
-                SpriteGroups().enemies_group.sprites() +
-                SpriteGroups().bullets_group.sprites(),
+                sprite_groups.walls_group.sprites() +
+                sprite_groups.doors_group.sprites() +
+                sprite_groups.portal_group.sprites() +
+                sprite_groups.chests_group.sprites() +
+                sprite_groups.enemies_group.sprites() +
+                sprite_groups.bullets_group.sprites(),
                 key=lambda x: x.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
