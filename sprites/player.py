@@ -55,6 +55,8 @@ class Player(pygame.sprite.Sprite):
             self.kill()
         self.input()
         self.rect.center += self.direction * self.speed
+        if not self.battle:
+            self.not_allowed_through_doors = False
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.center -= self.direction
@@ -74,8 +76,6 @@ class Player(pygame.sprite.Sprite):
             if self.battle:
                 self.finished_direction = self.direction
                 self.not_allowed_through_doors = True
-            else:
-                self.not_allowed_through_doors = False
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) and self.not_allowed_through_doors:
             self.rect.center -= self.direction
