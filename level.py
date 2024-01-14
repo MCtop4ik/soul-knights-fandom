@@ -22,6 +22,7 @@ class Level(metaclass=Singleton):
 
     def start(self):
         clock = pygame.time.Clock()
+        fps = Constants().FPS
         level, \
             start_coordinates, \
             portal_coordinates, \
@@ -99,4 +100,4 @@ class Level(metaclass=Singleton):
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
 
             pygame.display.update()
-            clock.tick(Constants().FPS)
+            clock.tick(fps)

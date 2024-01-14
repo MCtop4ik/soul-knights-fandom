@@ -16,6 +16,7 @@ class CameraGroup(pygame.sprite.Group):
 
         self.map = lvl
         self.assets = Assets()
+        self.constants = Constants()
 
         self.offset = pygame.math.Vector2()
         self.quadrant_size = Constants().quadrant_size
@@ -26,10 +27,24 @@ class CameraGroup(pygame.sprite.Group):
     def map_draw(self):
         from level import Level
         Level().screen.fill((0, 0, 0))
-        for i in range(len(self.map)):
-            for j in range(len(self.map[0])):
+        player_offset_y = (SpriteGroups().player.rect.centery // self.quadrant_size)
+        player_offset_x = (SpriteGroups().player.rect.centerx // self.quadrant_size)
+        screen_limit_y = (Constants().screen_size[1] // self.quadrant_size)
+        screen_limit_x = (Constants().screen_size[0] // self.quadrant_size)
+        half_screen_limit_y = round(screen_limit_y / 2)
+        half_screen_limit_x = round(screen_limit_x / 2)
+        offset_i = player_offset_y - half_screen_limit_y - 2
+        offset_j = player_offset_x - half_screen_limit_x - 2
+        limit_i = screen_limit_y + 4
+        limit_j = screen_limit_x + 4
+        for i in range(
+                offset_i,
+                offset_i + limit_i if offset_i + limit_i < len(self.map) else len(self.map)):
+            for j in range(
+                    offset_j,
+                    offset_j + limit_j if offset_j + limit_j < len(self.map[0]) else len(self.map[0])):
                 div = self.map[i][j]
-                if div != Constants().EMPTY_CELL:
+                if div != self.constants.EMPTY_CELL:
                     ground_surf = self.assets.images[div.asset_abbr]
                     self.display_surface.blit(
                         ground_surf,
