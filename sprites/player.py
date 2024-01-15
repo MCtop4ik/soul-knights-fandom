@@ -59,9 +59,28 @@ class Player(pygame.sprite.Sprite):
         self.rect.center += self.direction * self.speed
         if not self.battle:
             self.not_allowed_through_doors = False
-
-        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
-            self.rect.center -= self.direction
+        collide_walls = pygame.sprite.spritecollideany(self, SpriteGroups().walls_group)
+        while collide_walls:
+            d = pygame.math.Vector2()
+            d.x = self.direction.x
+            d.y = 0
+            self.rect.center -= d
+            collide_walls = pygame.sprite.spritecollideany(self, SpriteGroups().walls_group)
+            if collide_walls:
+                d.x = -self.direction.x
+                d.y = 0
+                self.rect.center -= d
+                d.x = 0
+                d.y = self.direction.y
+                self.rect.center -= d
+                collide_walls = pygame.sprite.spritecollideany(self, SpriteGroups().walls_group)
+                if collide_walls:
+                    d.x = 0
+                    d.y = -self.direction.y
+                    self.rect.center -= d
+                    d.x = self.direction.x
+                    d.y = self.direction.y
+                    self.rect.center -= d
 
         if pygame.sprite.spritecollideany(self, SpriteGroups().doors_group):
             if self.battle is False:
@@ -80,6 +99,7 @@ class Player(pygame.sprite.Sprite):
                 self.not_allowed_through_doors = True
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) and self.not_allowed_through_doors:
+
             self.rect.center -= self.direction
 
     def get_player_coordinates(self):
