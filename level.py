@@ -8,12 +8,13 @@ from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
 from sprites.enemy import Enemy
-from sprites.inventory import InventorySpriteV2
+from sprites.inventory_sprite import InventorySpriteV2
 from sprites.map_sprites.chest import Chest
 from sprites.map_sprites.portal import Portal
 from sprites.player import Player
 from sprites.sprite_groups import SpriteGroups
 from sprites.item_sprites.weapon import Weapon
+from sprites.weapons_list import WeaponsList
 
 
 class Level(metaclass=Singleton):
@@ -31,6 +32,7 @@ class Level(metaclass=Singleton):
             treasure_room_coordinates, \
             enemy_coordinates, \
             enemy_room_sizes = CreateFieldMatrix().generate_field()
+        WeaponsList().add_weapons_to_list()
         SpriteGroups().camera_group = CameraGroup(*self.constants.camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +

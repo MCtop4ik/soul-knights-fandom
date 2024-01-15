@@ -51,7 +51,6 @@ class Assets(metaclass=Singleton):
 
     @staticmethod
     def load_base():
-
         fullname = os.path.join('assets/bases', "database.db")
         if not os.path.isfile(fullname):
             return
