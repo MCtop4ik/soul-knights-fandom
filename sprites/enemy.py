@@ -1,5 +1,5 @@
 import random
-from math import sqrt, atan2, pi
+from math import sqrt, atan2, pi, copysign
 
 import pygame
 
@@ -30,38 +30,31 @@ class Enemy(pygame.sprite.Sprite):
         self.big_cell_size = Constants().big_cell_size
         self.fire_radius = Constants().fire_radius
 
-    def sign(self, x):
-        if x == 0:
-            return 0
-        if x > 0:
-            return 1
-        return -1
-
     def get_direction(self):
         x_player, y_player = SpriteGroups().player.get_player_coordinates()
 
         relative_x = x_player - self.rect.centerx
         relative_y = y_player - self.rect.centery
 
-        self.angle = atan2(relative_y, relative_x)
-        self.direction.x = self.sign(relative_x)
-        self.direction.y = self.sign(relative_y)
+        self.angle = atan2(relative_y, relative_x) + random.uniform(-pi / 4, pi / 4)
+        self.direction.x = copysign(1, relative_x)
+        self.direction.y = copysign(1, relative_y)
         rnd_state = random.randint(1, 10)
         if 1 <= rnd_state <= 4:
-            self.direction.x = self.sign(relative_x)
+            self.direction.x = copysign(1, relative_x)
         if 5 <= rnd_state <= 8:
-            if self.sign(relative_x) == 1:
+            if copysign(1, relative_x) == 1:
                 self.direction.x = 0
-            if self.sign(relative_x) == -1:
+            if copysign(1, relative_x) == -1:
                 self.direction.x = 0
-            if self.sign(relative_x) == 0:
+            if copysign(1, relative_x) == 0:
                 self.direction.x = [-1, 1][random.randint(0, 1)]
         if 9 <= rnd_state <= 10:
-            if self.sign(relative_x) == 0:
+            if copysign(1, relative_x) == 0:
                 self.direction.x = 0
-            if self.sign(relative_x) == -1:
+            if copysign(1, relative_x) == -1:
                 self.direction.x = 1
-            if self.sign(relative_x) == 1:
+            if copysign(1, relative_x) == 1:
                 self.direction.x = -1
 
     def to_radians(self):

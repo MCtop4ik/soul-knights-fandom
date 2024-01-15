@@ -1,5 +1,5 @@
 from math import sqrt, inf, atan2, pi
-from random import randint
+from random import randint, uniform
 
 import pygame
 from assets import Assets
@@ -71,7 +71,7 @@ class Weapon(pygame.sprite.Sprite):
             self.angle = randint(0, 360)
             return
         self.angle = atan2(nearest_enemy.rect.y - SpriteGroups().player.rect.y,
-                           nearest_enemy.rect.x - SpriteGroups().player.rect.x)
+                           nearest_enemy.rect.x - SpriteGroups().player.rect.x) + uniform(-pi / 12, pi / 12)
 
     def shoot(self):
         self.compute_angle_to_fire()
