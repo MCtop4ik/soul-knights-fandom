@@ -8,6 +8,7 @@ from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
 from sprites.enemy import Enemy
+from sprites.inventory import InventorySpriteV2
 from sprites.map_sprites.chest import Chest
 from sprites.map_sprites.portal import Portal
 from sprites.player import Player
@@ -38,11 +39,12 @@ class Level(metaclass=Singleton):
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
             self.constants.player_size,
             SpriteGroups().camera_group)
-        SpriteGroups().weapon = Weapon((start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
-                                        (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
-                                        start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
-                                        (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
-                                       SpriteGroups().camera_group)
+        SpriteGroups().weapon = Weapon(
+            (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
+             (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
+             start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
+             (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
+            SpriteGroups().camera_group)
         SpriteGroups().camera_group.wall_draw()
         Portal(
             (portal_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
@@ -66,8 +68,8 @@ class Level(metaclass=Singleton):
             ec_y = enemy_coordinate[0]
             max_offset = (room_size[0] // 2 - 4) * self.constants.quadrant_size
             enemy_amount = random.randint(
-                    self.constants.min_enemy_amount,
-                    self.constants.max_enemy_amount)
+                self.constants.min_enemy_amount,
+                self.constants.max_enemy_amount)
             uncleared_rooms.append((ec_x, ec_y, enemy_amount))
             for _ in range(enemy_amount):
                 Enemy(
@@ -80,6 +82,10 @@ class Level(metaclass=Singleton):
                     (ec_x, ec_y),
                     SpriteGroups().enemies_group)
         SpriteGroups().player.set_uncleared_rooms(uncleared_rooms)
+
+        InventorySpriteV2((self.constants.screen_size[1] - self.constants.quadrant_size,
+                           self.constants.screen_size[0] - self.constants.quadrant_size),
+                          SpriteGroups().inventory_group)
 
         while True:
             for event in pygame.event.get():
@@ -98,7 +104,10 @@ class Level(metaclass=Singleton):
             SpriteGroups().portal_group.update()
             SpriteGroups().bullets_group.update()
             SpriteGroups().enemies_group.update()
+            SpriteGroups().inventory_group.update()
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
+            for inventory_cell in SpriteGroups().inventory_group.sprites():
+                self.screen.blit(inventory_cell.image, inventory_cell.rect)
 
             pygame.display.update()
             clock.tick(fps)
