@@ -26,24 +26,9 @@ class InventoryV2(metaclass=Singleton):
     def position_in_inventory(self):
         return self.__position_in_inventory
 
-<<<<<<< HEAD
     @position_in_inventory.setter
     def position_in_inventory(self, new_position):
         self.__position_in_inventory = new_position
-=======
-class Inventory(metaclass=Singleton):
-    def __init__(self):
-        self.inventory = []
-        self.max_prop = 5
-
-    def add_in_inventory(self, prop):
-        if len(self.inventory) < self.max_prop:
-            self.inventory.append(prop)
-            return None
-        drop_prop = self.inventory.pop()
-        self.inventory.append(prop)
-        return drop_prop
->>>>>>> origin/main
 
 
 class InventorySpriteV2(pygame.sprite.Sprite):
