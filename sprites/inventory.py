@@ -49,6 +49,22 @@ class MagicProps(ItemProp):
     price: int
 
 
+class InventoryV2(metaclass=Singleton):
+
+    def __init__(self):
+        self.inventory = []
+        self.max_amount_of_items = 3
+        self.position_in_inventory = 0
+
+    def add_item_in_inventory(self, item):
+        if len(self.inventory) < self.max_amount_of_items:
+            self.inventory.append(item)
+            return
+        dropped_item = self.inventory.pop(self.position_in_inventory)
+        self.inventory.append(item)
+        return dropped_item
+
+
 class Inventory(metaclass=Singleton):
     def __init__(self):
         self.inventory = []
