@@ -14,6 +14,8 @@ class Weapon(pygame.sprite.Sprite):
         self.offset_y = 20
         self.offset_x = 20
         self.offset_time_ms = 10
+        self.cut_off = pi / 12
+        self.fire_damage = 20
         self.last_shoot_time = 0
         self.rect = None
         self.image = None
@@ -22,9 +24,8 @@ class Weapon(pygame.sprite.Sprite):
         self.defaultWeaponBaseID = "test_weapon"
         self.currentWeaponInt = 1
         self.change_weapon(self.defaultWeaponBaseID)
-        self.cut_off = pi / 12
 
-    def init_weapon(self, offset_time, offset_x, offset_y, image_id):
+    def init_weapon(self, offset_time, offset_x, offset_y, image_id, cut_off, fire_damage):
         self.image = Assets().images[image_id]
         self.rect = self.image.get_rect(center=self.pos)
         self.rect.x += offset_x
@@ -33,6 +34,8 @@ class Weapon(pygame.sprite.Sprite):
         self.offset_time_ms = offset_time
         self.offset_x = offset_x
         self.offset_y = offset_y
+        self.cut_off = pi / cut_off
+        self.fire_damage = fire_damage
         self.angle = 0
 
     def update(self):
@@ -79,7 +82,7 @@ class Weapon(pygame.sprite.Sprite):
         self.radians_to_angle()
         Bullet(SpriteGroups().bullets_group, self.angle, self.offset_x + 50, self.offset_y + 60,
                (SpriteGroups().player.rect.x,
-                SpriteGroups().player.rect.y), 'player', 'chest')
+                SpriteGroups().player.rect.y), 'player', 'chest', self.fire_damage)
 
     def change_weapon(self, base_id):
         connection = Assets.load_base()
@@ -87,5 +90,5 @@ class Weapon(pygame.sprite.Sprite):
         sql_select_query = """select * from weapons where id = ?"""
         cursor.execute(sql_select_query, (base_id,))
         data = cursor.fetchone()
-        self.init_weapon(data[1], data[2], data[3], data[4])
+        self.init_weapon(data[1], data[2], data[3], data[4], data[5], data[6])
         connection.close()
