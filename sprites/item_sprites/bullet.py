@@ -5,9 +5,9 @@ from sprites.sprite_groups import SpriteGroups
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, angle, offset_x, offset_y, start_coordinates, sender, assetID):
+    def __init__(self, group, angle, offset_x, offset_y, start_coordinates, sender, asset_id):
         super().__init__(group)
-        self.assetID = assetID
+        self.assetID = asset_id
         self.image = Assets().images[self.assetID]
         self.angle = angle
         self.image = pygame.transform.rotate(self.image, -self.angle - 90)

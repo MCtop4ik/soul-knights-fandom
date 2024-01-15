@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
 
-        self.heal_points = 1000
+        self.heal_points = 10000
 
     def input(self):
         keys = pygame.key.get_pressed()

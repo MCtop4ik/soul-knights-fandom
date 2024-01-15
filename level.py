@@ -64,7 +64,7 @@ class Level(metaclass=Singleton):
         for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
             ec_x = enemy_coordinate[1]
             ec_y = enemy_coordinate[0]
-            max_offset = (room_size[0] // 2 - 2) * self.constants.quadrant_size
+            max_offset = (room_size[0] // 2 - 4) * self.constants.quadrant_size
             enemy_amount = random.randint(
                     self.constants.min_enemy_amount,
                     self.constants.max_enemy_amount)

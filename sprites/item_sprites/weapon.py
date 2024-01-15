@@ -1,5 +1,7 @@
+from math import sqrt, inf, atan2, pi
+from random import randint
+
 import pygame
-import sqlite3
 from assets import Assets
 from sprites.item_sprites.bullet import Bullet
 from sprites.sprite_groups import SpriteGroups
@@ -19,9 +21,9 @@ class Weapon(pygame.sprite.Sprite):
         self.group = group
         self.defaultWeaponBaseID = "test_weapon"
         self.currentWeaponInt = 1
-        self.changeWeapon(self.defaultWeaponBaseID)
+        self.change_weapon(self.defaultWeaponBaseID)
 
-    def initWeapon(self, offset_time, offset_x, offset_y, image_id):
+    def init_weapon(self, offset_time, offset_x, offset_y, image_id):
         self.image = Assets().images[image_id]
         self.rect = self.image.get_rect(center=self.pos)
         self.rect.x += offset_x
@@ -45,24 +47,44 @@ class Weapon(pygame.sprite.Sprite):
             if self.currentWeaponInt != 1:
                 self.currentWeaponInt = 1
                 print("a")
-                self.changeWeapon("test_weapon")
+                self.change_weapon("test_weapon")
         elif keys[pygame.K_2]:
             if self.currentWeaponInt != 2:
                 self.currentWeaponInt = 2
                 print("b")
-                self.changeWeapon("test_weapon_2")
+                self.change_weapon("test_weapon_2")
+
+    def radians_to_angle(self):
+        self.angle = self.angle / pi * 180
+
+    def compute_angle_to_fire(self):
+        min_distant_to_enemy = inf
+        nearest_enemy = None
+        for enemy in SpriteGroups().enemies_group.sprites():
+            if enemy.check_if_in_right_field():
+                d = sqrt((SpriteGroups().player.rect.x - enemy.rect.x) ** 2 +
+                         (SpriteGroups().player.rect.y - enemy.rect.y) ** 2)
+                if d < min_distant_to_enemy:
+                    min_distant_to_enemy = d
+                    nearest_enemy = enemy
+        if nearest_enemy is None:
+            self.angle = randint(0, 360)
+            return
+        self.angle = atan2(nearest_enemy.rect.y - SpriteGroups().player.rect.y,
+                           nearest_enemy.rect.x - SpriteGroups().player.rect.x)
 
     def shoot(self):
+        self.compute_angle_to_fire()
+        self.radians_to_angle()
         Bullet(SpriteGroups().bullets_group, self.angle, self.offset_x + 50, self.offset_y + 60,
                (SpriteGroups().player.rect.x,
                 SpriteGroups().player.rect.y), 'player', 'chest')
-        self.angle = (self.angle + 10) % 360
 
-    def changeWeapon(self, baseID):
+    def change_weapon(self, base_id):
         connection = Assets.load_base()
         cursor = connection.cursor()
         sql_select_query = """select * from weapons where id = ?"""
-        cursor.execute(sql_select_query, (baseID,))
+        cursor.execute(sql_select_query, (base_id,))
         data = cursor.fetchone()
-        self.initWeapon(data[1], data[2], data[3], data[4])
+        self.init_weapon(data[1], data[2], data[3], data[4])
         connection.close()
