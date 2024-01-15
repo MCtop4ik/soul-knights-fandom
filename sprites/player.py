@@ -18,6 +18,8 @@ class Player(pygame.sprite.Sprite):
         self.not_allowed_through_doors = False
         self.entered_direction = (0, 0)
         self.finished_direction = (0, 0)
+        self.quadrant_size = Constants().quadrant_size
+        self.big_cell_size = Constants().big_cell_size
 
         self.heal_points = 1000
 
@@ -64,8 +66,8 @@ class Player(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, SpriteGroups().doors_group):
             if self.battle is False:
                 self.entered_direction = self.direction
-            x, y = (self.rect.centerx // (Constants().big_cell_size * Constants().quadrant_size),
-                    self.rect.centery // (Constants().big_cell_size * Constants().quadrant_size))
+            x, y = (self.rect.centerx // (self.big_cell_size * self.quadrant_size),
+                    self.rect.centery // (self.big_cell_size * self.quadrant_size))
             for uncleared_room in self.uncleared_rooms:
                 if x == uncleared_room[0] and y == uncleared_room[1]:
                     if uncleared_room[2] > 0:

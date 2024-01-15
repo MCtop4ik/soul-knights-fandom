@@ -14,8 +14,9 @@ class CreateFieldMatrix:
         self.big_cell_size = Constants().big_cell_size
 
     def __create_field(self, field):
+        empty_cell = Constants().EMPTY_CELL
         height, width = len(field) * self.big_cell_size, len(field[0]) * self.big_cell_size
-        self.__field = [[Constants().EMPTY_CELL for _ in range(width)] for _ in range(height)]
+        self.__field = [[empty_cell for _ in range(width)] for _ in range(height)]
 
     def __find_corner_square(self, room_square):
         center_x = center_y = self.big_cell_size // 2
