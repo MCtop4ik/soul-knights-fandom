@@ -21,12 +21,12 @@ class Weapon(pygame.sprite.Sprite):
         self.image = None
         self.pos = pos
         self.group = group
-        self.defaultWeaponBaseID = "test_weapon"
+        self.defaultWeaponBaseID = "test_weapon_1"
         self.currentWeaponInt = 1
         self.change_weapon(self.defaultWeaponBaseID)
 
-    def init_weapon(self, offset_time, offset_x, offset_y, image_id, cut_off, fire_damage):
-        self.image = Assets().images[image_id]
+    def init_weapon(self, fire_damage, cut_off, offset_time, image_name, offset_x, offset_y):
+        self.image = Assets().images[image_name]
         self.rect = self.image.get_rect(center=self.pos)
         self.rect.x += offset_x
         self.rect.y = offset_y
@@ -51,7 +51,7 @@ class Weapon(pygame.sprite.Sprite):
             if self.currentWeaponInt != 1:
                 self.currentWeaponInt = 1
                 print("a")
-                self.change_weapon("test_weapon")
+                self.change_weapon("test_weapon_1")
         elif keys[pygame.K_2]:
             if self.currentWeaponInt != 2:
                 self.currentWeaponInt = 2
@@ -87,8 +87,11 @@ class Weapon(pygame.sprite.Sprite):
     def change_weapon(self, base_id):
         connection = Assets.load_base()
         cursor = connection.cursor()
-        sql_select_query = """select * from weapons where id = ?"""
+        sql_select_query = """select * from weapons where weapon_name = ?"""
+        # sql_select_query = """select * from weapons"""
         cursor.execute(sql_select_query, (base_id,))
+        # cursor.execute(sql_select_query)
         data = cursor.fetchone()
-        self.init_weapon(data[1], data[2], data[3], data[4], data[5], data[6])
+        print(data)
+        self.init_weapon(*data[2:])
         connection.close()
