@@ -3,6 +3,7 @@ from random import randint, uniform
 
 import pygame
 from assets import Assets
+from sprites.inventory import InventoryV2
 from sprites.item_sprites.bullet import Bullet
 from sprites.sprite_groups import SpriteGroups
 from sprites.weapons_list import WeaponsList
@@ -22,7 +23,7 @@ class Weapon(pygame.sprite.Sprite):
         self.image = None
         self.pos = pos
         self.group = group
-        self.currentWeaponInt = 1
+        self.current_position = 0
         self.change_weapon()
 
     def init_weapon(self, selected_weapon):
@@ -46,17 +47,10 @@ class Weapon(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and pygame.time.get_ticks() - self.last_shoot_time > self.offset_time_ms:
             self.shoot()
             self.last_shoot_time = pygame.time.get_ticks()
-
-        if keys[pygame.K_1]:
-            if self.currentWeaponInt != 1:
-                self.currentWeaponInt = 1
-                print("a")
-                self.change_weapon(1)
-        elif keys[pygame.K_2]:
-            if self.currentWeaponInt != 2:
-                self.currentWeaponInt = 2
-                print("b")
-                self.change_weapon(2)
+        inventory_position = InventoryV2().position_in_inventory
+        if inventory_position != self.current_position:
+            self.change_weapon(InventoryV2().inventory_item.id)
+            self.current_position = inventory_position
 
     def radians_to_angle(self):
         self.angle = self.angle / pi * 180

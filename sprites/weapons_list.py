@@ -1,6 +1,6 @@
 from assets import Assets
 from patterns.creational_patterns.singleton import Singleton
-from .weapon import Weapon
+from .weapon_dataclass import Weapon
 
 
 class WeaponsList(metaclass=Singleton):
@@ -16,9 +16,7 @@ class WeaponsList(metaclass=Singleton):
         all_weapons = self.load_weapons_from_db()
         for weapon in all_weapons:
             self.__weapons_list.append(Weapon(*weapon[:]))
-        print(self.__weapons_list)
 
     @property
     def weapons_list(self):
-        print(self.__weapons_list)
         return self.__weapons_list

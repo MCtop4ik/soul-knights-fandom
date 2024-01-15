@@ -1,3 +1,5 @@
+import pygame
+
 from patterns.creational_patterns.singleton import Singleton
 
 
@@ -16,9 +18,17 @@ class InventoryV2(metaclass=Singleton):
         self.inventory.append(item)
         return dropped_item
 
+    @staticmethod
+    def get_bound_keyboard_keys():
+        return [pygame.K_1, pygame.K_2, pygame.K_3]
+
     @property
     def position_in_inventory(self):
         return self.__position_in_inventory
+
+    @property
+    def inventory_item(self):
+        return self.inventory[self.__position_in_inventory]
 
     @position_in_inventory.setter
     def position_in_inventory(self, new_position):

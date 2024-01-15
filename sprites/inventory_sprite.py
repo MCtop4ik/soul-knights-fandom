@@ -17,12 +17,11 @@ class InventorySpriteV2(pygame.sprite.Sprite):
             ]
         ]
         self.inventory = InventoryV2()
-        print(pos)
         self.rect = self.image.get_rect(center=pos)
 
     def update(self):
         keys = pygame.key.get_pressed()
-        bound_keyboard_keys = [pygame.K_1, pygame.K_2, pygame.K_3]
+        bound_keyboard_keys = self.inventory.get_bound_keyboard_keys()
         for keyboard_key in bound_keyboard_keys:
             if keys[keyboard_key]:
                 self.inventory.position_in_inventory = bound_keyboard_keys.index(keyboard_key)
