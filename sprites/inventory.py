@@ -67,48 +67,16 @@ class InventoryV2(metaclass=Singleton):
 
 class Inventory(metaclass=Singleton):
     def __init__(self):
-        self.MAX_ARMORS = 1
-        self.MAX_INV = 10
-        self.MAX_POCKET = 3
-        self.MAX_HAND = 1
-        self.inv = []
-        self.hand = []
-        self.pocket = []
-        self.armors = []
-        self.player: int = -1
+        self.inventory = []
+        self.max_prop = 5
 
-    def add_prop_in_inv(self, prop):
-        if len(self.inv) >= self.MAX_INV:
-            drop_prop = self.inv.pop()
-            self.inv.append(prop)
-            return drop_prop
-        else:
-            self.inv.append(prop)
-
-    def add_weapon_in_hand(self, other_weapon: Weapon) -> Weapon or None:
-        if len(self.hand) >= self.MAX_HAND:
-            drop_weapon = self.hand.pop()
-            self.hand.append(other_weapon)
-            self.add_prop_in_inv(drop_weapon)
-        else:
-            self.hand.append(other_weapon)
-
-    def add_armor(self, other_armor: Armor) -> Armor or None:
-        if len(self.armors) >= self.MAX_ARMORS:
-            drop_armor = self.armors.pop()
-            self.armors.append(other_armor)
-            self.add_prop_in_inv(drop_armor)
-        else:
-            self.armors.append(other_armor)
-
-    def add_inventory(self, prop):
-        self.add_prop_in_inv(prop)
-
-    def add_pocket(self, prop):
-        if len(self.pocket) >= self.MAX_POCKET:
-            self.add_prop_in_inv(prop)
-        else:
-            self.pocket.append(prop)
+    def add_in_inventory(self, prop):
+        if len(self.inventory) < self.max_prop:
+            self.inventory.append(prop)
+            return None
+        drop_prop = self.inventory.pop()
+        self.inventory.append(prop)
+        return drop_prop
 
 
 class InventoryArmorSprite(pygame.sprite.Sprite):
