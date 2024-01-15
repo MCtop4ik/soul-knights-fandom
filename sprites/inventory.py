@@ -50,5 +50,5 @@ class InventorySpriteV2(pygame.sprite.Sprite):
         bound_keyboard_keys = [pygame.K_1, pygame.K_2, pygame.K_3]
         for keyboard_key in bound_keyboard_keys:
             if keys[keyboard_key]:
-                self.inventory.position_in_inventory =bound_keyboard_keys.index(keyboard_key)
+                self.inventory.position_in_inventory = bound_keyboard_keys.index(keyboard_key)
                 pprint(self.inventory.position_in_inventory)
