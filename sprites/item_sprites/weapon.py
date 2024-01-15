@@ -22,6 +22,7 @@ class Weapon(pygame.sprite.Sprite):
         self.defaultWeaponBaseID = "test_weapon"
         self.currentWeaponInt = 1
         self.change_weapon(self.defaultWeaponBaseID)
+        self.cut_off = pi / 12
 
     def init_weapon(self, offset_time, offset_x, offset_y, image_id):
         self.image = Assets().images[image_id]
@@ -71,7 +72,7 @@ class Weapon(pygame.sprite.Sprite):
             self.angle = randint(0, 360)
             return
         self.angle = atan2(nearest_enemy.rect.y - SpriteGroups().player.rect.y,
-                           nearest_enemy.rect.x - SpriteGroups().player.rect.x) + uniform(-pi / 12, pi / 12)
+                           nearest_enemy.rect.x - SpriteGroups().player.rect.x) + uniform(-self.cut_off, self.cut_off)
 
     def shoot(self):
         self.compute_angle_to_fire()
