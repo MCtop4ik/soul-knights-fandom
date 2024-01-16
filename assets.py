@@ -19,7 +19,7 @@ class Assets(metaclass=Singleton):
             'enemy': 'player-alpha.png'
         }
         self.__images = self.load_all_images()
-        self.__player = self.load_image('player.png')
+        self.__player = self.load_image('leo-player.png')
         self.road_image_ids = RoomFactory(Constants().name).get_road_images()
         self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
         self.connection = self.load_base()

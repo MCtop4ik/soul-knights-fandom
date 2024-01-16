@@ -36,7 +36,7 @@ class Enemy(pygame.sprite.Sprite):
         relative_x = x_player - self.rect.centerx
         relative_y = y_player - self.rect.centery
 
-        self.angle = atan2(relative_y, relative_x) + random.uniform(-pi / 4, pi / 4)
+        self.angle = atan2(relative_y, relative_x) + random.uniform(-pi / 6, pi / 6)
         self.direction.x = copysign(1, relative_x)
         self.direction.y = copysign(1, relative_y)
         rnd_state = random.randint(1, 10)

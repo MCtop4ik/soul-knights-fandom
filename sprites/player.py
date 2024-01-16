@@ -7,7 +7,7 @@ from sprites.sprite_groups import SpriteGroups
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, player_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/player.png').convert_alpha(),
+        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/leo-player.png').convert_alpha(),
                                             player_size)
         self.rect = self.image.get_rect(center=pos)
         self.pos = pos
@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite):
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
 
-        self.heal_points = 10000
+        self.heal_points = 100
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -55,32 +55,18 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.heal_points <= 0:
             self.kill()
-        self.input()
-        self.rect.center += self.direction * self.speed
         if not self.battle:
             self.not_allowed_through_doors = False
-        collide_walls = pygame.sprite.spritecollideany(self, SpriteGroups().walls_group)
-        while collide_walls:
-            d = pygame.math.Vector2()
-            d.x = self.direction.x
-            d.y = 0
-            self.rect.center -= d
-            collide_walls = pygame.sprite.spritecollideany(self, SpriteGroups().walls_group)
-            if collide_walls:
-                d.x = -self.direction.x
-                d.y = 0
-                self.rect.center -= d
-                d.x = 0
-                d.y = self.direction.y
-                self.rect.center -= d
-                collide_walls = pygame.sprite.spritecollideany(self, SpriteGroups().walls_group)
-                if collide_walls:
-                    d.x = 0
-                    d.y = -self.direction.y
-                    self.rect.center -= d
-                    d.x = self.direction.x
-                    d.y = self.direction.y
-                    self.rect.center -= d
+
+        self.input()
+
+        self.rect.centerx += self.direction.x * self.speed
+        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
+            self.rect.centerx -= self.direction.x
+
+        self.rect.centery += self.direction.y * self.speed
+        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
+            self.rect.centery -= self.direction.y
 
         if pygame.sprite.spritecollideany(self, SpriteGroups().doors_group):
             if self.battle is False:
