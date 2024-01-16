@@ -74,7 +74,9 @@ class Weapon(pygame.sprite.Sprite):
     def shoot(self):
         self.compute_angle_to_fire()
         self.radians_to_angle()
-        Bullet(SpriteGroups().bullets_group, WeaponsList().bullet_list[0], self.angle,
+        bullet = WeaponsList().bullet_list[0]
+        bullet.fire_damage = self.fire_damage
+        Bullet(SpriteGroups().bullets_group, bullet, self.angle,
                (SpriteGroups().player.rect.x,
                 SpriteGroups().player.rect.y), 'player')
 
