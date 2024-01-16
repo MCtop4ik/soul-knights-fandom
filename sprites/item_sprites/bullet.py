@@ -5,21 +5,20 @@ from sprites.sprite_groups import SpriteGroups
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, group, angle, offset_x, offset_y, start_coordinates, sender, asset_id, fire_damage):
+    def __init__(self, group, bullet, angle, start_coordinates, sender):
         super().__init__(group)
-        self.assetID = asset_id
-        self.image = Assets().images[self.assetID]
+        self.image = Assets().images[bullet.asset_id]
         self.angle = angle
         self.image = pygame.transform.rotate(self.image, -self.angle - 90)
-        self.offset_x = offset_x
-        self.offset_y = offset_y
+        self.offset_x = bullet.offset_x
+        self.offset_y = bullet.offset_y
         self.rect = self.image.get_rect(center=start_coordinates)
-        self.rect.x += offset_x
-        self.rect.y += offset_y
+        self.rect.x += bullet.offset_x
+        self.rect.y += bullet.offset_y
         self.direction = pygame.math.Vector2()
         self.sender = sender
-        self.speed = 15
-        self.fire_damage = fire_damage
+        self.speed = bullet.speed
+        self.fire_damage = bullet.fire_damage
 
     @staticmethod
     def angle_solve_radians(angle):

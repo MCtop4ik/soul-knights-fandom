@@ -74,9 +74,9 @@ class Weapon(pygame.sprite.Sprite):
     def shoot(self):
         self.compute_angle_to_fire()
         self.radians_to_angle()
-        Bullet(SpriteGroups().bullets_group, self.angle, self.offset_x, self.offset_y,
+        Bullet(SpriteGroups().bullets_group, WeaponsList().bullet_list[0], self.angle,
                (SpriteGroups().player.rect.x,
-                SpriteGroups().player.rect.y), 'player', 'chest', self.fire_damage)
+                SpriteGroups().player.rect.y), 'player')
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]

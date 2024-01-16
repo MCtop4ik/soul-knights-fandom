@@ -8,6 +8,7 @@ from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
 from sprites.enemy import Enemy
+from sprites.enemy_list import EnemyList
 from sprites.inventory import InventoryV2
 from sprites.inventory_sprite import InventorySpriteV2
 from sprites.map_sprites.chest import Chest
@@ -34,6 +35,8 @@ class Level(metaclass=Singleton):
             enemy_coordinates, \
             enemy_room_sizes = CreateFieldMatrix().generate_field()
         WeaponsList().add_weapons_to_list()
+        WeaponsList().add_bullets_to_list()
+        EnemyList().add_enemies_to_list()
         InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[0])
         InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[1])
         InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[1])
@@ -78,15 +81,15 @@ class Level(metaclass=Singleton):
                 self.constants.max_enemy_amount)
             uncleared_rooms.append((ec_x, ec_y, enemy_amount))
             for _ in range(enemy_amount):
-                Enemy(
-                    (ec_x * self.constants.quadrant_size * self.constants.big_cell_size +
-                     (self.constants.quadrant_size * self.constants.big_cell_size) // 2
-                     + random.randint(-max_offset, max_offset),
-                     ec_y * self.constants.quadrant_size * self.constants.big_cell_size +
-                     (self.constants.quadrant_size * self.constants.big_cell_size) // 2
-                     + random.randint(-max_offset, max_offset)),
-                    (ec_x, ec_y),
-                    SpriteGroups().enemies_group)
+                Enemy(EnemyList().get_random_enemy(),
+                      (ec_x * self.constants.quadrant_size * self.constants.big_cell_size +
+                          (self.constants.quadrant_size * self.constants.big_cell_size) // 2
+                          + random.randint(-max_offset, max_offset),
+                          ec_y * self.constants.quadrant_size * self.constants.big_cell_size +
+                          (self.constants.quadrant_size * self.constants.big_cell_size) // 2
+                          + random.randint(-max_offset, max_offset)),
+                      (ec_x, ec_y),
+                      SpriteGroups().enemies_group)
         SpriteGroups().player.set_uncleared_rooms(uncleared_rooms)
 
         InventorySpriteV2((self.constants.screen_size[1] - self.constants.quadrant_size,

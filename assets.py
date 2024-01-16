@@ -16,10 +16,10 @@ class Assets(metaclass=Singleton):
             'door': 'player.png',
             'portal': 'player.png',
             'chest': 'player-alpha-2.png',
-            'enemy': 'player-alpha.png'
+            'enemy1': 'player-alpha.png',
+            'enemy2': 'player.png'
         }
         self.__images = self.load_all_images()
-        self.__player = self.load_image('player.png')
         self.road_image_ids = RoomFactory(Constants().name).get_road_images()
         self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
         self.connection = self.load_base()
@@ -41,9 +41,6 @@ class Assets(metaclass=Singleton):
         for key, value in {**self.constant_images, **self.abbr}.items():
             images[key] = self.load_image(value)
         return images
-
-    def get_player(self):
-        return self.__player
 
     @property
     def images(self):

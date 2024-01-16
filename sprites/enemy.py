@@ -7,28 +7,31 @@ from assets import Assets
 from settings.constants import Constants
 from sprites.item_sprites.bullet import Bullet
 from sprites.sprite_groups import SpriteGroups
+from sprites.weapons_list import WeaponsList
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, pos, room_coordinates, group):
+    def __init__(self, enemy, pos, room_coordinates, group):
         super().__init__(group)
-        self.image = Assets().images['enemy']
+        self.heal_points = enemy.heal_points
+        self.cut_off = pi / enemy.cut_off
+        self.offset_moved_time_ms = enemy.offset_moved_time
+        self.offset_shoot_time_ms = enemy.offset_shoot_time
+        self.speed = enemy.speed
+        self.fire_radius_coefficient = enemy.fire_radius_coefficient
+        self.image = Assets().images[enemy.asset_id]
         self.rect = self.image.get_rect(center=pos)
         self.pos = pos
         self.direction = pygame.math.Vector2()
-        self.speed = 30
         self.angle = 0
-        self.offset_shoot_time_ms = 1000
         self.last_shoot_time = 0
         self.last_moved_time = 0
-        self.offset_moved_time_ms = 100
         self.visible = False
         self.is_frozen = True
         self.room_coordinates = room_coordinates
-        self.heal_points = 100
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
-        self.fire_radius = Constants().fire_radius
+        self.fire_radius = Constants().quadrant_size * self.fire_radius_coefficient
 
     def get_direction(self):
         x_player, y_player = SpriteGroups().player.get_player_coordinates()
@@ -36,7 +39,7 @@ class Enemy(pygame.sprite.Sprite):
         relative_x = x_player - self.rect.centerx
         relative_y = y_player - self.rect.centery
 
-        self.angle = atan2(relative_y, relative_x) + random.uniform(-pi / 4, pi / 4)
+        self.angle = atan2(relative_y, relative_x) + random.uniform(-self.cut_off, self.cut_off)
         self.direction.x = copysign(1, relative_x)
         self.direction.y = copysign(1, relative_y)
         rnd_state = random.randint(1, 10)
@@ -65,7 +68,7 @@ class Enemy(pygame.sprite.Sprite):
         if ((pygame.time.get_ticks() - self.last_shoot_time > self.offset_shoot_time_ms * random.randint(1, 10))
                 and sqrt((x_player - self.rect.centerx) ** 2 + (
                         y_player - self.rect.centery) ** 2) < self.fire_radius * sqrt(2)):
-            Bullet(SpriteGroups().bullets_group, self.to_radians(), 50, 60, self.pos, 'enemy', 'chest', 20)
+            Bullet(SpriteGroups().bullets_group, WeaponsList().bullet_list[0], self.to_radians(), self.pos, 'enemy')
             self.last_shoot_time = pygame.time.get_ticks()
 
     def check_if_battle(self):
