@@ -10,13 +10,8 @@ class InventorySpriteV2(pygame.sprite.Sprite):
 
     def __init__(self, pos, group):
         super().__init__(group)
-
-        self.image = Assets().images[
-            Assets().wall_image_ids[
-                randrange(len(Assets().wall_image_ids))
-            ]
-        ]
         self.inventory = InventoryV2()
+        self.image = Assets().images[self.inventory.inventory_item.image_name]
         self.rect = self.image.get_rect(center=pos)
 
     def update(self):
@@ -25,3 +20,5 @@ class InventorySpriteV2(pygame.sprite.Sprite):
         for keyboard_key in bound_keyboard_keys:
             if keys[keyboard_key]:
                 self.inventory.position_in_inventory = bound_keyboard_keys.index(keyboard_key)
+                self.image = Assets().images[self.inventory.inventory_item.image_name]
+
