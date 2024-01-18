@@ -1,3 +1,4 @@
+import os
 import random
 
 from assets import Assets
@@ -21,6 +22,14 @@ class EnemyList(metaclass=Singleton):
 
     def get_random_enemy(self):
         return self.__enemies_list[random.randint(0, len(self.__enemies_list) - 1)]
+
+    def load_enemy_sprites(self):
+        return EnemyList.__get_all_file_names_from_directory('assets/images_test/enemy_images')
+
+    @staticmethod
+    def __get_all_file_names_from_directory(directory_path):
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+        return files
 
     @property
     def enemies_list(self):
