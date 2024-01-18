@@ -27,6 +27,7 @@ class Assets(metaclass=Singleton):
 
     def load_abbr(self, new_abbr):
         self.abbr = new_abbr
+        # self.abbr.append()
         self.__images = self.load_all_images()
 
     def load_image(self, name):
