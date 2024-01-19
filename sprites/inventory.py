@@ -33,5 +33,3 @@ class InventoryV2(metaclass=Singleton):
     @position_in_inventory.setter
     def position_in_inventory(self, new_position):
         self.__position_in_inventory = new_position
-
-

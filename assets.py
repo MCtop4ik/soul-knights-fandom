@@ -19,6 +19,8 @@ class Assets(metaclass=Singleton):
             'enemy1': 'player-alpha.png',
             'enemy2': 'player.png'
         }
+        # self.load_abbr({})
+
         self.__images = self.load_all_images()
         self.road_image_ids = RoomFactory(Constants().name).get_road_images()
         self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
@@ -26,8 +28,8 @@ class Assets(metaclass=Singleton):
         self.connection.close()
 
     def load_abbr(self, new_abbr):
-        self.abbr = new_abbr
-        # self.abbr.append()
+        from sprites.weapons_list import WeaponsList
+        self.abbr = {**new_abbr, **WeaponsList().load_weapons_sprites()}
         self.__images = self.load_all_images()
 
     def load_image(self, name):
@@ -41,6 +43,7 @@ class Assets(metaclass=Singleton):
         images = {}
         for key, value in {**self.constant_images, **self.abbr}.items():
             images[key] = self.load_image(value)
+        print(images)
         return images
 
     @property
