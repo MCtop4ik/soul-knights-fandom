@@ -1,4 +1,5 @@
 import pygame
+from pygame.sprite import Group
 
 from settings.constants import Constants
 from sprites.sprite_groups import SpriteGroups
@@ -21,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
 
-        self.heal_points = 1000
+        self.heal_points = 100
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -55,6 +56,9 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if self.heal_points <= 0:
             self.kill()
+            for sprite in SpriteGroups().weapon_group:
+                sprite.kill()
+            SpriteGroups().weapon_group.update()
         if not self.battle:
             self.not_allowed_through_doors = False
 

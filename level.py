@@ -28,6 +28,7 @@ class Level(metaclass=Singleton):
     def start(self):
         clock = pygame.time.Clock()
         fps = self.constants.FPS
+        pygame.mixer.init()
         level, \
             start_coordinates, \
             portal_coordinates, \
@@ -95,6 +96,8 @@ class Level(metaclass=Singleton):
         InventorySpriteV2((self.constants.screen_size[1] - self.constants.quadrant_size,
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
+        pygame.mixer.music.load('assets/music/FallingMysts.mp3')
+        pygame.mixer.music.play()
 
         while True:
             for event in pygame.event.get():
