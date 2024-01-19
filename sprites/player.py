@@ -3,6 +3,7 @@ from pygame.sprite import Group
 
 from map_generation.room_factory import RoomFactory
 from settings.constants import Constants
+from sprites.map_sprites.portal import Portal
 from sprites.sprite_groups import SpriteGroups
 
 
@@ -61,16 +62,7 @@ class Player(pygame.sprite.Sprite):
             for sprite in SpriteGroups().weapon_group:
                 sprite.kill()
             SpriteGroups().weapon_group.update()
-            from level import Level
-            Constants().name = "1"
-            SpriteGroups().doors_group = pygame.sprite.Group()
-            SpriteGroups().walls_group = pygame.sprite.Group()
-            SpriteGroups().portal_group = pygame.sprite.Group()
-            SpriteGroups().chests_group = pygame.sprite.Group()
-            SpriteGroups().enemies_group = pygame.sprite.Group()
-            SpriteGroups().inventory_group = pygame.sprite.Group()
-            RoomFactory(Constants().name).load_assets()
-            Level().start()
+            Portal.teleport("1")
         if not self.battle:
             self.not_allowed_through_doors = False
 

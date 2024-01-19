@@ -17,11 +17,12 @@ class Portal(pygame.sprite.Sprite):
         if self.rect.colliderect(SpriteGroups().player.rect.inflate(
                 Constants().quadrant_size * 3, Constants().quadrant_size * 3)):
             if keys[pygame.K_RETURN]:
-                self.teleport()
+                self.teleport("1")
 
-    def teleport(self):
+    @staticmethod
+    def teleport(level_name):
         from level import Level
-        Constants().name = "1"
+        Constants().name = level_name
         SpriteGroups().doors_group = pygame.sprite.Group()
         SpriteGroups().walls_group = pygame.sprite.Group()
         SpriteGroups().portal_group = pygame.sprite.Group()
