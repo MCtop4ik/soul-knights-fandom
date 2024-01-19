@@ -24,6 +24,7 @@ class Weapon(pygame.sprite.Sprite):
         self.pos = pos
         self.group = group
         self.current_position = 0
+        self.sound_fire = pygame.mixer.Sound('assets/music/oi.mp3')
         self.change_weapon()
 
     def init_weapon(self, selected_weapon):
@@ -76,6 +77,7 @@ class Weapon(pygame.sprite.Sprite):
         self.radians_to_angle()
         bullet = WeaponsList().bullet_list[0]
         bullet.fire_damage = self.fire_damage
+        self.sound_fire.play()
         Bullet(SpriteGroups().bullets_group, bullet, self.angle,
                (SpriteGroups().player.rect.x,
                 SpriteGroups().player.rect.y), 'player')

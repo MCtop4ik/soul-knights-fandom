@@ -17,7 +17,8 @@ class Assets(metaclass=Singleton):
             'portal': 'player.png',
             'chest': 'player-alpha-2.png',
             'enemy1': 'player-alpha.png',
-            'enemy2': 'player.png'
+            'enemy2': 'player.png',
+            'senya': 'senya.jpg'
         }
         # self.load_abbr({})
 
