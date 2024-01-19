@@ -1,6 +1,7 @@
 import pygame
 from pygame.sprite import Group
 
+from map_generation.room_factory import RoomFactory
 from settings.constants import Constants
 from sprites.sprite_groups import SpriteGroups
 
@@ -22,7 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
 
-        self.heal_points = 100
+        self.heal_points = 1000
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -43,6 +44,7 @@ class Player(pygame.sprite.Sprite):
 
     def damage(self, damage):
         self.heal_points -= damage
+        print(self.heal_points)
 
     def decrease_enemies_cnt(self, room_coordinates):
         new_uncleared_rooms = []
@@ -59,8 +61,19 @@ class Player(pygame.sprite.Sprite):
             for sprite in SpriteGroups().weapon_group:
                 sprite.kill()
             SpriteGroups().weapon_group.update()
+            from level import Level
+            Constants().name = "1"
+            SpriteGroups().doors_group = pygame.sprite.Group()
+            SpriteGroups().walls_group = pygame.sprite.Group()
+            SpriteGroups().portal_group = pygame.sprite.Group()
+            SpriteGroups().chests_group = pygame.sprite.Group()
+            SpriteGroups().enemies_group = pygame.sprite.Group()
+            SpriteGroups().inventory_group = pygame.sprite.Group()
+            RoomFactory(Constants().name).load_assets()
+            Level().start()
         if not self.battle:
             self.not_allowed_through_doors = False
+
 
         self.input()
 

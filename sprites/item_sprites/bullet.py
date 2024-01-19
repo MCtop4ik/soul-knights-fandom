@@ -10,6 +10,8 @@ class Bullet(pygame.sprite.Sprite):
         self.image = Assets().images[bullet.asset_id]
         self.angle = angle
         self.image = pygame.transform.rotate(self.image, -self.angle - 90)
+        self.image = pygame.transform.rotozoom(self.image, 0, 0.6)
+
         self.offset_x = bullet.offset_x
         self.offset_y = bullet.offset_y
         self.rect = self.image.get_rect(center=start_coordinates)
