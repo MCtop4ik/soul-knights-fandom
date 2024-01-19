@@ -24,7 +24,7 @@ class Weapon(pygame.sprite.Sprite):
         self.pos = pos
         self.group = group
         self.current_position = 0
-        self.sound_fire = pygame.mixer.Sound('assets/music/oi.mp3')
+        self.sound_fire = pygame.mixer.Sound('assets/music/oi_new.mp3')
         self.change_weapon()
 
     def init_weapon(self, selected_weapon):
