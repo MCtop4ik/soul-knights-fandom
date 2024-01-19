@@ -68,7 +68,7 @@ class Enemy(pygame.sprite.Sprite):
         if ((pygame.time.get_ticks() - self.last_shoot_time > self.offset_shoot_time_ms * random.randint(1, 10))
                 and sqrt((x_player - self.rect.centerx) ** 2 + (
                         y_player - self.rect.centery) ** 2) < self.fire_radius * sqrt(2)):
-            Bullet(SpriteGroups().bullets_group, WeaponsList().bullet_list[0], self.to_radians(), self.pos, 'enemy')
+            Bullet(SpriteGroups().bullets_group, WeaponsList().bullet_list[1], self.to_radians(), self.pos, 'enemy')
             self.last_shoot_time = pygame.time.get_ticks()
 
     def check_if_battle(self):
