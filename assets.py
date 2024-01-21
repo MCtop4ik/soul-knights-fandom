@@ -44,7 +44,6 @@ class Assets(metaclass=Singleton):
         images = {}
         for key, value in {**self.constant_images, **self.abbr}.items():
             images[key] = self.load_image(value)
-        print(images)
         return images
 
     @property
