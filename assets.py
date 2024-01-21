@@ -13,10 +13,10 @@ class Assets(metaclass=Singleton):
         self.quadrant_size = Constants().quadrant_size
         self.abbr = {}
         self.constant_images = {
-            'door': 'player.png',
-            'portal': 'player.png',
-            'chest': 'player-alpha-2.png',
-            'enemy1': 'player-alpha.png',
+            'door': 'player_.png',
+            'portal': 'player_.png',
+            'chest': 'chest.jpg',
+            'enemy1': '0.jpeg',
             'enemy2': 'player.png',
             'senya': 'senya.jpg'
         }

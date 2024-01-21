@@ -19,7 +19,7 @@ class Constants(metaclass=Singleton):
         self.screen_size = (800, 800)
         # level which will load
         self.name = '2'
-        self.FPS = 80
+        self.FPS = 100
 
         # generation params
         self.min_enemies_rooms = 2
