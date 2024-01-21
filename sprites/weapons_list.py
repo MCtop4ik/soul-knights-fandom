@@ -40,7 +40,6 @@ class WeaponsList(metaclass=Singleton):
     def add_bullets_to_list(self):
         all_bullets = self.load_bullets_from_db()
         for bullet in all_bullets:
-            print(Bullet(*bullet[:]))
             self.__bullet_list.append(Bullet(*bullet[:]))
 
     @property
