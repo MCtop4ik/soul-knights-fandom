@@ -9,6 +9,7 @@ class InventoryV2(metaclass=Singleton):
         self.inventory = []
         self.max_amount_of_items = 3
         self.__position_in_inventory = 0
+        self.needChange = False
 
     def add_item_in_inventory(self, item):
         if len(self.inventory) < self.max_amount_of_items:
@@ -16,6 +17,7 @@ class InventoryV2(metaclass=Singleton):
             return
         dropped_item = self.inventory.pop(self.__position_in_inventory)
         self.inventory.append(item)
+        self.needChange = True
         return dropped_item
 
     @staticmethod
