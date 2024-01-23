@@ -105,14 +105,11 @@ class CameraGroup(pygame.sprite.Group):
                                     self.map[i + box_i - 1][j + box_j],
                                     self.map[i + box_i][j + box_j + 1],
                                     self.map[i + box_i][j + box_j - 1])
-                    if self.empty_cell not in cells_around:
-
-                        def check_is_floor_around():
-                            pass
-                        Box(
-                            (self.quadrant_size * j + self.quadrant_size // 2,
-                             self.quadrant_size * i + self.quadrant_size // 2),
-                            boxes_group)
+                                if self.empty_cell not in cells_around_box:
+                                    Box(
+                                        (self.quadrant_size * j + self.quadrant_size // 2,
+                                         self.quadrant_size * i + self.quadrant_size // 2),
+                                        boxes_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
