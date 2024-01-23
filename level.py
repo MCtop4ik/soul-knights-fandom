@@ -96,7 +96,7 @@ class Level(metaclass=Singleton):
         InventorySpriteV2((self.constants.screen_size[1] - self.constants.quadrant_size,
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
-        pygame.mixer.music.load('assets/music/FallingMysts.mp3')
+        pygame.mixer.music.load(f'assets/music/{Constants().music}')
         pygame.mixer.music.play()
 
         while True:

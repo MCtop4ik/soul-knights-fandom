@@ -1,7 +1,11 @@
+import random
+
 import pygame
 
 from assets import Assets
 from settings.constants import Constants
+from sprites.box_structures import BoxStructures
+from sprites.map_sprites.box import Box
 from sprites.map_sprites.door import Door
 from sprites.map_sprites.wall import Wall
 from sprites.sprite_groups import SpriteGroups
@@ -83,6 +87,32 @@ class CameraGroup(pygame.sprite.Group):
                             (self.quadrant_size * j + self.quadrant_size // 2,
                              self.quadrant_size * i + self.quadrant_size // 2),
                             doors_group)
+
+    def box_draw(self):
+        boxes_group = SpriteGroups().boxes_group
+        for i in range(1, len(self.map) - 1):
+            for j in range(1, len(self.map[0]) - 1):
+                cells_around = (self.map[i + 1][j], self.map[i - 1][j], self.map[i][j + 1], self.map[i][j - 1])
+                if self.empty_cell not in cells_around:
+                    box_spawn_chance = 5
+                    if random.randint(1, box_spawn_chance) == random.randint(1, 100):
+                        box_structure = BoxStructures().random_box_structure()
+                        for box_i in range(len(box_structure)):
+                            for box_j in range(len(box_structure[0])):
+                                div = self.map[i + box_i][j + box_j]
+                                cells_around_box = (
+                                    self.map[i + box_i + 1][j + box_j],
+                                    self.map[i + box_i - 1][j + box_j],
+                                    self.map[i + box_i][j + box_j + 1],
+                                    self.map[i + box_i][j + box_j - 1])
+                    if self.empty_cell not in cells_around:
+
+                        def check_is_floor_around():
+                            pass
+                        Box(
+                            (self.quadrant_size * j + self.quadrant_size // 2,
+                             self.quadrant_size * i + self.quadrant_size // 2),
+                            boxes_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w

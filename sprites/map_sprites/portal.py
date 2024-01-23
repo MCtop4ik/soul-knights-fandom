@@ -17,12 +17,13 @@ class Portal(pygame.sprite.Sprite):
         if self.rect.colliderect(SpriteGroups().player.rect.inflate(
                 Constants().quadrant_size * 3, Constants().quadrant_size * 3)):
             if keys[pygame.K_RETURN]:
-                self.teleport("1")
+                self.teleport("1", 'AquaticAuroras.ogg')
 
     @staticmethod
-    def teleport(level_name):
+    def teleport(level_name, music_name):
         from level import Level
         Constants().name = level_name
+        Constants().music = music_name
         SpriteGroups().doors_group = pygame.sprite.Group()
         SpriteGroups().walls_group = pygame.sprite.Group()
         SpriteGroups().portal_group = pygame.sprite.Group()

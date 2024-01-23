@@ -8,7 +8,7 @@ from settings.constants import Constants
 
 
 class RoomFactory:
-    EMPTY_CELL = Cell(0, 'Empty')
+    EMPTY_CELL = Constants().EMPTY_CELL
 
     def __init__(self, name):
         self.name = name

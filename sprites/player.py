@@ -62,7 +62,7 @@ class Player(pygame.sprite.Sprite):
             for sprite in SpriteGroups().weapon_group:
                 sprite.kill()
             SpriteGroups().weapon_group.update()
-            Portal.teleport("1")
+            Portal.teleport("1", 'AquaticAuroras.ogg')
         if not self.battle:
             self.not_allowed_through_doors = False
 

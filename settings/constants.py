@@ -20,6 +20,7 @@ class Constants(metaclass=Singleton):
         # level which will load
         self.name = '2'
         self.FPS = 100
+        self.music = 'FallingMysts.mp3'
 
         # generation params
         self.min_enemies_rooms = 2
