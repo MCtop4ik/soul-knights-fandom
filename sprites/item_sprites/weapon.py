@@ -53,6 +53,11 @@ class Weapon(pygame.sprite.Sprite):
             self.change_weapon(InventoryV2().inventory_item.id)
             self.current_position = inventory_position
 
+        if InventoryV2().needChange:
+            self.change_weapon(InventoryV2().inventory_item.id)
+            self.current_position = inventory_position
+            InventoryV2().needChange = False
+
     def radians_to_angle(self):
         self.angle = self.angle / pi * 180
 

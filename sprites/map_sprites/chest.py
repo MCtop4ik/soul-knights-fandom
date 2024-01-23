@@ -1,7 +1,11 @@
+import random
+
 import pygame
 
 from assets import Assets
+from sprites.inventory import InventoryV2
 from sprites.sprite_groups import SpriteGroups
+from sprites.weapons_list import WeaponsList
 
 
 class Chest(pygame.sprite.Sprite):
@@ -15,4 +19,7 @@ class Chest(pygame.sprite.Sprite):
         if pygame.sprite.spritecollideany(self, SpriteGroups().camera_group):
             if keys[pygame.K_RETURN]:
                 print('chest opened')
+                InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[random.randint(0, len(WeaponsList().weapons_list) - 1)])
+
+
 
