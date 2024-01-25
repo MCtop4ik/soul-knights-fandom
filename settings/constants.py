@@ -10,7 +10,7 @@ class Constants(metaclass=Singleton):
         # square root of amount of small squares in area of room
         self.big_cell_size = 50
         # player_size
-        self.player_size = (60, 60)
+        self.player_size = (80, 70)
         # player speed
         self.speed = 10
         # camera size
@@ -20,7 +20,7 @@ class Constants(metaclass=Singleton):
         # level which will load
         self.name = '2'
         self.FPS = 100
-        self.music = 'FallingMysts.mp3'
+        self.music = 'Confrontation.mp3'
 
         # generation params
         self.min_enemies_rooms = 2

@@ -1,7 +1,7 @@
-import pygame
-from pygame.sprite import Group
+from math import inf
 
-from map_generation.room_factory import RoomFactory
+import pygame
+
 from settings.constants import Constants
 from sprites.map_sprites.portal import Portal
 from sprites.sprite_groups import SpriteGroups
@@ -10,7 +10,7 @@ from sprites.sprite_groups import SpriteGroups
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, player_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/leo-player.png').convert_alpha(),
+        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/normal-alpha-leo.png').convert_alpha(),
                                             player_size)
         self.rect = self.image.get_rect(center=pos)
         self.pos = pos
@@ -24,7 +24,7 @@ class Player(pygame.sprite.Sprite):
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
 
-        self.heal_points = 1000
+        self.heal_points = inf
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -62,10 +62,9 @@ class Player(pygame.sprite.Sprite):
             for sprite in SpriteGroups().weapon_group:
                 sprite.kill()
             SpriteGroups().weapon_group.update()
-            Portal.teleport("1", 'AquaticAuroras.ogg')
+            Portal.teleport("2", 'Confrontation.mp3')
         if not self.battle:
             self.not_allowed_through_doors = False
-
         self.input()
 
         self.rect.centerx += self.direction.x * self.speed

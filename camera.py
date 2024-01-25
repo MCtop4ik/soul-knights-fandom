@@ -88,28 +88,39 @@ class CameraGroup(pygame.sprite.Group):
                              self.quadrant_size * i + self.quadrant_size // 2),
                             doors_group)
 
-    def box_draw(self):
+    def box_draw(self, enemy_coordinates, enemy_room_sizes):
         boxes_group = SpriteGroups().boxes_group
         for i in range(1, len(self.map) - 1):
             for j in range(1, len(self.map[0]) - 1):
                 cells_around = (self.map[i + 1][j], self.map[i - 1][j], self.map[i][j + 1], self.map[i][j - 1])
                 if self.empty_cell not in cells_around:
                     box_spawn_chance = 5
-                    if random.randint(1, box_spawn_chance) == random.randint(1, 100):
+                    if random.randint(1, box_spawn_chance) == random.randint(1, 50):
                         box_structure = BoxStructures().random_box_structure()
+                        cnt = 0
                         for box_i in range(len(box_structure)):
                             for box_j in range(len(box_structure[0])):
-                                div = self.map[i + box_i][j + box_j]
                                 cells_around_box = (
                                     self.map[i + box_i + 1][j + box_j],
                                     self.map[i + box_i - 1][j + box_j],
                                     self.map[i + box_i][j + box_j + 1],
                                     self.map[i + box_i][j + box_j - 1])
                                 if self.empty_cell not in cells_around_box:
-                                    Box(
-                                        (self.quadrant_size * j + self.quadrant_size // 2,
-                                         self.quadrant_size * i + self.quadrant_size // 2),
-                                        boxes_group)
+                                    for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
+                                        ec_x = (enemy_coordinate[1] * self.constants.quadrant_size *
+                                                self.constants.big_cell_size +
+                                                (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
+                                        ec_y = (enemy_coordinate[0] * self.constants.quadrant_size *
+                                                self.constants.big_cell_size +
+                                                (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
+                                        max_offset = (room_size[0] // 2 - 4) * self.constants.quadrant_size
+                                        box_x, box_y = (self.quadrant_size * (box_j + j) + self.quadrant_size // 2,
+                                                        self.quadrant_size * (box_i + i) + self.quadrant_size // 2)
+
+                                        if (ec_x - max_offset <= box_y <= ec_x + max_offset and
+                                                ec_y - max_offset <= box_y <= ec_y + max_offset):
+                                            Box((box_x, box_y), boxes_group)
+                                            cnt += 1
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
@@ -123,6 +134,7 @@ class CameraGroup(pygame.sprite.Group):
                 self.sprites() +
                 sprite_groups.walls_group.sprites() +
                 sprite_groups.doors_group.sprites() +
+                sprite_groups.boxes_group.sprites() +
                 sprite_groups.portal_group.sprites() +
                 sprite_groups.chests_group.sprites() +
                 sprite_groups.enemies_group.sprites() +

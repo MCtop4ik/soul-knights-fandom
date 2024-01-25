@@ -17,7 +17,7 @@ class Portal(pygame.sprite.Sprite):
         if self.rect.colliderect(SpriteGroups().player.rect.inflate(
                 Constants().quadrant_size * 3, Constants().quadrant_size * 3)):
             if keys[pygame.K_RETURN]:
-                self.teleport("1", 'AquaticAuroras.ogg')
+                self.teleport("1", 'FallingMysts.mp3')
 
     @staticmethod
     def teleport(level_name, music_name):

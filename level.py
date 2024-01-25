@@ -56,6 +56,7 @@ class Level(metaclass=Singleton):
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
             SpriteGroups().camera_group)
         SpriteGroups().camera_group.wall_draw()
+        SpriteGroups().camera_group.box_draw(enemy_coordinates, enemy_room_sizes)
         Portal(
             (portal_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
@@ -97,7 +98,7 @@ class Level(metaclass=Singleton):
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
         pygame.mixer.music.load(f'assets/music/{Constants().music}')
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1)
 
         while True:
             for event in pygame.event.get():
