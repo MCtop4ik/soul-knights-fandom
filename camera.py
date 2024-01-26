@@ -90,26 +90,30 @@ class CameraGroup(pygame.sprite.Group):
 
     def box_draw(self, enemy_coordinates, enemy_room_sizes):
         boxes_group = SpriteGroups().boxes_group
+        print(enemy_coordinates)
         for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
-            ec_x = (enemy_coordinate[0] * self.constants.quadrant_size *
+            ec_x = (enemy_coordinate[1] * self.constants.quadrant_size *
                     self.constants.big_cell_size +
                     (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
-            ec_y = (enemy_coordinate[1] * self.constants.quadrant_size *
+            ec_y = (enemy_coordinate[0] * self.constants.quadrant_size *
                     self.constants.big_cell_size +
                     (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
-            max_offset_x = (room_size[0] // 2 - 4) * self.constants.quadrant_size
-            max_offset_y = (room_size[1] // 2 - 4) * self.constants.quadrant_size
-            for i in range(ec_y - max_offset_y, ec_y + max_offset_y, self.constants.quadrant_size):
-                for j in range(ec_x - max_offset_x, ec_x + max_offset_x, self.constants.quadrant_size):
-                    box_spawn_chance = 5
-                    if random.randint(1, box_spawn_chance) == random.randint(1, 10):
-                        box_structure = BoxStructures().random_box_structure()
-                        for box_i in range(len(box_structure)):
-                            for box_j in range(len(box_structure[0])):
-                                box_x, box_y = (self.quadrant_size * box_j + j + self.quadrant_size // 2,
-                                                self.quadrant_size * box_i + i + self.quadrant_size // 2)
-                                print(box_x, box_y)
-                                Box((box_x, box_y), boxes_group)
+            max_offset_x = (room_size[1] // 2 - 4) * self.constants.quadrant_size
+            max_offset_y = (room_size[0] // 2 - 4) * self.constants.quadrant_size
+            min_amount_of_boxes = random.randint(3, 7)
+            cnt = 0
+            while cnt < min_amount_of_boxes:
+                for i in range(ec_y - max_offset_y, ec_y + max_offset_y, self.constants.quadrant_size):
+                    for j in range(ec_x - max_offset_x, ec_x + max_offset_x, self.constants.quadrant_size):
+                        box_spawn_chance = 5
+                        if random.randint(1, box_spawn_chance) == random.randint(1, 10):
+                            box_structure = BoxStructures().random_box_structure()
+                            for box_i in range(len(box_structure)):
+                                for box_j in range(len(box_structure[0])):
+                                    box_x, box_y = (self.quadrant_size * box_j + j + self.quadrant_size // 2,
+                                                    self.quadrant_size * box_i + i + self.quadrant_size // 2)
+                                    cnt += 1
+                                    Box((box_x, box_y), boxes_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
