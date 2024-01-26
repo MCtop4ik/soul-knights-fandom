@@ -39,8 +39,12 @@ class Bullet(pygame.sprite.Sprite):
         if enemy:
             if self.sender == 'player':
                 enemy.damage(self.fire_damage)
+        box = pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group)
+        if box:
+            box.damage(self.fire_damage)
         if (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
                 pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) or
+                pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group) or
                 (pygame.sprite.spritecollideany(self, SpriteGroups().enemies_group) and self.sender == 'player') or
-                self.rect.colliderect(SpriteGroups().player.rect) and self.sender == 'enemy'):
+                (self.rect.colliderect(SpriteGroups().player.rect) and self.sender == 'enemy')):
             self.kill()

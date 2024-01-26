@@ -114,6 +114,7 @@ class Level(metaclass=Singleton):
 
             SpriteGroups().camera_group.update()
             SpriteGroups().walls_group.update()
+            SpriteGroups().boxes_group.update()
             SpriteGroups().doors_group.update()
             SpriteGroups().chests_group.update()
             SpriteGroups().portal_group.update()
