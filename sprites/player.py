@@ -43,6 +43,9 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
 
+        if keys[pygame.K_5]:
+            print(self.get_player_coordinates())
+
     def damage(self, damage):
         self.heal_points -= damage
         print(self.heal_points)
@@ -66,7 +69,6 @@ class Player(pygame.sprite.Sprite):
         if not self.battle:
             self.not_allowed_through_doors = False
         self.input()
-
         self.rect.centerx += self.direction.x * self.speed
         while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
             self.rect.centerx -= self.direction.x

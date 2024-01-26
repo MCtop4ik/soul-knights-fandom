@@ -77,7 +77,8 @@ class Level(metaclass=Singleton):
         for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
             ec_x = enemy_coordinate[1]
             ec_y = enemy_coordinate[0]
-            max_offset = (room_size[0] // 2 - 4) * self.constants.quadrant_size
+            max_offset_x = (room_size[0] // 2 - 4) * self.constants.quadrant_size
+            max_offset_y = (room_size[1] // 2 - 4) * self.constants.quadrant_size
             enemy_amount = random.randint(
                 self.constants.min_enemy_amount,
                 self.constants.max_enemy_amount)
@@ -86,10 +87,10 @@ class Level(metaclass=Singleton):
                 Enemy(EnemyList().get_random_enemy(),
                       (ec_x * self.constants.quadrant_size * self.constants.big_cell_size +
                           (self.constants.quadrant_size * self.constants.big_cell_size) // 2
-                          + random.randint(-max_offset, max_offset),
+                          + random.randint(-max_offset_x, max_offset_x),
                           ec_y * self.constants.quadrant_size * self.constants.big_cell_size +
                           (self.constants.quadrant_size * self.constants.big_cell_size) // 2
-                          + random.randint(-max_offset, max_offset)),
+                          + random.randint(-max_offset_y, max_offset_y)),
                       (ec_x, ec_y),
                       SpriteGroups().enemies_group)
         SpriteGroups().player.set_uncleared_rooms(uncleared_rooms)
@@ -98,6 +99,7 @@ class Level(metaclass=Singleton):
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
         pygame.mixer.music.load(f'assets/music/{Constants().music}')
+        pygame.mixer.music.set_volume(0)
         pygame.mixer.music.play(-1)
 
         while True:

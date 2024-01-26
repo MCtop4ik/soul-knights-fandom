@@ -90,37 +90,26 @@ class CameraGroup(pygame.sprite.Group):
 
     def box_draw(self, enemy_coordinates, enemy_room_sizes):
         boxes_group = SpriteGroups().boxes_group
-        for i in range(1, len(self.map) - 1):
-            for j in range(1, len(self.map[0]) - 1):
-                cells_around = (self.map[i + 1][j], self.map[i - 1][j], self.map[i][j + 1], self.map[i][j - 1])
-                if self.empty_cell not in cells_around:
+        for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
+            ec_x = (enemy_coordinate[0] * self.constants.quadrant_size *
+                    self.constants.big_cell_size +
+                    (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
+            ec_y = (enemy_coordinate[1] * self.constants.quadrant_size *
+                    self.constants.big_cell_size +
+                    (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
+            max_offset_x = (room_size[0] // 2 - 4) * self.constants.quadrant_size
+            max_offset_y = (room_size[1] // 2 - 4) * self.constants.quadrant_size
+            for i in range(ec_y - max_offset_y, ec_y + max_offset_y, self.constants.quadrant_size):
+                for j in range(ec_x - max_offset_x, ec_x + max_offset_x, self.constants.quadrant_size):
                     box_spawn_chance = 5
-                    if random.randint(1, box_spawn_chance) == random.randint(1, 50):
+                    if random.randint(1, box_spawn_chance) == random.randint(1, 10):
                         box_structure = BoxStructures().random_box_structure()
-                        cnt = 0
                         for box_i in range(len(box_structure)):
                             for box_j in range(len(box_structure[0])):
-                                cells_around_box = (
-                                    self.map[i + box_i + 1][j + box_j],
-                                    self.map[i + box_i - 1][j + box_j],
-                                    self.map[i + box_i][j + box_j + 1],
-                                    self.map[i + box_i][j + box_j - 1])
-                                if self.empty_cell not in cells_around_box:
-                                    for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
-                                        ec_x = (enemy_coordinate[1] * self.constants.quadrant_size *
-                                                self.constants.big_cell_size +
-                                                (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
-                                        ec_y = (enemy_coordinate[0] * self.constants.quadrant_size *
-                                                self.constants.big_cell_size +
-                                                (self.constants.quadrant_size * self.constants.big_cell_size) // 2)
-                                        max_offset = (room_size[0] // 2 - 4) * self.constants.quadrant_size
-                                        box_x, box_y = (self.quadrant_size * (box_j + j) + self.quadrant_size // 2,
-                                                        self.quadrant_size * (box_i + i) + self.quadrant_size // 2)
-
-                                        if (ec_x - max_offset <= box_y <= ec_x + max_offset and
-                                                ec_y - max_offset <= box_y <= ec_y + max_offset):
-                                            Box((box_x, box_y), boxes_group)
-                                            cnt += 1
+                                box_x, box_y = (self.quadrant_size * box_j + j + self.quadrant_size // 2,
+                                                self.quadrant_size * box_i + i + self.quadrant_size // 2)
+                                print(box_x, box_y)
+                                Box((box_x, box_y), boxes_group)
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w

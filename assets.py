@@ -14,7 +14,7 @@ class Assets(metaclass=Singleton):
         self.abbr = {}
         self.constant_images = {
             'door': 'player_.png',
-            'portal': 'player_.png',
+            'portal': ('portal.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
             'chest': 'chest.jpg',
             'enemy1': '0.jpeg',
             'enemy2': 'player.png',
@@ -41,10 +41,20 @@ class Assets(metaclass=Singleton):
         image = pygame.transform.scale(pygame.image.load(fullname), (self.quadrant_size, self.quadrant_size))
         return image
 
+    def load_image_with_size(self, name, size):
+        fullname = os.path.join('assets/images_test', name)
+        if not os.path.isfile(fullname):
+            return
+        image = pygame.transform.scale(pygame.image.load(fullname), size)
+        return image
+
     def load_all_images(self):
         images = {}
         for key, value in {**self.constant_images, **self.abbr}.items():
-            images[key] = self.load_image(value)
+            if type(value) is tuple:
+                images[key] = self.load_image_with_size(value[0], value[1])
+            else:
+                images[key] = self.load_image(value)
         return images
 
     @property
