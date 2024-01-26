@@ -70,11 +70,13 @@ class Player(pygame.sprite.Sprite):
             self.not_allowed_through_doors = False
         self.input()
         self.rect.centerx += self.direction.x * self.speed
-        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
+        while  (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
+               pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group)):
             self.rect.centerx -= self.direction.x
 
         self.rect.centery += self.direction.y * self.speed
-        while pygame.sprite.spritecollideany(self, SpriteGroups().walls_group):
+        while (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
+               pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group)):
             self.rect.centery -= self.direction.y
 
         if pygame.sprite.spritecollideany(self, SpriteGroups().doors_group):

@@ -90,7 +90,6 @@ class CameraGroup(pygame.sprite.Group):
 
     def box_draw(self, enemy_coordinates, enemy_room_sizes):
         boxes_group = SpriteGroups().boxes_group
-        print(enemy_coordinates)
         for enemy_coordinate, room_size in zip(enemy_coordinates, enemy_room_sizes):
             ec_x = (enemy_coordinate[1] * self.constants.quadrant_size *
                     self.constants.big_cell_size +
@@ -112,8 +111,13 @@ class CameraGroup(pygame.sprite.Group):
                                 for box_j in range(len(box_structure[0])):
                                     box_x, box_y = (self.quadrant_size * box_j + j + self.quadrant_size // 2,
                                                     self.quadrant_size * box_i + i + self.quadrant_size // 2)
-                                    cnt += 1
-                                    Box((box_x, box_y), boxes_group)
+                                    cells_around = (self.map[i // self.quadrant_size + 1][j // self.quadrant_size],
+                                                    self.map[i // self.quadrant_size - 1][j // self.quadrant_size],
+                                                    self.map[i // self.quadrant_size][j // self.quadrant_size + 1],
+                                                    self.map[i // self.quadrant_size][j // self.quadrant_size - 1])
+                                    if self.empty_cell not in cells_around:
+                                        Box((box_x, box_y), boxes_group)
+                                        cnt += 1
 
     def center_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
