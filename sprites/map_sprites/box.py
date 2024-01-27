@@ -1,6 +1,8 @@
 import pygame
 
 from assets import Assets
+from sprites.item_sprites.energy import Energy
+from sprites.sprite_groups import SpriteGroups
 
 
 class Box(pygame.sprite.Sprite):
@@ -15,4 +17,5 @@ class Box(pygame.sprite.Sprite):
 
     def update(self):
         if self.health <= 0:
+            Energy(self.rect.center, SpriteGroups().energy_group)
             self.kill()

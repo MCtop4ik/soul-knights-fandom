@@ -3,14 +3,11 @@ import pygame
 from assets import Assets
 
 
-class Door(pygame.sprite.Sprite):
+class Energy(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
-        self.image = Assets().images['door']
+        self.image = Assets().images['energy']
         self.rect = self.image.get_rect(center=pos)
 
-    def open(self):
-        pass
-
-    def close(self):
+    def update(self):
         pass

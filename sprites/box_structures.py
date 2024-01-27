@@ -10,7 +10,11 @@ class BoxStructures:
         'light': 50,
         'dark': 60
     }
-    box_structures = [[['standard', 'standard'], ['standard', 'standard']]]
+    box_structures = [[['standard', 'standard'],
+                       ['standard', 'standard']],
+                      [['empty', 'standard', 'empty'],
+                       ['standard', 'standard', 'standard'],
+                       ['empty', 'standard', 'empty']]]
 
     def random_box_structure(self):
         return self.box_structures[random.randint(0, len(self.box_structures) - 1)]

@@ -115,7 +115,7 @@ class CameraGroup(pygame.sprite.Group):
                                                     self.map[i // self.quadrant_size - 1][j // self.quadrant_size],
                                                     self.map[i // self.quadrant_size][j // self.quadrant_size + 1],
                                                     self.map[i // self.quadrant_size][j // self.quadrant_size - 1])
-                                    if self.empty_cell not in cells_around:
+                                    if self.empty_cell not in cells_around and box_structure[box_i][box_j] != 'empty':
                                         Box((box_x, box_y), boxes_group)
                                         cnt += 1
 
@@ -134,6 +134,7 @@ class CameraGroup(pygame.sprite.Group):
                 sprite_groups.boxes_group.sprites() +
                 sprite_groups.portal_group.sprites() +
                 sprite_groups.chests_group.sprites() +
+                sprite_groups.energy_group.sprites() +
                 sprite_groups.enemies_group.sprites() +
                 sprite_groups.bullets_group.sprites(),
                 key=lambda x: x.rect.centery):

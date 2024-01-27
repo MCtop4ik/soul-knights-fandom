@@ -20,7 +20,8 @@ class Assets(metaclass=Singleton):
             'enemy2': 'player.png',
             'enemy3': 'victor.png',
             'senya': 'bullet.png',
-            'box': 'box_sprite.webp'
+            'box': 'box_sprite.webp',
+            'energy': ('energy_stone.webp', (16, 16))
         }
         # self.load_abbr({})
 
