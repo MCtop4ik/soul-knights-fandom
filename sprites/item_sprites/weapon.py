@@ -25,6 +25,7 @@ class Weapon(pygame.sprite.Sprite):
         self.group = group
         self.current_position = 0
         self.sound_fire = pygame.mixer.Sound('assets/music/oi_new.mp3')
+        self.energy_use = 1
         self.change_weapon()
 
     def init_weapon(self, selected_weapon):
@@ -78,15 +79,17 @@ class Weapon(pygame.sprite.Sprite):
                            nearest_enemy.rect.x - SpriteGroups().player.rect.x) + uniform(-self.cut_off, self.cut_off)
 
     def shoot(self):
-        self.compute_angle_to_fire()
-        self.radians_to_angle()
-        bullet = WeaponsList().bullet_list[1]
-        bullet.fire_damage = self.fire_damage
-        self.sound_fire.set_volume(0.15)
-        self.sound_fire.play()
-        Bullet(SpriteGroups().bullets_group, bullet, self.angle,
-               (SpriteGroups().player.rect.x,
-                SpriteGroups().player.rect.y), 'player')
+        if SpriteGroups().player.use_energy(self.energy_use):
+            self.compute_angle_to_fire()
+            self.radians_to_angle()
+            bullet = WeaponsList().bullet_list[1]
+            bullet.fire_damage = self.fire_damage
+
+            self.sound_fire.set_volume(0.15)
+            self.sound_fire.play()
+            Bullet(SpriteGroups().bullets_group, bullet, self.angle,
+                   (SpriteGroups().player.rect.x,
+                    SpriteGroups().player.rect.y), 'player')
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]

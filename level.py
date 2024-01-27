@@ -120,6 +120,7 @@ class Level(metaclass=Singleton):
             SpriteGroups().portal_group.update()
             SpriteGroups().bullets_group.update()
             SpriteGroups().enemies_group.update()
+            SpriteGroups().energy_group.update()
             SpriteGroups().inventory_group.update()
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
             for inventory_cell in SpriteGroups().inventory_group.sprites():

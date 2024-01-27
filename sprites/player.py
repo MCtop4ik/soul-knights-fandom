@@ -10,8 +10,9 @@ from sprites.sprite_groups import SpriteGroups
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, player_size, group):
         super().__init__(group)
-        self.image = pygame.transform.scale(pygame.image.load('assets/images_test/normal-alpha-leo.png').convert_alpha(),
-                                            player_size)
+        self.image = pygame.transform.scale(
+            pygame.image.load('assets/images_test/normal-alpha-leo.png').convert_alpha(),
+            player_size)
         self.rect = self.image.get_rect(center=pos)
         self.pos = pos
         self.direction = pygame.math.Vector2()
@@ -25,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.big_cell_size = Constants().big_cell_size
 
         self.heal_points = inf
+        self.energy = 16
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -70,10 +72,9 @@ class Player(pygame.sprite.Sprite):
             self.not_allowed_through_doors = False
         self.input()
         self.rect.centerx += self.direction.x * self.speed
-        while  (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
+        while (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
                pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group)):
             self.rect.centerx -= self.direction.x
-
         self.rect.centery += self.direction.y * self.speed
         while (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
                pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group)):
@@ -97,9 +98,19 @@ class Player(pygame.sprite.Sprite):
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) and self.not_allowed_through_doors:
             self.rect.center -= self.direction
+        energy_obj = pygame.sprite.spritecollideany(self, SpriteGroups().energy_group)
+        if energy_obj:
+            self.energy += 8
+            energy_obj.kill()
 
     def get_player_coordinates(self):
         return self.rect.center
 
     def set_uncleared_rooms(self, uncleared_rooms):
         self.uncleared_rooms = uncleared_rooms
+
+    def use_energy(self, amount):
+        if self.energy - amount >= 0:
+            self.energy -= amount
+            return True
+        return False
