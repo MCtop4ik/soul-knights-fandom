@@ -1,6 +1,9 @@
+import random
+
 import pygame
 
 from assets import Assets
+from sprites.item_sprites.coin import Coin
 from sprites.item_sprites.energy import Energy
 from sprites.sprite_groups import SpriteGroups
 
@@ -17,5 +20,10 @@ class Box(pygame.sprite.Sprite):
 
     def update(self):
         if self.health <= 0:
-            Energy(self.rect.center, SpriteGroups().energy_group)
+            if random.randint(1, 100) in range(1, 5 + 1):
+                Energy(self.rect.center, SpriteGroups().energy_group)
+                print('energy')
+            if random.randint(1, 100) == 1:
+                Coin(self.rect.center, SpriteGroups().energy_group, coin_type='copper')
+                print('coin')
             self.kill()

@@ -26,7 +26,8 @@ class Player(pygame.sprite.Sprite):
         self.big_cell_size = Constants().big_cell_size
 
         self.heal_points = inf
-        self.energy = 16
+        self.energy = inf
+        self.money = 0
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -45,12 +46,8 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
 
-        if keys[pygame.K_5]:
-            print(self.get_player_coordinates())
-
     def damage(self, damage):
         self.heal_points -= damage
-        print(self.heal_points)
 
     def decrease_enemies_cnt(self, room_coordinates):
         new_uncleared_rooms = []
@@ -102,6 +99,10 @@ class Player(pygame.sprite.Sprite):
         if energy_obj:
             self.energy += 8
             energy_obj.kill()
+        coins_obj = pygame.sprite.spritecollideany(self, SpriteGroups().coins_group)
+        if coins_obj:
+            self.money += coins_obj.get_amount()
+            coins_obj.kill()
 
     def get_player_coordinates(self):
         return self.rect.center
