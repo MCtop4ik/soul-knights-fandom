@@ -5,6 +5,7 @@ import pygame
 from assets import Assets
 from sprites.inventory import InventoryV2
 from sprites.item_sprites.bullet import Bullet
+from sprites.item_sprites.dropped_weapon import DroppedWeapon
 from sprites.sprite_groups import SpriteGroups
 from sprites.weapons_list import WeaponsList
 
@@ -12,6 +13,7 @@ from sprites.weapons_list import WeaponsList
 class Weapon(pygame.sprite.Sprite):
     def __init__(self, pos, group):
         super().__init__(group)
+
         self.angle = 0
         self.offset_y = 20
         self.offset_x = 20
@@ -19,19 +21,21 @@ class Weapon(pygame.sprite.Sprite):
         self.cut_off = pi / 12
         self.fire_damage = 20
         self.last_shoot_time = 0
-        self.rect = None
         self.image = None
         self.pos = pos
         self.group = group
+        self.idd = None
         self.current_position = 0
         self.sound_fire = pygame.mixer.Sound('assets/music/oi_new.mp3')
         self.energy_use = 1
         self.change_weapon()
+        self.rect = self.image.get_rect(center=pos)
+        self.chest = None
         self.is_melee = False
 
     def init_weapon(self, selected_weapon):
         self.last_shoot_time = 0
-
+        self.idd = selected_weapon
         self.image = Assets().images[selected_weapon.image_name]
         self.rect = self.image.get_rect(center=self.pos)
         self.rect.x += selected_weapon.offset_x
@@ -44,9 +48,13 @@ class Weapon(pygame.sprite.Sprite):
 
     def update(self):
         keys = pygame.key.get_pressed()
+
         self.rect = SpriteGroups().player.rect.copy()
         self.rect.x += self.offset_x
         self.rect.y += self.offset_y
+        if InventoryV2().dropped:
+            self.drop()
+
         if keys[pygame.K_SPACE] and pygame.time.get_ticks() - self.last_shoot_time > self.offset_time_ms:
             if self.is_melee:
                 self.hit()
@@ -97,6 +105,12 @@ class Weapon(pygame.sprite.Sprite):
 
     def hit(self):
         pass
+
+    def drop(self):
+        print("as")
+        self.change_weapon(InventoryV2().inventory_item.id)
+        inventory_position = InventoryV2().position_in_inventory
+        self.current_position = inventory_position
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]

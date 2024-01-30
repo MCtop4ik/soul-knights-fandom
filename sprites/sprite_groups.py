@@ -15,6 +15,7 @@ class SpriteGroups(metaclass=Singleton):
         self.enemies_group = Group()
         self.weapon_group = Group()
         self.bullets_group = Group()
+        self.dropped_group = Group()
         self.inventory_group = Group()
         self.energy_group = Group()
         self.coins_group = Group()
