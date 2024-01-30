@@ -1,5 +1,6 @@
 import random
 import sys
+from math import inf
 
 import pygame
 
@@ -30,15 +31,22 @@ class Level(metaclass=Singleton):
         health_bar_width = (150 / PlayerState().max_health) * PlayerState().health
         pygame.draw.rect(self.screen, (255, 255, 255), (10, 10, 150, 20))
         pygame.draw.rect(self.screen, (0, 255, 0), (10, 10, health_bar_width, 20))
+        my_font = pygame.font.SysFont('Comic Sans MS', 20)
+        health_bar = my_font.render(f"{PlayerState().health}/{PlayerState().max_health}",
+                                    False, (220, 20, 60))
+        self.screen.blit(health_bar, (50, 5))
 
     def draw_energy_bar(self):
         energy_bar_width = (150 / PlayerState().max_energy) * PlayerState().energy
         pygame.draw.rect(self.screen, (255, 255, 255), (10, 50, 150, 20))
         pygame.draw.rect(self.screen, (0, 255, 255), (10, 50, energy_bar_width, 20))
-
+        my_font = pygame.font.SysFont('Comic Sans MS', 20)
+        energy_bar = my_font.render(f"{PlayerState().energy}/{PlayerState().max_energy}",
+                                    False, (138, 43, 226))
+        self.screen.blit(energy_bar, (50, 45))
     def start(self):
         PlayerState().health = 100
-        PlayerState().energy = 100
+        PlayerState().energy = inf
         PlayerState().money = 0
         clock = pygame.time.Clock()
         fps = self.constants.FPS
