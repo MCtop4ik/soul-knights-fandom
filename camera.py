@@ -135,6 +135,7 @@ class CameraGroup(pygame.sprite.Group):
                 sprite_groups.portal_group.sprites() +
                 sprite_groups.chests_group.sprites() +
                 sprite_groups.energy_group.sprites() +
+                sprite_groups.coins_group.sprites() +
                 sprite_groups.enemies_group.sprites() +
                 sprite_groups.dropped_items_group.sprites() +
                 sprite_groups.bullets_group.sprites(),

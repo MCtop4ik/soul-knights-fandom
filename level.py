@@ -44,10 +44,19 @@ class Level(metaclass=Singleton):
         energy_bar = my_font.render(f"{PlayerState().energy}/{PlayerState().max_energy}",
                                     False, (138, 43, 226))
         self.screen.blit(energy_bar, (50, 45))
+
+    def draw_money_counter(self):
+        pygame.draw.rect(self.screen, (255, 255, 255),
+                         (Constants().screen_size[0] - 30 - len(str(PlayerState().money) * 25), 10,
+                          50, 50))
+        my_font = pygame.font.SysFont('Comic Sans MS', 40)
+        money_bar = my_font.render(f"{PlayerState().money}",
+                                   False, (138, 43, 226))
+        self.screen.blit(money_bar, (Constants().screen_size[0] - 20 - len(str(PlayerState().money) * 25), 7))
+
     def start(self):
         PlayerState().health = 100
         PlayerState().energy = inf
-        PlayerState().money = 0
         clock = pygame.time.Clock()
         fps = self.constants.FPS
         pygame.mixer.init()
@@ -145,16 +154,13 @@ class Level(metaclass=Singleton):
             SpriteGroups().dropped_items_group.update()
             SpriteGroups().enemies_group.update()
             SpriteGroups().energy_group.update()
+            SpriteGroups().coins_group.update()
             SpriteGroups().inventory_group.update()
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
             for inventory_cell in SpriteGroups().inventory_group.sprites():
                 self.screen.blit(inventory_cell.image, inventory_cell.rect)
-            # my_font = pygame.font.SysFont('Comic Sans MS', 30)
-            # mana_bar = my_font.render('Health -> ' + str(PlayerState().health), False, (220, 20, 60))
-            # self.screen.blit(mana_bar, (0, 0))
-            # mana_bar = my_font.render('Energy -> ' + str(PlayerState().energy), False, (138, 43, 226))
-            # self.screen.blit(mana_bar, (0, 50))
             self.draw_health_bar()
             self.draw_energy_bar()
+            self.draw_money_counter()
             pygame.display.update()
             clock.tick(fps)
