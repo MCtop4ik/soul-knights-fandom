@@ -1,6 +1,10 @@
+import random
+from math import copysign
+
 import pygame
 
 from assets import Assets
+from settings.constants import Constants
 from sprites.sprite_groups import SpriteGroups
 
 
@@ -21,6 +25,10 @@ class DroppedWeapon(pygame.sprite.Sprite):
                 self.last_click = pygame.time.get_ticks()
                 SpriteGroups().weapon.change_weapon(self.item.id)
                 dropped_item = InventoryV2().add_item_in_inventory(self.item)
+                self.rect = self.image.get_rect(center=self.pos + pygame.math.Vector2(
+                    copysign(1, random.random() - 0.5) * (Constants().quadrant_size // 2),
+                    copysign(1, random.random() - 0.5) * (Constants().quadrant_size // 2)
+                ))
                 if dropped_item:
                     self.image = Assets().images[dropped_item.image_name]
                     self.item = dropped_item
