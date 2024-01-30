@@ -7,6 +7,7 @@ from camera import CameraGroup
 from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
+from settings.player_state import PlayerState
 from sprites.enemy import Enemy
 from sprites.enemy_list import EnemyList
 from sprites.inventory import InventoryV2
@@ -26,9 +27,13 @@ class Level(metaclass=Singleton):
         self.constants = Constants()
 
     def start(self):
+        PlayerState().health = 1000
+        PlayerState().energy = 100
+        PlayerState().money = 0
         clock = pygame.time.Clock()
         fps = self.constants.FPS
         pygame.mixer.init()
+        pygame.font.init()
         level, \
             start_coordinates, \
             portal_coordinates, \
@@ -86,11 +91,11 @@ class Level(metaclass=Singleton):
             for _ in range(enemy_amount):
                 Enemy(EnemyList().get_random_enemy(),
                       (ec_x * self.constants.quadrant_size * self.constants.big_cell_size +
-                          (self.constants.quadrant_size * self.constants.big_cell_size) // 2
-                          + random.randint(-max_offset_x, max_offset_x),
-                          ec_y * self.constants.quadrant_size * self.constants.big_cell_size +
-                          (self.constants.quadrant_size * self.constants.big_cell_size) // 2
-                          + random.randint(-max_offset_y, max_offset_y)),
+                       (self.constants.quadrant_size * self.constants.big_cell_size) // 2
+                       + random.randint(-max_offset_x, max_offset_x),
+                       ec_y * self.constants.quadrant_size * self.constants.big_cell_size +
+                       (self.constants.quadrant_size * self.constants.big_cell_size) // 2
+                       + random.randint(-max_offset_y, max_offset_y)),
                       (ec_x, ec_y),
                       SpriteGroups().enemies_group)
         SpriteGroups().player.set_uncleared_rooms(uncleared_rooms)
@@ -125,6 +130,10 @@ class Level(metaclass=Singleton):
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
             for inventory_cell in SpriteGroups().inventory_group.sprites():
                 self.screen.blit(inventory_cell.image, inventory_cell.rect)
-
+            my_font = pygame.font.SysFont('Comic Sans MS', 30)
+            mana_bar = my_font.render('Health -> ' + str(PlayerState().health), False, (220, 20, 60))
+            self.screen.blit(mana_bar, (0, 0))
+            mana_bar = my_font.render('Energy -> ' + str(PlayerState().energy), False, (138, 43, 226))
+            self.screen.blit(mana_bar, (0, 50))
             pygame.display.update()
             clock.tick(fps)

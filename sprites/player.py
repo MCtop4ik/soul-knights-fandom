@@ -1,8 +1,7 @@
-from math import inf
-
 import pygame
 
 from settings.constants import Constants
+from settings.player_state import PlayerState
 from sprites.map_sprites.portal import Portal
 from sprites.sprite_groups import SpriteGroups
 
@@ -25,9 +24,9 @@ class Player(pygame.sprite.Sprite):
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
 
-        self.heal_points = inf
-        self.energy = inf
-        self.money = 0
+        self.heal_points = PlayerState().health
+        self.energy = PlayerState().energy
+        self.money = PlayerState().money
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -48,6 +47,7 @@ class Player(pygame.sprite.Sprite):
 
     def damage(self, damage):
         self.heal_points -= damage
+        PlayerState().health = self.heal_points
 
     def decrease_enemies_cnt(self, room_coordinates):
         new_uncleared_rooms = []
@@ -103,6 +103,8 @@ class Player(pygame.sprite.Sprite):
         if coins_obj:
             self.money += coins_obj.get_amount()
             coins_obj.kill()
+        PlayerState().energy = self.energy
+        PlayerState().money = self.money
 
     def get_player_coordinates(self):
         return self.rect.center
@@ -113,5 +115,6 @@ class Player(pygame.sprite.Sprite):
     def use_energy(self, amount):
         if self.energy - amount >= 0:
             self.energy -= amount
+            PlayerState().energy = self.energy
             return True
         return False
