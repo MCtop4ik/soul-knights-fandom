@@ -99,7 +99,7 @@ class Level(metaclass=Singleton):
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
         pygame.mixer.music.load(f'assets/music/{Constants().music}')
-        pygame.mixer.music.set_volume(0)
+        pygame.mixer.music.set_volume(1)
         pygame.mixer.music.play(-1)
 
         while True:

@@ -27,6 +27,7 @@ class Weapon(pygame.sprite.Sprite):
         self.sound_fire = pygame.mixer.Sound('assets/music/oi_new.mp3')
         self.energy_use = 1
         self.change_weapon()
+        self.is_melee = False
 
     def init_weapon(self, selected_weapon):
         self.last_shoot_time = 0
@@ -47,7 +48,10 @@ class Weapon(pygame.sprite.Sprite):
         self.rect.x += self.offset_x
         self.rect.y += self.offset_y
         if keys[pygame.K_SPACE] and pygame.time.get_ticks() - self.last_shoot_time > self.offset_time_ms:
-            self.shoot()
+            if self.is_melee:
+                self.hit()
+            if not self.is_melee:
+                self.shoot()
             self.last_shoot_time = pygame.time.get_ticks()
         inventory_position = InventoryV2().position_in_inventory
         if inventory_position != self.current_position:
@@ -90,6 +94,9 @@ class Weapon(pygame.sprite.Sprite):
             Bullet(SpriteGroups().bullets_group, bullet, self.angle,
                    (SpriteGroups().player.rect.x,
                     SpriteGroups().player.rect.y), 'player')
+
+    def hit(self):
+        pass
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]

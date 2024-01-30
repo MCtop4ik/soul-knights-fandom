@@ -13,7 +13,7 @@ class Box(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = Assets().images['box']
         self.rect = self.image.get_rect(center=pos)
-        self.health = 100
+        self.health = 50
 
     def damage(self, damage):
         self.health -= damage

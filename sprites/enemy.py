@@ -104,5 +104,6 @@ class Enemy(pygame.sprite.Sprite):
                 self.last_moved_time = pygame.time.get_ticks()
 
             while (pygame.sprite.spritecollideany(self, SpriteGroups().walls_group) or
-                   pygame.sprite.spritecollideany(self, SpriteGroups().doors_group)):
+                   pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) or
+                    pygame.sprite.spritecollideany(self, SpriteGroups().boxes_group)):
                 self.rect.center -= self.direction
