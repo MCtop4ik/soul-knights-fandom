@@ -8,7 +8,7 @@ class Constants(metaclass=Singleton):
         # size of one block image
         self.quadrant_size = 60
         # square root of amount of small squares in area of room
-        self.big_cell_size = 50
+        self.big_cell_size = 25
         # player_size
         self.player_size = (80, 70)
         # player speed
@@ -23,9 +23,9 @@ class Constants(metaclass=Singleton):
         self.music = 'Confrontation.mp3'
 
         # generation params
-        self.min_enemies_rooms = 2
-        self.max_enemies_rooms = 5
-        self.max_treasuries_rooms = 3
+        self.min_enemies_rooms = 1
+        self.max_enemies_rooms = 1
+        self.max_treasuries_rooms = 5
 
         # treasury room spawn chance
         self.chance = 3

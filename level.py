@@ -43,9 +43,9 @@ class Level(metaclass=Singleton):
         WeaponsList().add_weapons_to_list()
         WeaponsList().add_bullets_to_list()
         EnemyList().add_enemies_to_list()
-        InventoryV2().add_item_in_inventory_without_drop(WeaponsList().weapons_list[0])
-        InventoryV2().add_item_in_inventory_without_drop(WeaponsList().weapons_list[1])
-        InventoryV2().add_item_in_inventory_without_drop(WeaponsList().weapons_list[1])
+        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[0])
+        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[1])
+        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[1])
         SpriteGroups().camera_group = CameraGroup(*self.constants.camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
@@ -104,7 +104,7 @@ class Level(metaclass=Singleton):
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
         pygame.mixer.music.load(f'assets/music/{Constants().music}')
-        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.set_volume(0)
         pygame.mixer.music.play(-1)
 
         while True:
@@ -124,7 +124,7 @@ class Level(metaclass=Singleton):
             SpriteGroups().chests_group.update()
             SpriteGroups().portal_group.update()
             SpriteGroups().bullets_group.update()
-            SpriteGroups().dropped_group.update()
+            SpriteGroups().dropped_items_group.update()
             SpriteGroups().enemies_group.update()
             SpriteGroups().energy_group.update()
             SpriteGroups().inventory_group.update()

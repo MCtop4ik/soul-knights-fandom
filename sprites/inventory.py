@@ -12,34 +12,15 @@ class InventoryV2(metaclass=Singleton):
         self.inventory = []
         self.max_amount_of_items = 3
         self.__position_in_inventory = 0
-        self.needChange = False
-        self.dropped = False
-    def add_item_in_inventory_without_drop(self, item):
-        if len(self.inventory) < self.max_amount_of_items:
-            self.inventory.append(item)
-            return
-
-        self.inventory.append(item)
-        self.needChange = True
 
     def add_item_in_inventory(self, item):
         if len(self.inventory) < self.max_amount_of_items:
-            # self.inventory.append(item)
-            #dropped_item = self.inventory[self.__position_in_inventory]
-            DroppedWeapon(SpriteGroups().player.pos, SpriteGroups().dropped_group, self.inventory[self.__position_in_inventory])
-
-            self.inventory[self.__position_in_inventory] = item
-            #dropped_item.drop()
-            self.dropped = True
-            self.needChange = True
+            self.inventory = (self.inventory[:self.__position_in_inventory] + [item] +
+                              self.inventory[self.__position_in_inventory:])
             return
-
-    def add_item_in_inventory_id(self, item, id):
-        dropped_item = self.inventory[id]
-        self.inventory[id] = item
-        dropped_item.drop()
-
-        self.needChange = True
+        dropped_item = self.inventory.pop(self.__position_in_inventory)
+        self.inventory = (self.inventory[:self.__position_in_inventory] + [item] +
+                          self.inventory[self.__position_in_inventory:])
         return dropped_item
 
     @staticmethod
@@ -57,3 +38,19 @@ class InventoryV2(metaclass=Singleton):
     @position_in_inventory.setter
     def position_in_inventory(self, new_position):
         self.__position_in_inventory = new_position
+
+
+if __name__ == "__main__":
+    inventory = InventoryV2()
+    inventory.add_item_in_inventory('test1')
+    inventory.add_item_in_inventory('test2')
+    inventory.add_item_in_inventory('test3')
+    print(inventory.inventory)
+    inventory.add_item_in_inventory('test2')
+    print(inventory.inventory)
+    inventory.add_item_in_inventory('test1')
+    inventory.add_item_in_inventory('test2')
+    inventory.add_item_in_inventory('test1')
+    print(inventory.inventory)
+
+

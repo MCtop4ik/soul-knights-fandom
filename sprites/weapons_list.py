@@ -1,3 +1,5 @@
+import random
+
 from assets import Assets
 from patterns.creational_patterns.singleton import Singleton
 from .bullet_dataclass import Bullet
@@ -41,6 +43,9 @@ class WeaponsList(metaclass=Singleton):
         all_bullets = self.load_bullets_from_db()
         for bullet in all_bullets:
             self.__bullet_list.append(Bullet(*bullet[:]))
+
+    def random_weapon(self):
+        return self.__weapons_list[random.randint(0, len(self.weapons_list) - 1)]
 
     @property
     def weapons_list(self):
