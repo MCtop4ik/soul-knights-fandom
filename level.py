@@ -26,8 +26,18 @@ class Level(metaclass=Singleton):
         self.screen = pygame.display.set_mode(Constants().screen_size)
         self.constants = Constants()
 
+    def draw_health_bar(self):
+        health_bar_width = (150 / PlayerState().max_health) * PlayerState().health
+        pygame.draw.rect(self.screen, (255, 255, 255), (10, 10, 150, 20))
+        pygame.draw.rect(self.screen, (0, 255, 0), (10, 10, health_bar_width, 20))
+
+    def draw_energy_bar(self):
+        energy_bar_width = (150 / PlayerState().max_energy) * PlayerState().energy
+        pygame.draw.rect(self.screen, (255, 255, 255), (10, 50, 150, 20))
+        pygame.draw.rect(self.screen, (0, 255, 255), (10, 50, energy_bar_width, 20))
+
     def start(self):
-        PlayerState().health = 1000
+        PlayerState().health = 100
         PlayerState().energy = 100
         PlayerState().money = 0
         clock = pygame.time.Clock()
@@ -131,10 +141,12 @@ class Level(metaclass=Singleton):
             SpriteGroups().camera_group.draw_sprites(SpriteGroups().player)
             for inventory_cell in SpriteGroups().inventory_group.sprites():
                 self.screen.blit(inventory_cell.image, inventory_cell.rect)
-            my_font = pygame.font.SysFont('Comic Sans MS', 30)
-            mana_bar = my_font.render('Health -> ' + str(PlayerState().health), False, (220, 20, 60))
-            self.screen.blit(mana_bar, (0, 0))
-            mana_bar = my_font.render('Energy -> ' + str(PlayerState().energy), False, (138, 43, 226))
-            self.screen.blit(mana_bar, (0, 50))
+            # my_font = pygame.font.SysFont('Comic Sans MS', 30)
+            # mana_bar = my_font.render('Health -> ' + str(PlayerState().health), False, (220, 20, 60))
+            # self.screen.blit(mana_bar, (0, 0))
+            # mana_bar = my_font.render('Energy -> ' + str(PlayerState().energy), False, (138, 43, 226))
+            # self.screen.blit(mana_bar, (0, 50))
+            self.draw_health_bar()
+            self.draw_energy_bar()
             pygame.display.update()
             clock.tick(fps)
