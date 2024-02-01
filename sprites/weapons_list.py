@@ -26,12 +26,14 @@ class WeaponsList(metaclass=Singleton):
         return self.cursor.execute('SELECT * FROM bullets').fetchall()
 
     def load_weapons_sprites(self):
+        weapons = self.load_weapons_from_db()
         path_lists = list(
             map(lambda path: "weapons/" + path, self.__get_all_file_names_from_directory('assets/images_test/weapons')))
         path_dict = {}
         for weapon_path in path_lists:
             key = "weapon_" + weapon_path.split('/')[-1].split('.')[0]
-            path_dict[key] = weapon_path
+            current_weapon = list(filter(lambda x: x[5] == key, weapons))[0]
+            path_dict[key] = (weapon_path, (current_weapon[-3], current_weapon[-2]))
         return path_dict
 
     @staticmethod

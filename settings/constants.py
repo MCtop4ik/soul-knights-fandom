@@ -10,13 +10,13 @@ class Constants(metaclass=Singleton):
         # square root of amount of small squares in area of room
         self.big_cell_size = 50
         # player_size
-        self.player_size = (80, 70)
+        self.player_size = (60, 53)
         # player speed
         self.speed = 10
         # camera size
-        self.camera_size = (800, 800)
+        self.camera_size = (1000, 800)
         # screen size
-        self.screen_size = (800, 800)
+        self.screen_size = (1000, 800)
         # level which will load
         self.name = '2'
         self.FPS = 100

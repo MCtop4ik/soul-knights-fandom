@@ -4,6 +4,7 @@ from math import inf
 
 import pygame
 
+from assets import Assets
 from camera import CameraGroup
 from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
@@ -55,7 +56,11 @@ class Level(metaclass=Singleton):
         self.screen.blit(money_bar, (Constants().screen_size[0] - 20 - len(str(PlayerState().money) * 25), 7))
 
     def start(self):
-        PlayerState().health = 100
+        pygame.display.set_icon(Assets().load_image('leo-player.png'))
+        pygame.display.set_caption('Leo FIGHT')
+        pygame.mouse.set_visible(False)
+        weapon_id = 0
+        PlayerState().health = 1000
         PlayerState().energy = inf
         clock = pygame.time.Clock()
         fps = self.constants.FPS
@@ -70,9 +75,7 @@ class Level(metaclass=Singleton):
         WeaponsList().add_weapons_to_list()
         WeaponsList().add_bullets_to_list()
         EnemyList().add_enemies_to_list()
-        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[0])
-        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[1])
-        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[1])
+        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[weapon_id])
         SpriteGroups().camera_group = CameraGroup(*self.constants.camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
@@ -82,6 +85,7 @@ class Level(metaclass=Singleton):
             self.constants.player_size,
             SpriteGroups().camera_group)
         SpriteGroups().weapon = Weapon(
+            weapon_id + 1,
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
              start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +

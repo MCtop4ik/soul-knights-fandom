@@ -10,9 +10,10 @@ from sprites.weapons_list import WeaponsList
 
 
 class Weapon(pygame.sprite.Sprite):
-    def __init__(self, pos, group):
+    def __init__(self, weapon_id, pos, group):
         super().__init__(group)
 
+        self.bullet_id = None
         self.angle = 0
         self.offset_y = 20
         self.offset_x = 20
@@ -26,7 +27,7 @@ class Weapon(pygame.sprite.Sprite):
         self.current_position = 0
         self.sound_fire = pygame.mixer.Sound('assets/music/oi_new.mp3')
         self.energy_use = 1
-        self.change_weapon()
+        self.change_weapon(weapon_id)
         self.rect = None
         self.chest = None
         self.is_melee = False
@@ -42,6 +43,7 @@ class Weapon(pygame.sprite.Sprite):
         self.offset_y = selected_weapon.offset_y
         self.cut_off = pi / selected_weapon.cut_off
         self.fire_damage = selected_weapon.fire_damage
+        self.bullet_id = selected_weapon.bullet_id
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -84,7 +86,7 @@ class Weapon(pygame.sprite.Sprite):
         if SpriteGroups().player.use_energy(self.energy_use):
             self.compute_angle_to_fire()
             self.radians_to_angle()
-            bullet = WeaponsList().bullet_list[1]
+            bullet = list(filter(lambda x: x.id == self.bullet_id, WeaponsList().bullet_list))[0]
             bullet.fire_damage = self.fire_damage
 
             self.sound_fire.set_volume(0.15)

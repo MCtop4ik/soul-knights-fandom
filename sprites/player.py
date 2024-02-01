@@ -103,7 +103,6 @@ class Player(pygame.sprite.Sprite):
         if coins_obj:
             self.money += coins_obj.get_amount()
             coins_obj.kill()
-        print(self.money)
         PlayerState().energy = self.energy
         PlayerState().money = self.money
 
