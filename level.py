@@ -59,7 +59,7 @@ class Level(metaclass=Singleton):
         pygame.display.set_icon(Assets().load_image('leo-player.png'))
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
-        weapon_id = 0
+        weapon_id = 4
         PlayerState().health = 1000
         PlayerState().energy = inf
         clock = pygame.time.Clock()
@@ -75,7 +75,7 @@ class Level(metaclass=Singleton):
         WeaponsList().add_weapons_to_list()
         WeaponsList().add_bullets_to_list()
         EnemyList().add_enemies_to_list()
-        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[weapon_id])
+        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[weapon_id - 1])
         SpriteGroups().camera_group = CameraGroup(*self.constants.camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
@@ -85,7 +85,7 @@ class Level(metaclass=Singleton):
             self.constants.player_size,
             SpriteGroups().camera_group)
         SpriteGroups().weapon = Weapon(
-            weapon_id + 1,
+            weapon_id,
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
              start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
