@@ -32,5 +32,7 @@ class Portal(pygame.sprite.Sprite):
         SpriteGroups().energy_group = pygame.sprite.Group()
         SpriteGroups().enemies_group = pygame.sprite.Group()
         SpriteGroups().inventory_group = pygame.sprite.Group()
+        SpriteGroups().energy_group = pygame.sprite.Group()
+        SpriteGroups().dropped_items_group = pygame.sprite.Group()
         RoomFactory(Constants().name).load_assets()
         Level().start()

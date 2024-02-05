@@ -46,6 +46,15 @@ class WeaponsList(metaclass=Singleton):
         for bullet in all_bullets:
             self.__bullet_list.append(Bullet(*bullet[:]))
 
+    def load_bullet_sprites(self):
+        path_lists = list(
+            map(lambda path: "bullets/" + path, self.__get_all_file_names_from_directory('assets/images_test/bullets')))
+        path_dict = {}
+        for bullet_path in path_lists:
+            key = "bullet_" + bullet_path.split('/')[-1].split('.')[0]
+            path_dict[key] = bullet_path
+        return path_dict
+
     def random_weapon(self):
         return self.__weapons_list[random.randint(0, len(self.weapons_list) - 1)]
 

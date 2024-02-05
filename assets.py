@@ -36,8 +36,9 @@ class Assets(metaclass=Singleton):
 
     def load_abbr(self, new_abbr):
         from sprites.weapons_list import WeaponsList
-        self.abbr = {**new_abbr, **WeaponsList().load_weapons_sprites()}
+        self.abbr = {**new_abbr, **WeaponsList().load_weapons_sprites(), **WeaponsList().load_bullet_sprites()}
         self.__images = self.load_all_images()
+        print(self.__images)
 
     def load_image(self, name):
         fullname = os.path.join('assets/images_test', name)

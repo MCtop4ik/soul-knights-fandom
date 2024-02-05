@@ -96,7 +96,17 @@ class Weapon(pygame.sprite.Sprite):
                     SpriteGroups().player.rect.y), 'player')
 
     def hit(self):
-        pass
+        hit_radius = 180
+        angle_current = 0
+        time_hit = 2
+        one_tick = hit_radius / time_hit
+        last_tick = pygame.time.get_ticks()
+        while angle_current < hit_radius:
+            if one_tick < pygame.time.get_ticks() - last_tick:
+                last_tick = pygame.time.get_ticks()
+                ''':todo rotation'''
+                if pygame.sprite.spritecollideany(SpriteGroups().weapon_group, SpriteGroups().enemies_group):
+                    pass
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]

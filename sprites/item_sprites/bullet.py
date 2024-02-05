@@ -7,9 +7,9 @@ from sprites.sprite_groups import SpriteGroups
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, group, bullet, angle, start_coordinates, sender):
         super().__init__(group)
-        self.image = Assets().images[bullet.asset_id]
+        self.image = Assets().images['bullet_' + bullet.asset_id]
         self.angle = angle
-        self.image = pygame.transform.rotate(self.image, -self.angle - 90)
+        self.image = pygame.transform.rotate(self.image, -self.angle)
         self.image = pygame.transform.rotozoom(self.image, 0, 0.6)
 
         self.offset_x = bullet.offset_x
