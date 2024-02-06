@@ -27,9 +27,27 @@ class Player(pygame.sprite.Sprite):
         self.heal_points = PlayerState().health
         self.energy = PlayerState().energy
         self.money = PlayerState().money
+        self.player_name = PlayerState().character
+
+        self.state = 0
+        self.last_tick = pygame.time.get_ticks()
 
     def input(self):
         keys = pygame.key.get_pressed()
+        from assets import Assets
+        if pygame.time.get_ticks() - self.last_tick > 90:
+            if any(keys):
+                if self.state < 8:
+                    self.state = 8
+                self.state = self.state % 16
+                self.image = Assets().images[f'{self.player_name}_{self.state}']
+            else:
+                if self.state > 8:
+                    self.state = 0
+                self.state = self.state % 8
+                self.image = Assets().images[f'{self.player_name}_{self.state}']
+            self.state += 1
+            self.last_tick = pygame.time.get_ticks()
 
         if keys[pygame.K_UP] or keys[pygame.K_w]:
             self.direction.y = -1

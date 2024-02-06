@@ -32,7 +32,7 @@ class Assets(metaclass=Singleton):
             'portal_4': ('transfer_gate_4.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
             'portal_5': ('transfer_gate_5.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
             'portal_6': ('transfer_gate_6.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
-            'portal_7': ('transfer_gate_7.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_7': ('transfer_gate_7.png', (self.quadrant_size * 2, self.quadrant_size * 3))
         }
         # self.load_abbr({})
 
@@ -41,6 +41,20 @@ class Assets(metaclass=Singleton):
         self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
         self.connection = self.load_base()
         self.connection.close()
+
+    def load_player(self, player_name):
+        print(player_name)
+        abbr = {}
+        for elem in self.__get_all_file_names_from_directory('assets/images_test/characters'):
+            if elem[:len(player_name)] == player_name:
+                abbr[elem.split('.')[0]] = self.load_image('characters/' + elem)
+        print(abbr)
+        self.__images = {**self.__images, **abbr}
+
+    @staticmethod
+    def __get_all_file_names_from_directory(directory_path):
+        files = [f for f in os.listdir(directory_path) if os.path.isfile(os.path.join(directory_path, f))]
+        return files
 
     def load_abbr(self, new_abbr):
         from sprites.weapons_list import WeaponsList

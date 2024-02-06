@@ -59,6 +59,7 @@ class Level(metaclass=Singleton):
         pygame.display.set_icon(Assets().load_image('leo-pixel.png'))
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
+        Assets().load_player(PlayerState().character)
         weapon_id = 6
         PlayerState().health = 500
         PlayerState().energy = 300
