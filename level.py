@@ -59,9 +59,9 @@ class Level(metaclass=Singleton):
         pygame.display.set_icon(Assets().load_image('leo-pixel.png'))
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
-        weapon_id = 5
-        PlayerState().health = 10000
-        PlayerState().energy = inf
+        weapon_id = 6
+        PlayerState().health = 500
+        PlayerState().energy = 300
         clock = pygame.time.Clock()
         fps = self.constants.FPS
         pygame.mixer.init()

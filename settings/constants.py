@@ -23,8 +23,8 @@ class Constants(metaclass=Singleton):
         self.music = 'Confrontation.mp3'
 
         # generation params
-        self.min_enemies_rooms = 2
-        self.max_enemies_rooms = 5
+        self.min_enemies_rooms = 1
+        self.max_enemies_rooms = 2
         self.max_treasuries_rooms = 3
 
         # treasury room spawn chance

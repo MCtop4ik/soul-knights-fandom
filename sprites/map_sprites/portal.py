@@ -11,8 +11,15 @@ class Portal(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = Assets().images['portal']
         self.rect = self.image.get_rect(center=pos)
+        self.state = 0
+        self.last_tick = pygame.time.get_ticks()
 
     def update(self):
+        if pygame.time.get_ticks() - self.last_tick > 90:
+            self.state = self.state % 8
+            self.image = Assets().images[f'portal_{self.state}']
+            self.state += 1
+            self.last_tick = pygame.time.get_ticks()
         keys = pygame.key.get_pressed()
         if self.rect.colliderect(SpriteGroups().player.rect.inflate(
                 Constants().quadrant_size * 3, Constants().quadrant_size * 3)):

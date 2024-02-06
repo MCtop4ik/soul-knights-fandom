@@ -20,8 +20,8 @@ class Box(pygame.sprite.Sprite):
 
     def update(self):
         if self.health <= 0:
-            if random.randint(1, 100) in range(1, 5 + 1):
+            if random.randint(1, 10) in range(1, 5 + 1):
                 Energy(self.rect.center, SpriteGroups().energy_group)
-            if random.randint(1, 2) == 1:
+            if random.randint(1, 20) == 1:
                 Coin(self.rect.center, SpriteGroups().coins_group, coin_type='copper')
             self.kill()

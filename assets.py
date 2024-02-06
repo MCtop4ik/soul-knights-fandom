@@ -24,7 +24,15 @@ class Assets(metaclass=Singleton):
             'energy': ('energy_stone.webp', (16, 16)),
             'copper_coin': ('coin.png', (16, 16)),
             'silver_coin': ('coin.png', (16, 16)),
-            'gold_coin': ('coin.png', (16, 16))
+            'gold_coin': ('coin.png', (16, 16)),
+            'portal_0': ('transfer_gate_0.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_1': ('transfer_gate_1.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_2': ('transfer_gate_2.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_3': ('transfer_gate_3.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_4': ('transfer_gate_4.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_5': ('transfer_gate_5.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_6': ('transfer_gate_6.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
+            'portal_7': ('transfer_gate_7.png', (self.quadrant_size * 2, self.quadrant_size * 3)),
         }
         # self.load_abbr({})
 
