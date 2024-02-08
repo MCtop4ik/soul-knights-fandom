@@ -3,6 +3,7 @@ from random import randint, uniform
 
 import pygame
 from assets import Assets
+from settings.player_state import PlayerState
 from sprites.inventory import InventoryV2
 from sprites.item_sprites.bullet import Bullet
 from sprites.sprite_groups import SpriteGroups
@@ -14,7 +15,7 @@ class Weapon(pygame.sprite.Sprite):
         super().__init__(group)
 
         self.bullet_id = None
-        self.angle = 0
+        self.angle: int
         self.offset_y = 20
         self.offset_x = 20
         self.offset_time_ms = 10
@@ -27,10 +28,15 @@ class Weapon(pygame.sprite.Sprite):
         self.current_position = 0
         self.sound_fire = pygame.mixer.Sound('assets/music/oi_new.mp3')
         self.energy_use = 1
+        self.selected_weapon = None
         self.change_weapon(weapon_id)
         self.rect = None
         self.chest = None
         self.is_melee = False
+
+        self.last_tick = 0
+        self.state = 0
+        self.player_name = PlayerState().character
 
     def init_weapon(self, selected_weapon):
         self.last_shoot_time = 0
@@ -44,6 +50,7 @@ class Weapon(pygame.sprite.Sprite):
         self.cut_off = pi / selected_weapon.cut_off
         self.fire_damage = selected_weapon.fire_damage
         self.bullet_id = selected_weapon.bullet_id
+        self.selected_weapon = selected_weapon
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -51,6 +58,23 @@ class Weapon(pygame.sprite.Sprite):
         self.rect = SpriteGroups().player.rect.copy()
         self.rect.x += self.offset_x
         self.rect.y += self.offset_y
+        if pygame.time.get_ticks() - self.last_tick > 90:
+            if any(keys):
+                if self.state < 8:
+                    self.state = 8
+                self.state = self.state % 16
+            else:
+                if self.state > 8:
+                    self.state = 0
+                self.state = self.state % 8
+            self.image = Assets().images[f'{self.selected_weapon.image_name}']
+            if SpriteGroups().player.look_side == 'left':
+                self.image = pygame.transform.flip(self.image, True, False)
+                self.offset_x = 0
+            else:
+                self.offset_x = self.selected_weapon.offset_x
+            self.state += 1
+            self.last_tick = pygame.time.get_ticks()
 
         if keys[pygame.K_SPACE] and pygame.time.get_ticks() - self.last_shoot_time > self.offset_time_ms:
             if self.is_melee:

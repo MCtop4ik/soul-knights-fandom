@@ -31,6 +31,7 @@ class Player(pygame.sprite.Sprite):
 
         self.state = 0
         self.last_tick = pygame.time.get_ticks()
+        self.look_side = 'right'
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -40,12 +41,13 @@ class Player(pygame.sprite.Sprite):
                 if self.state < 8:
                     self.state = 8
                 self.state = self.state % 16
-                self.image = Assets().images[f'{self.player_name}_{self.state}']
             else:
                 if self.state > 8:
                     self.state = 0
                 self.state = self.state % 8
-                self.image = Assets().images[f'{self.player_name}_{self.state}']
+            self.image = Assets().images[f'{self.player_name}_{self.state}']
+            if self.look_side == 'left':
+                self.image = pygame.transform.flip(self.image, True, False)
             self.state += 1
             self.last_tick = pygame.time.get_ticks()
 
@@ -58,8 +60,10 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.direction.x = 1
+            self.look_side = 'right'
         elif keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.direction.x = -1
+            self.look_side = 'left'
         else:
             self.direction.x = 0
 
@@ -121,7 +125,7 @@ class Player(pygame.sprite.Sprite):
         if coins_obj:
             self.money += coins_obj.get_amount()
             coins_obj.kill()
-        PlayerState().energy = self.energy
+        PlayerState().energy = min(self.energy, PlayerState().max_energy)
         PlayerState().money = self.money
 
     def get_player_coordinates(self):

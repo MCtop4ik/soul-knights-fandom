@@ -5,7 +5,7 @@ from patterns.creational_patterns.singleton import Singleton
 
 class PlayerState(metaclass=Singleton):
     def __init__(self):
-        self.character = 'mayunlu'
+        self.character = 'swordmaster_1'
 
         self.health = 500
         self.energy = 300

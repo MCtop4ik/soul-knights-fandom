@@ -31,9 +31,12 @@ class WeaponsList(metaclass=Singleton):
             map(lambda path: "weapons/" + path, self.__get_all_file_names_from_directory('assets/images_test/weapons')))
         path_dict = {}
         for weapon_path in path_lists:
-            key = "weapon_" + weapon_path.split('/')[-1].split('.')[0]
-            current_weapon = list(filter(lambda x: x[5] == key, weapons))[0]
-            path_dict[key] = (weapon_path, (current_weapon[-3], current_weapon[-2]))
+            try:
+                key = "weapon_" + weapon_path.split('/')[-1].split('.')[0]
+                current_weapon = list(filter(lambda x: x[5] == key, weapons))[0]
+                path_dict[key] = (weapon_path, (current_weapon[-3], current_weapon[-2]))
+            except IndexError:
+                print(weapon_path)
         return path_dict
 
     @staticmethod
