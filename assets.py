@@ -43,12 +43,10 @@ class Assets(metaclass=Singleton):
         self.connection.close()
 
     def load_player(self, player_name):
-        print(player_name)
         abbr = {}
         for elem in self.__get_all_file_names_from_directory('assets/images_test/characters'):
             if elem[:len(player_name)] == player_name:
                 abbr[elem.split('.')[0]] = self.load_image('characters/' + elem)
-        print(abbr)
         self.__images = {**self.__images, **abbr}
 
     @staticmethod

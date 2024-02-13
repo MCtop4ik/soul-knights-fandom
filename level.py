@@ -60,7 +60,7 @@ class Level(metaclass=Singleton):
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
         Assets().load_player(PlayerState().character)
-        weapon_id = 5
+        weapon_id = 6
         PlayerState().health = 500
         PlayerState().energy = 300
         clock = pygame.time.Clock()
@@ -136,7 +136,7 @@ class Level(metaclass=Singleton):
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
         pygame.mixer.music.load(f'assets/music/{Constants().music}')
-        pygame.mixer.music.set_volume(1)
+        pygame.mixer.music.set_volume(0)
         pygame.mixer.music.play(-1)
 
         while True:

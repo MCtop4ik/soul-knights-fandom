@@ -1,4 +1,4 @@
-from math import sqrt, inf, atan2, pi
+from math import sqrt, inf, atan2, pi, cos, sin, radians
 from random import randint, uniform
 
 import pygame
@@ -15,7 +15,7 @@ class Weapon(pygame.sprite.Sprite):
         super().__init__(group)
 
         self.bullet_id = None
-        self.angle: int
+        self.angle = 0
         self.offset_y = 20
         self.offset_x = 20
         self.offset_time_ms = 10
@@ -30,13 +30,13 @@ class Weapon(pygame.sprite.Sprite):
         self.energy_use = 1
         self.selected_weapon = None
         self.change_weapon(weapon_id)
-        self.rect = None
+        self.rect = (0, 0)
         self.chest = None
         self.is_melee = False
 
         self.last_tick = 0
-        self.state = 0
         self.player_name = PlayerState().character
+        self.hit_angle = 180
 
     def init_weapon(self, selected_weapon):
         self.last_shoot_time = 0
@@ -59,26 +59,22 @@ class Weapon(pygame.sprite.Sprite):
         self.rect.x += self.offset_x
         self.rect.y += self.offset_y
         if pygame.time.get_ticks() - self.last_tick > 90:
-            if any(keys):
-                if self.state < 8:
-                    self.state = 8
-                self.state = self.state % 16
-            else:
-                if self.state > 8:
-                    self.state = 0
-                self.state = self.state % 8
             self.image = Assets().images[f'{self.selected_weapon.image_name}']
+            self.image = pygame.transform.rotate(self.image, self.angle)
             if SpriteGroups().player.look_side == 'left':
                 self.image = pygame.transform.flip(self.image, True, False)
                 self.offset_x = 0
             else:
                 self.offset_x = self.selected_weapon.offset_x
-            self.state += 1
             self.last_tick = pygame.time.get_ticks()
+            if self.hit_angle < 180:
+                self.hit()
 
         if keys[pygame.K_SPACE] and pygame.time.get_ticks() - self.last_shoot_time > self.offset_time_ms:
             if self.is_melee:
+                self.hit_angle = 0
                 self.hit()
+                print('222')
             if not self.is_melee:
                 self.shoot()
             self.last_shoot_time = pygame.time.get_ticks()
@@ -110,27 +106,44 @@ class Weapon(pygame.sprite.Sprite):
         if SpriteGroups().player.use_energy(self.energy_use):
             self.compute_angle_to_fire()
             self.radians_to_angle()
+            if SpriteGroups().player.look_side == 'left' and (-90 <= self.angle % 360 <= 90 or self.angle >= 270):
+                SpriteGroups().player.look_side = 'right'
+            elif SpriteGroups().player.look_side == 'right' and not (
+                    -90 <= self.angle % 360 <= 90 or self.angle >= 270):
+                SpriteGroups().player.look_side = 'left'
             bullet = list(filter(lambda x: x.id == self.bullet_id, WeaponsList().bullet_list))[0]
             bullet.fire_damage = self.fire_damage
 
-            self.sound_fire.set_volume(0.15)
+            # self.sound_fire.set_volume(0.15)
+            self.sound_fire.set_volume(0)
             self.sound_fire.play()
             Bullet(SpriteGroups().bullets_group, bullet, self.angle,
                    (SpriteGroups().player.rect.x,
                     SpriteGroups().player.rect.y), 'player')
 
+    def rotate_sword(self):
+        w, h = self.image.get_size()
+        box = [pygame.math.Vector2(p) for p in [(0, 0), (w, 0), (w, -h), (0, -h)]]
+        box_rotate = [p.rotate(self.angle) for p in box]
+        min_box = (min(box_rotate, key=lambda p: p[0])[0], min(box_rotate, key=lambda p: p[1])[1])
+        max_box = (max(box_rotate, key=lambda p: p[0])[0], max(box_rotate, key=lambda p: p[1])[1])
+
+        origin = (self.image.get_rect().x + min_box[0], self.image.get_rect().y - max_box[1])
+        print(origin)
+        self.rect = origin
+        rotated_image = pygame.transform.rotate(self.image, self.hit_angle)
+        self.image = rotated_image
+
     def hit(self):
-        hit_radius = 180
-        angle_current = 0
-        time_hit = 2
-        one_tick = hit_radius / time_hit
-        last_tick = pygame.time.get_ticks()
-        while angle_current < hit_radius:
-            if one_tick < pygame.time.get_ticks() - last_tick:
-                last_tick = pygame.time.get_ticks()
-                ''':todo rotation'''
-                if pygame.sprite.spritecollideany(SpriteGroups().weapon_group, SpriteGroups().enemies_group):
-                    pass
+        self.rotate_sword()
+        self.rect = self.image.get_rect()
+        enemy = pygame.sprite.spritecollideany(self, SpriteGroups().enemies_group)
+        if enemy:
+            print(self.fire_damage)
+            enemy.damage(self.fire_damage)
+        self.hit_angle += 20
+        pygame.draw.rect(self.image, (255, 0, 0), self.image.get_rect(), 2)
+        print(self.hit_angle)
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]
