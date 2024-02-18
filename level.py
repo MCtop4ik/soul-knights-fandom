@@ -60,7 +60,7 @@ class Level(metaclass=Singleton):
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
         Assets().load_player(PlayerState().character)
-        weapon_id = 6
+        weapon_id = 3
         PlayerState().health = 500
         PlayerState().energy = 300
         clock = pygame.time.Clock()

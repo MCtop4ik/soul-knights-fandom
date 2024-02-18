@@ -3,6 +3,7 @@ import pygame
 from assets import Assets
 from map_generation.room_factory import RoomFactory
 from settings.constants import Constants
+from settings.player_state import PlayerState
 from sprites.sprite_groups import SpriteGroups
 
 
@@ -24,7 +25,8 @@ class Portal(pygame.sprite.Sprite):
         if self.rect.colliderect(SpriteGroups().player.rect.inflate(
                 Constants().quadrant_size * 3, Constants().quadrant_size * 3)):
             if keys[pygame.K_RETURN]:
-                self.teleport("1", 'FallingMysts.mp3')
+                PlayerState().level_index += 1
+                self.teleport(PlayerState().levels[PlayerState().level_index], 'FallingMysts.mp3')
 
     @staticmethod
     def teleport(level_name, music_name):

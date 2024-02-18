@@ -139,6 +139,8 @@ class Weapon(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         enemy = pygame.sprite.spritecollideany(self, SpriteGroups().enemies_group)
         if enemy:
+            print(enemy)
+            print(self.fire_damage)
             print(self.fire_damage)
             enemy.damage(self.fire_damage)
         self.hit_angle += 20
