@@ -61,8 +61,6 @@ class Level(metaclass=Singleton):
         pygame.mouse.set_visible(False)
         Assets().load_player(PlayerState().character)
         weapon_id = 3
-        PlayerState().health = 500
-        PlayerState().energy = 300
         clock = pygame.time.Clock()
         fps = self.constants.FPS
         pygame.mixer.init()
