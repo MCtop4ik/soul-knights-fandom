@@ -12,5 +12,5 @@ class PlayerState(metaclass=Singleton):
         self.money = 0
         self.max_health = 500
         self.max_energy = 300
-        self.levels = ['2',  '1', '2', '1']
+        self.levels = ['1', '2', '2', '1']
         self.level_index = 0

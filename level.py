@@ -56,7 +56,7 @@ class Level(metaclass=Singleton):
         self.screen.blit(money_bar, (Constants().screen_size[0] - 20 - len(str(PlayerState().money) * 25), 7))
 
     def start(self):
-        pygame.display.set_icon(Assets().load_image('leo-pixel.png'))
+        pygame.display.set_icon(Assets().load_image('leo-player.png'))
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
         Assets().load_player(PlayerState().character)
