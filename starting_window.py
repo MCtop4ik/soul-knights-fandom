@@ -1,4 +1,4 @@
-import tkinter as tk
+import sys
 
 import pygame
 
@@ -17,31 +17,60 @@ def start_game():
     Level().start()
 
 
-def button_clicked():
-    print("Button clicked!")
+def choose_player():
+    choose_player_window.choose_player()
 
 
-def starting_window():
-    root = tk.Tk()
-    root.title("Starting Window")
-    window_width, window_height = (300, 300)
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    x_coordinate = (screen_width - window_width) // 2
-    y_coordinate = (screen_height - window_height) // 2
-    root.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
 
-    # Create a label widget
-    label = tk.Label(root, text="Welcome to my application!", font=("Helvetica", 16))
-    label.pack(pady=20)
 
-    start_button = tk.Button(root, text="Start Game", command=start_game)
-    start_button.pack(pady=20)
+def start_window():
+    pygame.init()
+    pygame.mouse.set_visible(True)
 
-    choose_player_button = tk.Button(root, text="Choose Your Player", command=choose_player_window.choose_player)
-    choose_player_button.pack(pady=60)
+    # Установка размеров окна
+    WINDOW_WIDTH, WINDOW_HEIGHT = 400, 300
+    screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    pygame.display.set_caption("Starting Window")
 
+    # Цвета
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+
+    # Шрифт
+    font = pygame.font.Font(None, 36)
     while True:
-        root.update_idletasks()
-        root.update()
+        screen.fill(WHITE)
 
+        # Рисуем кнопки
+        start_button = pygame.Rect(50, 100, 200, 50)
+        pygame.draw.rect(screen, BLACK, start_button)
+        draw_text("Start Game", font, WHITE, screen, 65, 110)
+
+        choose_button = pygame.Rect(50, 200, 200, 50)
+        pygame.draw.rect(screen, BLACK, choose_button)
+        draw_text("Choose Player", font, WHITE, screen, 65, 210)
+
+        # Обработка событий
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+
+                # Проверка нажатия на кнопки
+                if start_button.collidepoint(mouse_pos):
+                    start_game()
+                elif choose_button.collidepoint(mouse_pos):
+                    choose_player()
+
+        pygame.display.update()
+
+
+if __name__ == "__main__":
+    start_window()

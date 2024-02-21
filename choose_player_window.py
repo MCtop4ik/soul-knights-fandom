@@ -1,10 +1,9 @@
 import pygame
 import sys
 
-import starting_window
-
 
 def choose_player():
+    import starting_window
     pygame.init()
     window_width = 400
     window_height = 300
@@ -66,7 +65,7 @@ def choose_player():
                     selected_player = list(player_images.keys())[selected_row * 4 + selected_col]
                     print(f"Selected player: {selected_player}")
                     pygame.quit()
-                    starting_window.starting_window()
+                    starting_window.start_window()
                     sys.exit()
 
         window.fill((255, 255, 255))

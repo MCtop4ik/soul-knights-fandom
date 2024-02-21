@@ -59,6 +59,8 @@ class Level(metaclass=Singleton):
         pygame.display.set_icon(Assets().load_image('leo-player.png'))
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
+        self.screen = pygame.display.set_mode(Constants().screen_size)
+        self.constants = Constants()
         Assets().load_player(PlayerState().character)
         weapon_id = 3
         clock = pygame.time.Clock()
@@ -144,8 +146,7 @@ class Level(metaclass=Singleton):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
-                        starting_window.starting_window()
+                        starting_window.start_window()
                         sys.exit()
 
             SpriteGroups().camera_group.update()
