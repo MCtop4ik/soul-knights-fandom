@@ -146,6 +146,16 @@ class Level(metaclass=Singleton):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        SpriteGroups().doors_group = pygame.sprite.Group()
+                        SpriteGroups().walls_group = pygame.sprite.Group()
+                        SpriteGroups().portal_group = pygame.sprite.Group()
+                        SpriteGroups().chests_group = pygame.sprite.Group()
+                        SpriteGroups().boxes_group = pygame.sprite.Group()
+                        SpriteGroups().energy_group = pygame.sprite.Group()
+                        SpriteGroups().enemies_group = pygame.sprite.Group()
+                        SpriteGroups().inventory_group = pygame.sprite.Group()
+                        SpriteGroups().energy_group = pygame.sprite.Group()
+                        SpriteGroups().dropped_items_group = pygame.sprite.Group()
                         starting_window.start_window()
                         sys.exit()
 
