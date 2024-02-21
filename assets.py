@@ -2,6 +2,7 @@ import os
 import sqlite3
 
 import pygame
+
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
 
@@ -55,10 +56,12 @@ class Assets(metaclass=Singleton):
         return files
 
     def load_abbr(self, new_abbr):
+        from map_generation.room_factory import RoomFactory
         from sprites.weapons_list import WeaponsList
         self.abbr = {**new_abbr, **WeaponsList().load_weapons_sprites(), **WeaponsList().load_bullet_sprites()}
         self.__images = self.load_all_images()
-        print(self.__images)
+        self.road_image_ids = RoomFactory(Constants().name).get_road_images()
+        self.wall_image_ids = RoomFactory(Constants().name).get_wall_images()
 
     def load_image(self, name):
         fullname = os.path.join('assets/images_test', name)
