@@ -83,7 +83,7 @@ class Level(metaclass=Singleton):
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
              start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
-            self.constants.player_size,
+            self.constants.player_size, level,
             SpriteGroups().camera_group)
         SpriteGroups().weapon = Weapon(
             weapon_id,

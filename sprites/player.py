@@ -7,7 +7,7 @@ from sprites.sprite_groups import SpriteGroups
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, player_size, group):
+    def __init__(self, pos, player_size, level, group):
         super().__init__(group)
         self.image = pygame.transform.scale(
             pygame.image.load('assets/images_test/normal-alpha-leo.png').convert_alpha(),
@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.finished_direction = (0, 0)
         self.quadrant_size = Constants().quadrant_size
         self.big_cell_size = Constants().big_cell_size
+        self.level = level
 
         self.heal_points = PlayerState().health
         self.energy = PlayerState().energy
@@ -81,6 +82,7 @@ class Player(pygame.sprite.Sprite):
         self.uncleared_rooms = new_uncleared_rooms
 
     def update(self):
+        stay_cell = self.level[self.get_player_coordinates()[1] // self.quadrant_size][self.get_player_coordinates()[0] // self.quadrant_size]
         if self.heal_points <= 0:
             self.kill()
             for sprite in SpriteGroups().weapon_group:
@@ -113,9 +115,11 @@ class Player(pygame.sprite.Sprite):
                     else:
                         self.battle = False
         else:
-            if self.battle:
+            if self.battle and stay_cell.name == 'Enemy':
                 self.finished_direction = self.direction
                 self.not_allowed_through_doors = True
+            else:
+                self.battle = False
 
         while pygame.sprite.spritecollideany(self, SpriteGroups().doors_group) and self.not_allowed_through_doors:
             self.rect.center -= self.direction
