@@ -1,9 +1,9 @@
 import random
 import sys
-from math import inf
 
 import pygame
 
+import starting_window
 from assets import Assets
 from camera import CameraGroup
 from map_generation.create_field_matrix import CreateFieldMatrix
@@ -147,6 +147,7 @@ class Level(metaclass=Singleton):
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         pygame.quit()
+                        starting_window.starting_window()
                         sys.exit()
 
             SpriteGroups().camera_group.update()
