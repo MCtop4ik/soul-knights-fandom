@@ -1,3 +1,4 @@
+import os
 import sys
 
 import pygame
@@ -11,7 +12,7 @@ def start_game():
     from settings.constants import Constants
     from settings.player_state import PlayerState
     pygame.init()
-    pygame.display.set_caption("Pygame Window")
+    pygame.display.set_caption("Main window")
     PlayerState().health = PlayerState().max_health
     PlayerState().energy = PlayerState().max_energy
     PlayerState().money = 0
@@ -38,6 +39,7 @@ def start_window():
     WINDOW_WIDTH, WINDOW_HEIGHT = 400, 300
     screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     pygame.display.set_caption("Starting Window")
+    os.environ['SDL_VIDEO_WINDOW_POS'] = '200,100'
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     font = pygame.font.Font(None, 36)

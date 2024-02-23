@@ -1,3 +1,7 @@
+import ctypes
+import os
+
+import pyautogui
 import random
 import sys
 
@@ -55,11 +59,20 @@ class Level(metaclass=Singleton):
                                    False, (138, 43, 226))
         self.screen.blit(money_bar, (Constants().screen_size[0] - 20 - len(str(PlayerState().money) * 25), 7))
 
+    def set_window_position(self, x, y):
+        # Используем библиотеку ctypes для вызова WinAPI функций
+        user32 = ctypes.windll.user32
+        hWnd = pygame.display.get_wm_info()["window"]
+        user32.SetWindowPos(hWnd, 0, x, y, 0, 0, 0x0001)
+
     def start(self):
         pygame.display.set_icon(Assets().load_image('leo-player.png'))
         pygame.display.set_caption('Leo FIGHT')
         pygame.mouse.set_visible(False)
         self.screen = pygame.display.set_mode(Constants().screen_size)
+        window_pos_x = 200
+        window_pos_y = 100
+        pyautogui.moveTo(window_pos_x, window_pos_y)
         self.constants = Constants()
         Assets().load_player(PlayerState().character)
         weapon_id = 3
@@ -67,6 +80,7 @@ class Level(metaclass=Singleton):
         fps = self.constants.FPS
         pygame.mixer.init()
         pygame.font.init()
+        self.set_window_position(200, 100)
         level, \
             start_coordinates, \
             portal_coordinates, \
