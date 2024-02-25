@@ -4,6 +4,7 @@ import sys
 import pygame
 
 import choose_player_window
+from assets import Assets
 
 
 def start_game():
@@ -43,15 +44,22 @@ def start_window():
     WHITE = (255, 255, 255)
     BLACK = (0, 0, 0)
     font = pygame.font.Font(None, 36)
+    bg = Assets().load_image_with_size('start_background.jpg', (WINDOW_WIDTH + 100, WINDOW_HEIGHT + 100))
+
     while True:
         screen.fill(WHITE)
-        start_button = pygame.Rect(50, 100, 200, 50)
-        pygame.draw.rect(screen, BLACK, start_button)
-        draw_text("Start Game", font, WHITE, screen, 65, 110)
+        screen.blit(bg, (0, 0))
+        start_button = pygame.Rect(65, 60, 300, 55)
+        # pygame.draw.rect(screen, BLACK, start_button)
+        draw_text("Start Game", font, WHITE, screen, 148, 70)
 
-        choose_button = pygame.Rect(50, 200, 200, 50)
-        pygame.draw.rect(screen, BLACK, choose_button)
-        draw_text("Choose Player", font, WHITE, screen, 65, 210)
+        choose_button = pygame.Rect(65, 135, 300, 55)
+        # pygame.draw.rect(screen, BLACK, choose_button)
+        draw_text("Choose Player", font, WHITE, screen, 148, 150)
+
+        settings_button = pygame.Rect(65, 200, 300, 55)
+        # pygame.draw.rect(screen, BLACK, settings_button)
+        draw_text("Settings", font, WHITE, screen, 148, 224)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -61,8 +69,12 @@ def start_window():
                 mouse_pos = event.pos
                 if start_button.collidepoint(mouse_pos):
                     start_game()
+
                 elif choose_button.collidepoint(mouse_pos):
                     choose_player()
+
+                elif settings_button.collidepoint(mouse_pos):
+                    pass  # settings()
 
         pygame.display.update()
 

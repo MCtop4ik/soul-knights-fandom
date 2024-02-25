@@ -1,7 +1,7 @@
 import ctypes
 import os
 
-import pyautogui
+# import pyautogui
 import random
 import sys
 
@@ -72,7 +72,7 @@ class Level(metaclass=Singleton):
         self.screen = pygame.display.set_mode(Constants().screen_size)
         window_pos_x = 200
         window_pos_y = 100
-        pyautogui.moveTo(window_pos_x, window_pos_y)
+        # pyautogui.moveTo(window_pos_x, window_pos_y)
         self.constants = Constants()
         Assets().load_player(PlayerState().character)
         weapon_id = 3

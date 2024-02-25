@@ -19,7 +19,7 @@ class Constants(metaclass=Singleton):
         self.screen_size = (1000, 800)
         # level which will load
         self.name = '2'
-        self.FPS = 100
+        self.FPS = 80
         self.music = 'Confrontation.mp3'
 
         # generation params
