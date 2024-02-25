@@ -90,6 +90,7 @@ class Player(pygame.sprite.Sprite):
             SpriteGroups().weapon_group.update()
             PlayerState().health = 500
             PlayerState().energy = 300
+            PlayerState().level_index = 1
             Portal.teleport(PlayerState().levels[0], 'Confrontation.mp3')
         if not self.battle:
             self.not_allowed_through_doors = False

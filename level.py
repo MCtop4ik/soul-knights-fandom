@@ -1,5 +1,4 @@
 import ctypes
-import os
 
 import pyautogui
 import random
