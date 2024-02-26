@@ -1,6 +1,9 @@
 import pygame
 import sys
+
+from assets import Assets
 from logger import CustomLogger
+from settings.player_state import PlayerState
 
 
 class ChoosePlayerWindow:
@@ -12,23 +15,32 @@ class ChoosePlayerWindow:
         self.cell_height = self.window_height // 3
         self.window = pygame.display.set_mode((self.window_width, self.window_height))
         pygame.display.set_caption("Player Selection")
-        self.player_images = {
-            "Player 1": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 2": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 3": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 4": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 5": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 6": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 7": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 8": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 9": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 10": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 11": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha(),
-            "Player 12": pygame.image.load("../../assets/images_test/characters/mage_4_0.png").convert_alpha()
+        self.assets = Assets
+        self.image_path = 'assets/images_test/characters/'
+        self.name_to_sprite_name = {
+            "Player 1": "mage_4_0",
+            "Player 2": "mage_17_0",
+            "Player 3": "mage_4_0",
+            "Player 4": "mage_17_0",
+            "Player 5": "mage_4_0",
+            "Player 6": "mage_17_0",
+            "Player 7": "mage_4_0",
+            "Player 8": "mage_17_0",
+            "Player 9": "mage_4_0",
+            "Player 10": "mage_17_0",
+            "Player 11": "mage_4_0",
+            "Player 12": "mage_17_0"
         }
+        self.player_images = {}
+        self.load_player_images()
+
         self.font = pygame.font.Font(None, 24)
         self.selected_row = 0
         self.selected_col = 0
+
+    def load_player_images(self):
+        for key, img_name in self.name_to_sprite_name.items():
+            self.player_images[key] = self.assets.load_alpha_image(self.image_path + img_name + '.png')
 
     def draw_player_buttons(self):
         for num, (player, image) in enumerate(self.player_images.items()):
@@ -68,6 +80,8 @@ class ChoosePlayerWindow:
                     elif event.key == pygame.K_RETURN:
                         selected_player = list(self.player_images.keys())[self.selected_row * 4 + self.selected_col]
                         CustomLogger().debug(f"Selected player: {selected_player}")
+                        new_character = self.name_to_sprite_name[selected_player]
+                        PlayerState().character = new_character[:new_character.rfind('_')]
                         pygame.quit()
                         StartWindow().run()
                         sys.exit()

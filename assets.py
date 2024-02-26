@@ -77,6 +77,10 @@ class Assets(metaclass=Singleton):
         image = pygame.transform.scale(pygame.image.load(fullname), size)
         return image
 
+    @staticmethod
+    def load_alpha_image(img_path):
+        return pygame.image.load(img_path).convert_alpha()
+
     def load_all_images(self):
         images = {}
         for key, value in {**self.constant_images, **self.abbr}.items():
