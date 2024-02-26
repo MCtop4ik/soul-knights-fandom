@@ -1,6 +1,7 @@
 import random
 
 from assets import Assets
+from logger import CustomLogger
 from patterns.creational_patterns.singleton import Singleton
 from .bullet_dataclass import Bullet
 from .weapon_dataclass import Weapon
@@ -36,7 +37,7 @@ class WeaponsList(metaclass=Singleton):
                 current_weapon = list(filter(lambda x: x[5] == key, weapons))[0]
                 path_dict[key] = (weapon_path, (current_weapon[-3], current_weapon[-2]))
             except IndexError:
-                print(weapon_path)
+                CustomLogger.warning('Index Error caused by file: ' + weapon_path)
         return path_dict
 
     @staticmethod

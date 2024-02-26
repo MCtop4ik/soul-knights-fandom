@@ -95,4 +95,4 @@ class CreateFieldMatrix:
     @staticmethod
     def print_field(field):
         for row in field:
-            CustomLogger().debug(*row)
+            CustomLogger().debug(row)

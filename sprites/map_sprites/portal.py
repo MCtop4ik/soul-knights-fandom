@@ -1,11 +1,12 @@
 import pygame
 
-import end_screen
+from windows import end_screen
 from assets import Assets
 from map_generation.room_factory import RoomFactory
 from settings.constants import Constants
 from settings.player_state import PlayerState
 from sprites.sprite_groups import SpriteGroups
+from windows.end_screen import EndScreen
 
 
 class Portal(pygame.sprite.Sprite):
@@ -28,7 +29,7 @@ class Portal(pygame.sprite.Sprite):
             if keys[pygame.K_RETURN]:
                 PlayerState().level_index += 1
                 if PlayerState().level_index == len(PlayerState().levels):
-                    end_screen.start_window()
+                    EndScreen().run()
                     SpriteGroups().clear_level_sprites()
                     return
                 self.teleport(PlayerState().levels[PlayerState().level_index], 'FallingMysts.mp3')

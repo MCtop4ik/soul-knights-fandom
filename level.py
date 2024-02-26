@@ -1,12 +1,10 @@
 import ctypes
 
-# import pyautogui
 import random
 import sys
 
 import pygame
 
-import starting_window
 from assets import Assets
 from camera import CameraGroup
 from logger import CustomLogger
@@ -25,6 +23,8 @@ from sprites.sprite_groups import SpriteGroups
 from sprites.item_sprites.weapon import Weapon
 from sprites.weapons_list import WeaponsList
 import platform
+
+from windows.starting_window import StartWindow
 
 
 class Level(metaclass=Singleton):
@@ -60,12 +60,13 @@ class Level(metaclass=Singleton):
                                    False, (138, 43, 226))
         self.screen.blit(money_bar, (Constants().screen_size[0] - 20 - len(str(PlayerState().money) * 25), 7))
 
-    def set_window_position(self):
+    @staticmethod
+    def set_window_position():
         window_pos_x = 200
         window_pos_y = 100
         user32 = ctypes.windll.user32
-        hWnd = pygame.display.get_wm_info()["window"]
-        user32.SetWindowPos(hWnd, 0, window_pos_x, window_pos_y, 0, 0, 0x0001)
+        h_wnd = pygame.display.get_wm_info()["window"]
+        user32.SetWindowPos(h_wnd, 0, window_pos_x, window_pos_y, 0, 0, 0x0001)
 
     def start(self):
         pygame.display.set_icon(Assets().load_image('leo-player.png'))
@@ -167,7 +168,7 @@ class Level(metaclass=Singleton):
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         SpriteGroups().clear_level_sprites()
-                        starting_window.start_window()
+                        StartWindow().run()
                         sys.exit()
 
             SpriteGroups().camera_group.update()

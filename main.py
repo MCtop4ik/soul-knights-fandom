@@ -1,6 +1,6 @@
-import starting_window
-
+from windows.starting_window import StartWindow
 
 if __name__ == '__main__':
-    starting_window.start_window()
+    start_window = StartWindow()
+    start_window.run()
 
