@@ -37,7 +37,7 @@ class WeaponsList(metaclass=Singleton):
                 current_weapon = list(filter(lambda x: x[5] == key, weapons))[0]
                 path_dict[key] = (weapon_path, (current_weapon[-3], current_weapon[-2]))
             except IndexError:
-                CustomLogger.warning('Index Error caused by file: ' + weapon_path)
+                CustomLogger().warning('Index Error caused by file: ' + weapon_path)
         return path_dict
 
     @staticmethod

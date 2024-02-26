@@ -25,6 +25,7 @@ class EndScreen:
         self.screen.blit(textobj, textrect)
 
     def run(self):
+        pygame.mixer.music.stop()
         while True:
             self.screen.fill(self.WHITE)
             self.screen.blit(self.bg, (0, 0))
@@ -47,4 +48,4 @@ class EndScreen:
 
 
 if __name__ == "__main__":
-    EndWindow().run()
+    EndScreen().run()

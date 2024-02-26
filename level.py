@@ -156,9 +156,12 @@ class Level(metaclass=Singleton):
         InventorySpriteV2((self.constants.screen_size[1] - self.constants.quadrant_size,
                            self.constants.screen_size[0] - self.constants.quadrant_size),
                           SpriteGroups().inventory_group)
-        pygame.mixer.music.load(f'assets/music/{Constants().music}')
-        pygame.mixer.music.set_volume(0)
-        pygame.mixer.music.play(-1)
+        if Constants().music_enable:
+            pygame.mixer.music.load(f'assets/music/{Constants().music}')
+            pygame.mixer.music.set_volume(Constants().music_volume)
+            pygame.mixer.music.play(-1)
+        else:
+            pygame.mixer.music.stop()
 
         while True:
             for event in pygame.event.get():
@@ -169,6 +172,7 @@ class Level(metaclass=Singleton):
                     if event.key == pygame.K_ESCAPE:
                         SpriteGroups().clear_level_sprites()
                         StartWindow().run()
+                        pygame.mixer.music.stop()
                         sys.exit()
 
             SpriteGroups().camera_group.update()

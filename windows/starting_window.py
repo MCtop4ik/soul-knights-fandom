@@ -50,6 +50,7 @@ class StartWindow:
         settings_menu.run()
 
     def run(self):
+        pygame.mixer.music.stop()
         while True:
             self.screen.fill(self.WHITE)
             self.screen.blit(self.bg, (0, 0))

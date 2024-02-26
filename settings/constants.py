@@ -21,6 +21,8 @@ class Constants(metaclass=Singleton):
         self.name = '2'
         self.FPS = 80
         self.music = 'Confrontation.mp3'
+        self.music_volume = 0
+        self.music_enable = False
 
         # generation params
         self.min_enemies_rooms = 1
