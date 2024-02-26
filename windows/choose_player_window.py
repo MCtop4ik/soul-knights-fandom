@@ -64,11 +64,11 @@ class ChoosePlayerWindow:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.K_ESCAPE:
-                    pygame.quit()
-                    StartWindow().run()
-                    sys.exit()
                 elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        StartWindow().run()
+                        sys.exit()
                     if event.key == pygame.K_UP:
                         self.selected_row = max(0, self.selected_row - 1)
                     elif event.key == pygame.K_DOWN:

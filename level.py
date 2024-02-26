@@ -1,4 +1,5 @@
 import ctypes
+import os
 
 import random
 import sys
@@ -83,6 +84,7 @@ class Level(metaclass=Singleton):
         current_os = platform.system()
         if current_os == 'Darwin':
             CustomLogger().info('MacOS')
+            os.environ['SDL_VIDEO_WINDOW_POS'] = '200,100'
         if current_os == 'Windows':
             CustomLogger().info('Windows')
             self.set_window_position()
