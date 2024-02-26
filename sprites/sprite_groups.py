@@ -1,3 +1,4 @@
+import pygame
 from pygame.sprite import Group
 
 from patterns.creational_patterns.singleton import Singleton
@@ -21,3 +22,22 @@ class SpriteGroups(metaclass=Singleton):
         self.coins_group = Group()
         self.weapon = None
         self.player = None
+
+    def clear_level_sprites(self):
+        self.doors_group = pygame.sprite.Group()
+        self.walls_group = pygame.sprite.Group()
+        self.portal_group = pygame.sprite.Group()
+        self.chests_group = pygame.sprite.Group()
+        self.boxes_group = pygame.sprite.Group()
+        self.energy_group = pygame.sprite.Group()
+        self.enemies_group = pygame.sprite.Group()
+        self.inventory_group = pygame.sprite.Group()
+        self.energy_group = pygame.sprite.Group()
+        self.dropped_items_group = pygame.sprite.Group()
+        self.energy_group = Group()
+        self.coins_group = Group()
+
+
+if __name__ == "__main__":
+    s = SpriteGroups()
+    s.clear_level_sprites()

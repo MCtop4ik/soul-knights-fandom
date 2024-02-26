@@ -1,5 +1,6 @@
 import pygame
 
+import end_screen
 from assets import Assets
 from map_generation.room_factory import RoomFactory
 from settings.constants import Constants
@@ -26,6 +27,10 @@ class Portal(pygame.sprite.Sprite):
                 Constants().quadrant_size * 3, Constants().quadrant_size * 3)):
             if keys[pygame.K_RETURN]:
                 PlayerState().level_index += 1
+                if PlayerState().level_index == len(PlayerState().levels):
+                    end_screen.start_window()
+                    SpriteGroups().clear_level_sprites()
+                    return
                 self.teleport(PlayerState().levels[PlayerState().level_index], 'FallingMysts.mp3')
 
     @staticmethod
@@ -33,15 +38,6 @@ class Portal(pygame.sprite.Sprite):
         from level import Level
         Constants().name = level_name
         Constants().music = music_name
-        SpriteGroups().doors_group = pygame.sprite.Group()
-        SpriteGroups().walls_group = pygame.sprite.Group()
-        SpriteGroups().portal_group = pygame.sprite.Group()
-        SpriteGroups().chests_group = pygame.sprite.Group()
-        SpriteGroups().boxes_group = pygame.sprite.Group()
-        SpriteGroups().energy_group = pygame.sprite.Group()
-        SpriteGroups().enemies_group = pygame.sprite.Group()
-        SpriteGroups().inventory_group = pygame.sprite.Group()
-        SpriteGroups().energy_group = pygame.sprite.Group()
-        SpriteGroups().dropped_items_group = pygame.sprite.Group()
+        SpriteGroups().clear_level_sprites()
         RoomFactory(Constants().name).load_assets()
         Level().start()

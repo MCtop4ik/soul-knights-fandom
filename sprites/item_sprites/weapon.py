@@ -74,7 +74,6 @@ class Weapon(pygame.sprite.Sprite):
             if self.is_melee:
                 self.hit_angle = 0
                 self.hit()
-                print('222')
             if not self.is_melee:
                 self.shoot()
             self.last_shoot_time = pygame.time.get_ticks()
@@ -129,7 +128,6 @@ class Weapon(pygame.sprite.Sprite):
         max_box = (max(box_rotate, key=lambda p: p[0])[0], max(box_rotate, key=lambda p: p[1])[1])
 
         origin = (self.image.get_rect().x + min_box[0], self.image.get_rect().y - max_box[1])
-        print(origin)
         self.rect = origin
         rotated_image = pygame.transform.rotate(self.image, self.hit_angle)
         self.image = rotated_image
@@ -139,13 +137,9 @@ class Weapon(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         enemy = pygame.sprite.spritecollideany(self, SpriteGroups().enemies_group)
         if enemy:
-            print(enemy)
-            print(self.fire_damage)
-            print(self.fire_damage)
             enemy.damage(self.fire_damage)
         self.hit_angle += 20
         pygame.draw.rect(self.image, (255, 0, 0), self.image.get_rect(), 2)
-        print(self.hit_angle)
 
     def change_weapon(self, weapon_id=1):
         selected_weapon = list(filter(lambda weapon: weapon.id == weapon_id, WeaponsList().weapons_list))[0]

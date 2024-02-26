@@ -1,6 +1,7 @@
 from random import randrange
 
 from assets import Assets
+from logger import CustomLogger
 from map_generation.cell import Cell
 from map_generation.map_generator import MapGenerator
 from map_generation.room_factory import RoomFactory
@@ -68,7 +69,7 @@ class CreateFieldMatrix:
                 end_x=coordinates[i][0] * self.big_cell_size + self.big_cell_size // 2,
                 end_y=coordinates[i][1] * self.big_cell_size + self.big_cell_size // 2
             )
-        print(coordinates_treasure_rooms)
+        CustomLogger().debug(f'Treasure rooms cords: {coordinates_treasure_rooms}')
         for i in range(len(coordinates_treasure_rooms)):
             self.__create_road(
                 start_x=coordinates_treasure_rooms[i][0][0] * self.big_cell_size + self.big_cell_size // 2,
@@ -94,4 +95,4 @@ class CreateFieldMatrix:
     @staticmethod
     def print_field(field):
         for row in field:
-            print(*row)
+            CustomLogger().debug(*row)

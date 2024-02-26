@@ -9,6 +9,7 @@ import pygame
 import starting_window
 from assets import Assets
 from camera import CameraGroup
+from logger import CustomLogger
 from map_generation.create_field_matrix import CreateFieldMatrix
 from patterns.creational_patterns.singleton import Singleton
 from settings.constants import Constants
@@ -23,6 +24,7 @@ from sprites.player import Player
 from sprites.sprite_groups import SpriteGroups
 from sprites.item_sprites.weapon import Weapon
 from sprites.weapons_list import WeaponsList
+import platform
 
 
 class Level(metaclass=Singleton):
@@ -58,20 +60,18 @@ class Level(metaclass=Singleton):
                                    False, (138, 43, 226))
         self.screen.blit(money_bar, (Constants().screen_size[0] - 20 - len(str(PlayerState().money) * 25), 7))
 
-    def set_window_position(self, x, y):
-        # Используем библиотеку ctypes для вызова WinAPI функций
+    def set_window_position(self):
+        window_pos_x = 200
+        window_pos_y = 100
         user32 = ctypes.windll.user32
         hWnd = pygame.display.get_wm_info()["window"]
-        user32.SetWindowPos(hWnd, 0, x, y, 0, 0, 0x0001)
+        user32.SetWindowPos(hWnd, 0, window_pos_x, window_pos_y, 0, 0, 0x0001)
 
     def start(self):
         pygame.display.set_icon(Assets().load_image('leo-player.png'))
-        pygame.display.set_caption('Leo FIGHT')
+        pygame.display.set_caption('Soul Stranger')
         pygame.mouse.set_visible(False)
         self.screen = pygame.display.set_mode(Constants().screen_size)
-        window_pos_x = 200
-        window_pos_y = 100
-        # pyautogui.moveTo(window_pos_x, window_pos_y)
         self.constants = Constants()
         Assets().load_player(PlayerState().character)
         weapon_id = 3
@@ -79,7 +79,14 @@ class Level(metaclass=Singleton):
         fps = self.constants.FPS
         pygame.mixer.init()
         pygame.font.init()
-        self.set_window_position(200, 100)
+        current_os = platform.system()
+        if current_os == 'Darwin':
+            CustomLogger().info('MacOS')
+        if current_os == 'Windows':
+            CustomLogger().info('Windows')
+            self.set_window_position()
+        CustomLogger().debug('Start level')
+
         level, \
             start_coordinates, \
             portal_coordinates, \
@@ -159,16 +166,7 @@ class Level(metaclass=Singleton):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        SpriteGroups().doors_group = pygame.sprite.Group()
-                        SpriteGroups().walls_group = pygame.sprite.Group()
-                        SpriteGroups().portal_group = pygame.sprite.Group()
-                        SpriteGroups().chests_group = pygame.sprite.Group()
-                        SpriteGroups().boxes_group = pygame.sprite.Group()
-                        SpriteGroups().energy_group = pygame.sprite.Group()
-                        SpriteGroups().enemies_group = pygame.sprite.Group()
-                        SpriteGroups().inventory_group = pygame.sprite.Group()
-                        SpriteGroups().energy_group = pygame.sprite.Group()
-                        SpriteGroups().dropped_items_group = pygame.sprite.Group()
+                        SpriteGroups().clear_level_sprites()
                         starting_window.start_window()
                         sys.exit()
 

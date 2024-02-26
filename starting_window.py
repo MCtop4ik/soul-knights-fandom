@@ -5,6 +5,7 @@ import pygame
 
 import choose_player_window
 from assets import Assets
+from sprites.sprite_groups import SpriteGroups
 
 
 def start_game():
@@ -18,6 +19,7 @@ def start_game():
     PlayerState().energy = PlayerState().max_energy
     PlayerState().money = 0
     PlayerState().level_index = 0
+    SpriteGroups().clear_level_sprites()
     Constants().name = PlayerState().levels[PlayerState().level_index]
     RoomFactory(Constants().name).load_assets()
     Level().start()
