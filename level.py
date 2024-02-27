@@ -76,7 +76,6 @@ class Level(metaclass=Singleton):
         self.screen = pygame.display.set_mode(Constants().screen_size)
         self.constants = Constants()
         Assets().load_player(PlayerState().character)
-        weapon_id = 3
         clock = pygame.time.Clock()
         fps = self.constants.FPS
         pygame.mixer.init()
@@ -99,7 +98,6 @@ class Level(metaclass=Singleton):
         WeaponsList().add_weapons_to_list()
         WeaponsList().add_bullets_to_list()
         EnemyList().add_enemies_to_list()
-        InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[weapon_id - 1])
         SpriteGroups().camera_group = CameraGroup(*self.constants.camera_size, level)
         SpriteGroups().player = Player(
             (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
@@ -108,13 +106,24 @@ class Level(metaclass=Singleton):
              (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
             self.constants.player_size, level,
             SpriteGroups().camera_group)
-        SpriteGroups().weapon = Weapon(
-            weapon_id,
-            (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
-             (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
-             start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
-             (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
-            SpriteGroups().camera_group)
+        if PlayerState().level_index == 0:
+            weapon_id = 3
+            InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[weapon_id - 1])
+            SpriteGroups().weapon = Weapon(
+                weapon_id,
+                (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
+                 (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
+                 start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
+                 (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
+                SpriteGroups().camera_group)
+        else:
+            SpriteGroups().weapon = Weapon(
+                InventoryV2().inventory_item.id,
+                (start_coordinates[1] * self.constants.quadrant_size * self.constants.big_cell_size +
+                 (self.constants.quadrant_size * self.constants.big_cell_size) // 2,
+                 start_coordinates[0] * self.constants.quadrant_size * self.constants.big_cell_size +
+                 (self.constants.quadrant_size * self.constants.big_cell_size) // 2),
+                SpriteGroups().camera_group)
         SpriteGroups().camera_group.wall_draw()
         SpriteGroups().camera_group.box_draw(enemy_coordinates, enemy_room_sizes)
         Portal(

@@ -2,6 +2,7 @@ import os
 import sys
 import pygame
 from assets import Assets
+from settings.statistics import Statistics
 from sprites.sprite_groups import SpriteGroups
 from windows.choose_player_window import ChoosePlayerWindow
 from windows.settings_window import SettingsMenu
@@ -38,6 +39,7 @@ class StartWindow:
         PlayerState().money = 0
         PlayerState().level_index = 0
         SpriteGroups().clear_level_sprites()
+        Statistics().clear()
         Constants().name = PlayerState().levels[PlayerState().level_index]
         RoomFactory(Constants().name).load_assets()
         Level().start()

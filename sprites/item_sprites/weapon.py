@@ -1,4 +1,4 @@
-from math import sqrt, inf, atan2, pi, cos, sin, radians
+from math import sqrt, inf, atan2, pi
 from random import randint, uniform
 
 import pygame

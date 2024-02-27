@@ -5,6 +5,7 @@ import pygame
 
 from assets import Assets
 from settings.constants import Constants
+from settings.statistics import Statistics
 from sprites.item_sprites.bullet import Bullet
 from sprites.sprite_groups import SpriteGroups
 from sprites.weapons_list import WeaponsList
@@ -94,6 +95,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         if self.heal_points <= 0:
             SpriteGroups().player.decrease_enemies_cnt(self.room_coordinates)
+            Statistics().killed_enemy()
             self.kill()
         self.check_if_battle()
         if not self.is_frozen and self.check_if_in_right_field():

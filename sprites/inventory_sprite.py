@@ -1,5 +1,3 @@
-from random import randrange
-
 import pygame
 
 from assets import Assets

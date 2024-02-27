@@ -1,9 +1,6 @@
 import pygame
 
 from patterns.creational_patterns.singleton import Singleton
-from sprites.item_sprites.dropped_weapon import DroppedWeapon
-from sprites.sprite_groups import SpriteGroups
-from sprites.weapons_list import WeaponsList
 
 
 class InventoryV2(metaclass=Singleton):

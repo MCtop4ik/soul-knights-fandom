@@ -2,6 +2,7 @@ import os
 import sys
 import pygame
 from assets import Assets
+from settings.statistics import Statistics
 from windows.starting_window import StartWindow
 
 
@@ -30,6 +31,7 @@ class EndScreen:
             self.screen.fill(self.WHITE)
             self.screen.blit(self.bg, (0, 0))
             self.draw_text("Main Menu", 100, 100)
+            self.draw_text(f"Killed enemies: {Statistics().killed_enemies}", 100, 150)
             self.draw_text("Exit", 130, 200)
             main_menu_button = pygame.Rect(65, 100, 200, 50)
             exit_button = pygame.Rect(70, 170, 200, 50)
