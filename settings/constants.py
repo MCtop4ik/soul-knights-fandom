@@ -25,8 +25,8 @@ class Constants(metaclass=Singleton):
         self.music_enable = False
 
         # generation params
-        self.min_enemies_rooms = 1
-        self.max_enemies_rooms = 2
+        self.min_enemies_rooms = 3
+        self.max_enemies_rooms = 6
         self.max_treasuries_rooms = 3
 
         # treasury room spawn chance
@@ -34,7 +34,7 @@ class Constants(metaclass=Singleton):
         self.iters_for_chance = 3
 
         self.fire_radius = self.quadrant_size * 10
-        self.max_enemy_amount = 10
+        self.max_enemy_amount = 7
         self.min_enemy_amount = 3
 
         self.EMPTY_CELL = Cell(asset_abbr=0, name='Empty')

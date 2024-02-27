@@ -11,7 +11,7 @@ class Energy(pygame.sprite.Sprite):
         super().__init__(group)
         self.image = Assets().images['energy']
         self.rect = self.image.get_rect(center=pos)
-        self.speed = 4
+        self.speed = 8
         self.last_timeout = pygame.time.get_ticks()
 
     def update(self):

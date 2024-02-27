@@ -107,7 +107,7 @@ class Level(metaclass=Singleton):
             self.constants.player_size, level,
             SpriteGroups().camera_group)
         if PlayerState().level_index == 0:
-            weapon_id = 3
+            weapon_id = 4
             InventoryV2().add_item_in_inventory(WeaponsList().weapons_list[weapon_id - 1])
             SpriteGroups().weapon = Weapon(
                 weapon_id,
